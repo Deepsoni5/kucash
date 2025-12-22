@@ -115,8 +115,7 @@ export function LoanProductsSection() {
                   </div>
                   <Link href="#apply">
                     <Button
-                      variant="outline"
-                      className="w-full rounded-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors bg-transparent text-xs sm:text-sm py-4 sm:py-5"
+                      className="w-full rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-xs sm:text-sm py-4 sm:py-5 shadow-sm"
                     >
                       Apply Now
                     </Button>
