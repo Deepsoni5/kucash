@@ -7,7 +7,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Shield, ArrowLeft, Home, Settings } from "lucide-react";
+import { BackButton } from "@/components/ui/back-button";
+import { Shield, Home, ArrowLeft } from "lucide-react";
+
+// Force dynamic rendering
+export const dynamic = "force-dynamic";
 
 export default function AdminNotFound() {
   return (
@@ -82,14 +86,7 @@ export default function AdminNotFound() {
 
             {/* Back Button */}
             <div className="pt-4">
-              <Button
-                variant="ghost"
-                onClick={() => window.history.back()}
-                className="gap-2 text-muted-foreground hover:text-foreground"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                Go Back
-              </Button>
+              <BackButton />
             </div>
           </CardContent>
         </Card>
