@@ -16,6 +16,9 @@ import {
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 
+// Force dynamic rendering since we use cookies
+export const dynamic = "force-dynamic";
+
 export default async function AdminDashboard() {
   const session = await requireAdminAuth();
   const supabase = await createClient();

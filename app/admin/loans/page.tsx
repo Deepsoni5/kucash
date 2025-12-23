@@ -9,6 +9,9 @@ import {
 } from "@/components/ui/card";
 import { FileText, Construction } from "lucide-react";
 
+// Force dynamic rendering since we use cookies
+export const dynamic = "force-dynamic";
+
 export default async function LoansPage() {
   await requireAdminAuth();
 

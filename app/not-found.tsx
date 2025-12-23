@@ -7,7 +7,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Home, ArrowLeft, Search, FileQuestion } from "lucide-react";
+import { BackButton } from "@/components/ui/back-button";
+import { Home, Search, FileQuestion, ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -94,14 +95,7 @@ export default function NotFound() {
 
             {/* Back Button */}
             <div className="pt-4">
-              <Button
-                variant="ghost"
-                onClick={() => window.history.back()}
-                className="gap-2 text-muted-foreground hover:text-foreground"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                Go Back
-              </Button>
+              <BackButton />
             </div>
           </CardContent>
         </Card>

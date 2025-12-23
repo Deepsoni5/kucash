@@ -12,6 +12,9 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { MessageSquare, Clock, CheckCircle, XCircle } from "lucide-react";
 
+// Force dynamic rendering since we use cookies
+export const dynamic = "force-dynamic";
+
 export default async function ContactSubmissionsPage() {
   await requireAdminAuth();
 
