@@ -1,30 +1,30 @@
 "use client"
 
-import { FileText, CheckCircle, Banknote, Clock } from "lucide-react"
+import { UserCheck, ShieldCheck, ListChecks, Banknote } from "lucide-react"
 
 const steps = [
   {
-    icon: FileText,
-    title: "Apply Online",
-    description: "Fill our simple application form with basic details in just 5 minutes.",
+    icon: UserCheck,
+    title: "Check Eligibility",
+    description: "Enter basic details in our simple form. Our smart algorithm matches your profile with 100+ banking partners instantly.",
     step: "01",
   },
   {
-    icon: CheckCircle,
-    title: "Instant Verification",
-    description: "Our AI-powered system verifies your documents instantly and securely.",
+    icon: ShieldCheck,
+    title: "Paperless Verification",
+    description: "No physical documents required. We use secure Account Aggregator technology to verify your income and KYC safely.",
     step: "02",
   },
   {
-    icon: Clock,
-    title: "Quick Approval",
-    description: "Get loan approval within hours. We value your time and urgency.",
+    icon: ListChecks,
+    title: "Select Your Offer",
+    description: "Compare interest rates and terms from top lenders. View the Key Fact Statement (KFS) before you decide.",
     step: "03",
   },
   {
     icon: Banknote,
-    title: "Receive Funds",
-    description: "Amount credited directly to your bank account within 24 hours.",
+    title: "Direct Bank Transfer",
+    description: "Once e-signed, the loan amount is credited directly from the bank to your account within 24 hours. No wallet, no middleman.",
     step: "04",
   },
 ]

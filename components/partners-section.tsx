@@ -98,7 +98,7 @@ export function PartnersSection() {
 
         {/* Trust Badge */}
         <div className="mt-16 text-center">
-          <p className="text-sm text-muted-foreground">{"Partnered with 50+ financial institutions across India"}</p>
+          <p className="text-sm text-muted-foreground">{"Partnered with 100+ Banks, NBFCs, and Financial Institutions."}</p>
         </div>
       </div>
     </section>

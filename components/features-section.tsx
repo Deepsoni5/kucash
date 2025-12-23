@@ -1,61 +1,58 @@
 "use client"
 
-import { Shield, Clock, Percent, FileCheck, Smartphone, Headphones, Award, Users, TrendingUp } from "lucide-react"
+import {
+  Layers,
+  Zap,
+  ShieldCheck,
+  Users,
+  PhoneOff,
+  Network,
+  Banknote,
+  Award,
+} from "lucide-react"
 
 const features = [
   {
-    icon: Shield,
-    title: "100% Secure & Trusted",
-    description: "RBI registered NBFC with bank-grade security and end-to-end encryption for all your data.",
+    icon: Layers,
+    title: "One Application, Multiple Chances",
+    description: "Don't run from bank to bank. Submit your details once, and we match you with the right lender for your profile.",
     color: "from-blue-500 to-blue-600",
   },
   {
-    icon: Clock,
-    title: "Lightning Fast Approval",
-    description: "Get instant approval with our AI-powered verification system. Funds in your account within 24 hours.",
+    icon: Zap,
+    title: "Paperless & Fast",
+    description: "We prioritize digital-first lenders. Upload your documents from your phone and get approvals faster.",
     color: "from-orange-500 to-orange-600",
   },
   {
-    icon: Percent,
-    title: "Lowest Interest Rates",
-    description: "Industry-leading competitive rates starting from just 9% with flexible EMI options.",
+    icon: ShieldCheck,
+    title: "Data Security Guarantee",
+    description: "We are an ethical Lending Service Provider (LSP). Your data is shared only with the lender you choose, securely and with your consent.",
     color: "from-green-500 to-green-600",
   },
   {
-    icon: FileCheck,
-    title: "Minimal Documentation",
-    description: "Simple paperwork - just PAN, Aadhaar, and income proof. No hidden charges or complex forms.",
+    icon: Users,
+    title: "Options for Everyone",
+    description: "From salaried professionals to business owners, we have a loan product for every need.",
     color: "from-purple-500 to-purple-600",
   },
   {
-    icon: Smartphone,
-    title: "100% Digital Process",
-    description: "Complete online application from the comfort of your home. No branch visits required.",
+    icon: PhoneOff,
+    title: "No Spam Guarantee",
+    description: "We respect your privacy. You will never receive unsolicited robocalls from us. We speak only when you want us to.",
     color: "from-teal-500 to-teal-600",
   },
   {
-    icon: Headphones,
-    title: "24/7 Expert Support",
-    description: "Our dedicated team of financial experts is always available to assist you at every step.",
+    icon: Network,
+    title: "The Aggregator Advantage",
+    description: "Why apply to one bank when you can access 100? From the powerhouse lending of KuCash.",
     color: "from-pink-500 to-pink-600",
   },
   {
-    icon: Award,
-    title: "Highest Approval Rate",
-    description: "98% approval rate with flexible eligibility criteria for salaried and self-employed individuals.",
+    icon: Banknote,
+    title: "Zero Hidden Fees",
+    description: "We display the 'All-Inclusive APR.' Processing fees, insurance, and penal charges are visible upfront in your KFS Menu.",
     color: "from-indigo-500 to-indigo-600",
-  },
-  {
-    icon: Users,
-    title: "50,000+ Happy Customers",
-    description: "Join thousands of satisfied borrowers who trust Kucash for their financial needs.",
-    color: "from-cyan-500 to-cyan-600",
-  },
-  {
-    icon: TrendingUp,
-    title: "Flexible Loan Options",
-    description: "Choose from multiple loan products tailored to your personal and business requirements.",
-    color: "from-amber-500 to-amber-600",
   },
 ]
 
@@ -87,7 +84,8 @@ export function FeaturesSection() {
             return (
               <div
                 key={index}
-                className="group relative p-6 lg:p-8 rounded-3xl bg-card border border-border hover:border-primary/50 hover:shadow-2xl transition-all duration-300 overflow-hidden"
+                className={`group relative p-6 lg:p-8 rounded-3xl bg-card border border-border hover:border-primary/50 hover:shadow-2xl transition-all duration-300 overflow-hidden ${index === features.length - 1 && features.length % 3 === 1 ? "lg:col-start-2" : ""
+                  }`}
               >
                 {/* Gradient Background on Hover */}
                 <div

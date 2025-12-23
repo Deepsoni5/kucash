@@ -2,63 +2,69 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Building2, Home, CreditCard, Briefcase, TrendingUp, Users } from "lucide-react"
+import { Zap, Briefcase, Home, Car, TrendingUp, Users } from "lucide-react"
 import Link from "next/link"
 
 const loanProducts = [
   {
-    icon: CreditCard,
+    icon: Zap,
     title: "Personal Loan",
-    description: "Quick personal loans for any purpose - medical, education, travel, or weddings.",
-    amount: "₹50K - ₹25L",
+    description: "Instant Cash, Zero Stress. Get funds for travel, medical needs, or emergencies in 24 hours. No collateral required.",
+    amount: "₹50K - 1cr",
     interest: "From 9.99%",
     tenure: "Up to 5 years",
     color: "from-blue-500 to-blue-600",
+    cta: "Apply now for instant approval.",
   },
   {
     icon: Briefcase,
     title: "Business Loan",
-    description: "Fuel your business growth with flexible working capital and expansion loans.",
-    amount: "₹1L - ₹50L",
+    description: "Fund Your Growth. Need capital to expand? Get hassle-free business loans with minimal documentation and quick disbursal.",
+    amount: "₹5L - ₹5cr",
     interest: "From 11%",
     tenure: "Up to 7 years",
     color: "from-teal-500 to-teal-600",
+    cta: "Scale your business today.",
   },
   {
     icon: Home,
     title: "Loan Against Property",
-    description: "Unlock the value of your property with competitive loan against property rates.",
+    description: "Unlock High Value. Get the lowest interest rates by pledging your property. High loan amounts with long repayment tenures (up to 15 years).",
     amount: "₹10L - ₹5Cr",
     interest: "From 8.5%",
     tenure: "Up to 15 years",
     color: "from-purple-500 to-purple-600",
+    cta: "Leverage your asset now.",
   },
   {
-    icon: Building2,
-    title: "Working Capital",
-    description: "Maintain smooth business operations with our working capital solutions.",
-    amount: "₹5L - ₹1Cr",
+    icon: Car,
+    title: "Vehicle Loan",
+    description: "Drive Your Dream. Up to 100% on-road financing for new and used vehicles. Instant sanction with affordable EMIs.",
+    amount: "₹1L - ₹50L",
     interest: "From 10%",
-    tenure: "Up to 3 years",
+    tenure: "Up to 7 years",
     color: "from-orange-500 to-orange-600",
+    cta: "Get on the road faster.",
   },
   {
     icon: TrendingUp,
     title: "Invoice Discounting",
-    description: "Convert your unpaid invoices into immediate cash flow for your business.",
+    description: "Turn Unpaid Invoices into Cash. Don't wait 30–90 days for clients to pay. Get up to 90% of your invoice value within 24 hours to keep cash flowing.",
     amount: "₹1L - ₹50L",
     interest: "From 12%",
     tenure: "Up to 90 days",
     color: "from-green-500 to-green-600",
+    cta: "Stop waiting, start funding.",
   },
   {
-    icon: Users,
-    title: "MSME Loan",
-    description: "Special loan programs designed for micro, small and medium enterprises.",
-    amount: "₹50K - ₹25L",
-    interest: "From 10.5%",
-    tenure: "Up to 5 years",
+    icon: Briefcase,
+    title: "Working Capital Loan",
+    description: "Keep Your Business Moving. Cover daily expenses, payroll, and inventory gaps effortlessly. Flexible credit lines designed to smooth out seasonal cash crunches.",
+    amount: "₹5L - ₹1Cr",
+    interest: "From 10%",
+    tenure: "Up to 3 years",
     color: "from-pink-500 to-pink-600",
+    cta: "Stabilize your operations today.",
   },
 ]
 
@@ -79,45 +85,45 @@ export function LoanProductsSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
           {loanProducts.map((product, index) => {
             const Icon = product.icon
             return (
               <Card
                 key={index}
-                className="group hover:shadow-xl transition-all duration-300 hover:scale-105 border-border/50 hover:border-primary/50 overflow-hidden"
+                className="group hover:shadow-xl transition-all duration-300 hover:scale-[1.02] border-border/50 hover:border-primary/50 overflow-hidden"
               >
-                <CardHeader className="p-4 sm:p-6">
+                <CardHeader className="p-6">
                   <div
-                    className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br ${product.color} flex items-center justify-center mb-3 sm:mb-4 group-hover:scale-110 transition-transform`}
+                    className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${product.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}
                   >
-                    <Icon className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
+                    <Icon className="w-7 h-7 text-white" />
                   </div>
-                  <CardTitle className="text-base sm:text-xl text-foreground">{product.title}</CardTitle>
-                  <CardDescription className="text-xs sm:text-sm text-muted-foreground text-pretty leading-relaxed">
+                  <CardTitle className="text-xl text-foreground">{product.title}</CardTitle>
+                  <CardDescription className="text-sm text-muted-foreground text-pretty leading-relaxed">
                     {product.description}
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-3 sm:space-y-4 p-4 sm:p-6 pt-0">
-                  <div className="grid grid-cols-3 gap-1 sm:gap-2 text-xs sm:text-sm">
+                <CardContent className="space-y-4 p-6 pt-0">
+                  <div className="grid grid-cols-3 gap-2 text-sm border-y border-border/50 py-4 mb-4">
                     <div>
-                      <div className="text-muted-foreground text-[10px] sm:text-xs mb-1">Amount</div>
+                      <div className="text-muted-foreground text-[10px] sm:text-xs mb-1 uppercase tracking-wider font-medium">Amount</div>
                       <div className="font-semibold text-foreground text-xs sm:text-sm">{product.amount}</div>
                     </div>
                     <div>
-                      <div className="text-muted-foreground text-[10px] sm:text-xs mb-1">Interest</div>
+                      <div className="text-muted-foreground text-[10px] sm:text-xs mb-1 uppercase tracking-wider font-medium">Interest</div>
                       <div className="font-semibold text-foreground text-xs sm:text-sm">{product.interest}</div>
                     </div>
                     <div>
-                      <div className="text-muted-foreground text-[10px] sm:text-xs mb-1">Tenure</div>
+                      <div className="text-muted-foreground text-[10px] sm:text-xs mb-1 uppercase tracking-wider font-medium">Tenure</div>
                       <div className="font-semibold text-foreground text-xs sm:text-sm">{product.tenure}</div>
                     </div>
                   </div>
-                  <Link href="#apply">
+                  <Link href="#apply" className="block">
                     <Button
-                      className="w-full rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-xs sm:text-sm py-4 sm:py-5 shadow-sm"
+                      className={`w-full rounded-full bg-gradient-to-r ${product.color} text-white hover:opacity-90 transition-all font-semibold py-6 shadow-md`}
                     >
-                      Apply Now
+                      {product.cta}
                     </Button>
                   </Link>
                 </CardContent>

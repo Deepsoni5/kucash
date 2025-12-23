@@ -85,8 +85,9 @@ export function Footer() {
               <li className="text-muted-foreground">Personal Loan</li>
               <li className="text-muted-foreground">Business Loan</li>
               <li className="text-muted-foreground">Loan Against Property</li>
-              <li className="text-muted-foreground">Working Capital</li>
-              <li className="text-muted-foreground">MSME Loan</li>
+              <li className="text-muted-foreground">Vehicle Loan</li>
+              <li className="text-muted-foreground">Invoice Discounting</li>
+              <li className="text-muted-foreground">Working Capital Loan</li>
             </ul>
           </div>
 
@@ -121,7 +122,7 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className="border-t border-border mt-12 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
           <p className="text-muted-foreground text-sm text-center sm:text-left">
-            © {currentYear} Kucash. All rights reserved. | RBI Registered NBFC
+            © {currentYear} Kucash. All rights reserved. | LSP loan service provider
           </p>
           <div className="flex gap-6 text-sm text-muted-foreground">
             <Link href="/privacy-policy" className="hover:text-primary transition-colors">

@@ -138,9 +138,8 @@ export default function TermsAndConditionsPage() {
               <section>
                 <h2 className="text-2xl font-semibold mb-4 text-foreground">10. Regulatory Compliance</h2>
                 <p className="text-muted-foreground leading-relaxed">
-                  Kucash is a registered Non-Banking Financial Company (NBFC) regulated by the Reserve Bank of India
-                  (RBI). We comply with all applicable laws, regulations, and guidelines governing lending activities in
-                  India, including but not limited to the RBI Act, Fair Practices Code, and consumer protection laws.
+                  Kucash is a registered LSP loan service provider. We comply with all applicable laws, regulations, and guidelines governing lending activities in
+                  India, including but not limited to the Fair Practices Code and consumer protection laws.
                 </p>
               </section>
 

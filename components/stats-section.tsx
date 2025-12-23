@@ -5,14 +5,14 @@ import { TrendingUp, Users, Award, MapPin } from "lucide-react"
 const stats = [
   {
     icon: TrendingUp,
-    value: "₹5000+ Cr",
-    label: "Total Loans Disbursed",
+    value: "₹500+ Cr",
+    label: "Loans Disbursed",
     color: "bg-blue-500",
     iconColor: "text-blue-500",
   },
   {
     icon: Users,
-    value: "50,000+",
+    value: "5000+",
     label: "Happy Customers",
     color: "bg-teal-500",
     iconColor: "text-teal-500",

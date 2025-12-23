@@ -27,7 +27,7 @@ export function HeroSection() {
             {/* Trust Badge */}
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
               <Shield className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium text-primary">RBI Registered NBFC</span>
+              <span className="text-sm font-medium text-primary">Top Digital LSP</span>
             </div>
 
             {/* Main Heading */}
@@ -40,7 +40,7 @@ export function HeroSection() {
             {/* Subheading */}
             <p className="text-base sm:text-lg lg:text-xl text-muted-foreground leading-relaxed max-w-xl text-pretty">
               {
-                "Get quick approval on personal loans, business loans, and more. Minimal documentation, competitive rates, and funds in your account within 24 hours."
+                "Whether it's a new home, a growing business, or a personal emergency—KuCash connects you to India's most trusted lenders. Simple process. Transparent terms. Zero confusion."
               }
             </p>
 
@@ -70,7 +70,7 @@ export function HeroSection() {
                 </div>
                 <div>
                   <div className="font-semibold text-foreground text-sm lg:text-base">100% Secure</div>
-                  <div className="text-xs lg:text-sm text-muted-foreground">RBI Approved</div>
+                  <div className="text-xs lg:text-sm text-muted-foreground">LSP loan service provider</div>
                 </div>
               </div>
             </div>
@@ -82,7 +82,7 @@ export function HeroSection() {
                   size="lg"
                   className="w-full rounded-full bg-primary hover:bg-primary/90 text-base lg:text-lg px-6 lg:px-8 py-5 lg:py-6 hover:scale-105 transition-transform"
                 >
-                  Apply for Loan
+                  Apply Now
                   <ArrowRight className="ml-2 h-4 w-4 lg:h-5 lg:w-5" />
                 </Button>
               </Link>
@@ -100,12 +100,12 @@ export function HeroSection() {
             {/* Social Proof - Mobile Optimized */}
             <div className="flex flex-wrap items-center gap-4 lg:gap-8 pt-4">
               <div>
-                <div className="text-2xl lg:text-3xl font-bold text-primary">₹5000+ Cr</div>
+                <div className="text-2xl lg:text-3xl font-bold text-primary">₹500+ Cr</div>
                 <div className="text-xs lg:text-sm text-muted-foreground">Loans Disbursed</div>
               </div>
               <div className="h-8 lg:h-12 w-px bg-border" />
               <div>
-                <div className="text-2xl lg:text-3xl font-bold text-accent">50,000+</div>
+                <div className="text-2xl lg:text-3xl font-bold text-accent">5000+</div>
                 <div className="text-xs lg:text-sm text-muted-foreground">Happy Customers</div>
               </div>
               <div className="h-8 lg:h-12 w-px bg-border" />
@@ -123,7 +123,7 @@ export function HeroSection() {
           >
             <div className="relative h-full rounded-3xl overflow-hidden shadow-2xl">
               <Image
-                src="https://images.unsplash.com/photo-1573497491208-6b1acb260507?w=800&h=600&fit=crop&q=80"
+                src="https://images.pexels.com/photos/2988232/pexels-photo-2988232.jpeg?auto=compress&cs=tinysrgb&w=800&q=80"
                 alt="Professional financial consultation and loan approval process"
                 fill
                 className="object-cover object-center"

@@ -31,7 +31,7 @@ const faqs = [
   {
     question: "Is my personal information secure?",
     answer:
-      "We use bank-grade 256-bit SSL encryption and follow strict RBI guidelines to ensure your data is completely secure. We never share your information with third parties.",
+      "We use bank-grade 256-bit SSL encryption and follow strict LSP loan service provider guidelines to ensure your data is completely secure. We never share your information with third parties.",
   },
 ]
 

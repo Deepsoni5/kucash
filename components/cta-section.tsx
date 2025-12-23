@@ -30,7 +30,7 @@ export function CTASection() {
                 size="lg"
                 className="w-full sm:w-auto bg-white text-primary hover:bg-white/90 rounded-full text-lg px-8 py-6"
               >
-                Apply for Loan Now
+                Apply Now
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
@@ -47,7 +47,7 @@ export function CTASection() {
           </div>
 
           <p className="text-white/80 mt-8 text-sm">
-            {"🔒 100% Secure Application • RBI Registered NBFC • Quick Approval"}
+            {"🔒 100% Secure Application • LSP loan service provider • Quick Approval"}
           </p>
         </div>
       </div>
