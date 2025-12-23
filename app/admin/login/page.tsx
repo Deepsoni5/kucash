@@ -19,6 +19,9 @@ import { Shield, Eye, EyeOff, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { adminLogin } from "@/app/actions/admin-auth";
 
+// Force dynamic rendering
+export const dynamic = "force-dynamic";
+
 export default function AdminLoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
