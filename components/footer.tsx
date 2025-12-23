@@ -16,7 +16,7 @@ export function Footer() {
               <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-primary-foreground font-bold text-xl">
                 K
               </div>
-              <span className="text-2xl font-bold text-primary">Kucash</span>
+              <span className="text-2xl font-bold text-primary">KuCash</span>
             </div>
             <p className="text-muted-foreground text-sm leading-relaxed">
               {
@@ -122,7 +122,7 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className="border-t border-border mt-12 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
           <p className="text-muted-foreground text-sm text-center sm:text-left">
-            © {currentYear} Kucash. All rights reserved. | LSP loan service provider
+            © {currentYear} KuCash. All rights reserved. | LSP loan service provider
           </p>
           <div className="flex gap-6 text-sm text-muted-foreground">
             <Link href="/privacy-policy" className="hover:text-primary transition-colors">

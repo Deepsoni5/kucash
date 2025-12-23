@@ -20,7 +20,7 @@ export function CTASection() {
           </h2>
           <p className="text-xl text-white/90 mb-10 text-pretty leading-relaxed">
             {
-              "Join thousands of satisfied customers who trusted Kucash for their financial needs. Apply now and get instant approval!"
+              "Join thousands of satisfied customers who trusted KuCash for their financial needs. Apply now and get instant approval!"
             }
           </p>
 

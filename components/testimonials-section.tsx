@@ -12,7 +12,7 @@ const testimonials = [
     role: "Small Business Owner",
     image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&q=80",
     content:
-      "Kucash helped me expand my retail business with their quick business loan. The entire process was smooth and transparent. Highly recommended!",
+      "KuCash helped me expand my retail business with their quick business loan. The entire process was smooth and transparent. Highly recommended!",
     rating: 5,
   },
   {
@@ -28,7 +28,7 @@ const testimonials = [
     role: "Entrepreneur",
     image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&q=80",
     content:
-      "The working capital loan from Kucash was a lifesaver during the expansion phase. Quick approval and flexible repayment terms.",
+      "The working capital loan from KuCash was a lifesaver during the expansion phase. Quick approval and flexible repayment terms.",
     rating: 5,
   },
   {
@@ -62,7 +62,7 @@ export function TestimonialsSection() {
             <span className="text-primary">Customers Say</span>
           </h2>
           <p className="text-lg text-muted-foreground text-pretty">
-            {"Join thousands of satisfied customers who trusted Kucash for their financial needs."}
+            {"Join thousands of satisfied customers who trusted KuCash for their financial needs."}
           </p>
         </div>
 
@@ -122,9 +122,8 @@ export function TestimonialsSection() {
               <button
                 key={index}
                 onClick={() => setCurrentIndex(index)}
-                className={`w-2 h-2 rounded-full transition-all ${
-                  index === currentIndex ? "bg-primary w-8" : "bg-border"
-                }`}
+                className={`w-2 h-2 rounded-full transition-all ${index === currentIndex ? "bg-primary w-8" : "bg-border"
+                  }`}
               />
             ))}
           </div>

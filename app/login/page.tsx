@@ -16,9 +16,9 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Login - Kucash | Secure Access to Your Account",
+  title: "Login - KuCash | Secure Access to Your Account",
   description:
-    "Login to your Kucash account using WhatsApp OTP. Secure and instant authentication to manage your loans and applications.",
+    "Login to your KuCash account using WhatsApp OTP. Secure and instant authentication to manage your loans and applications.",
 };
 
 export default function LoginPage() {

@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Admin Panel - Kucash",
-  description: "Administrator panel for Kucash loan management system",
+  title: "Admin Panel - KuCash",
+  description: "Administrator panel for KuCash loan management system",
 };
 
 export default function AdminLayout({

@@ -7,9 +7,9 @@ import { Mail, Phone, MapPin, Clock, MessageSquare } from "lucide-react"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Contact Us - Kucash | Get in Touch for Loan Queries",
+  title: "Contact Us - KuCash | Get in Touch for Loan Queries",
   description:
-    "Contact Kucash for any loan related queries. Call us at +91 9008367818 or email at wecare@kucash.in. Our team is available 24/7 to assist you.",
+    "Contact KuCash for any loan related queries. Call us at +91 9008367818 or email at wecare@kucash.in. Our team is available 24/7 to assist you.",
 }
 
 export default function ContactPage() {

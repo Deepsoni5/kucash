@@ -6,14 +6,14 @@ import { ScrollToTop } from "@/components/scroll-to-top"
 import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "Kucash - Fast Personal & Business Loans in India | Instant Approval",
+  title: "KuCash - Fast Personal & Business Loans in India | Instant Approval",
   description:
-    "Get instant personal loans, business loans, and loan against property with Kucash. Quick approval, minimal documentation, competitive interest rates. Apply online in minutes.",
+    "Get instant personal loans, business loans, and loan against property with KuCash. Quick approval, minimal documentation, competitive interest rates. Apply online in minutes.",
   keywords:
-    "personal loan, business loan, instant loan, loan against property, quick loan approval, online loan India, Kucash",
-  authors: [{ name: "Kucash" }],
-  creator: "Kucash",
-  publisher: "Kucash",
+    "personal loan, business loan, instant loan, loan against property, quick loan approval, online loan India, KuCash",
+  authors: [{ name: "KuCash" }],
+  creator: "KuCash",
+  publisher: "KuCash",
   formatDetection: {
     telephone: true,
     email: true,
@@ -21,16 +21,16 @@ export const metadata: Metadata = {
   },
   metadataBase: new URL("https://kucash.in"),
   openGraph: {
-    title: "Kucash - Fast Personal & Business Loans in India",
+    title: "KuCash - Fast Personal & Business Loans in India",
     description: "Get instant loans with quick approval. Minimal documentation, competitive rates. Apply now!",
     url: "https://kucash.in",
-    siteName: "Kucash",
+    siteName: "KuCash",
     images: [
       {
         url: "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=1200&h=630&fit=crop",
         width: 1200,
         height: 630,
-        alt: "Kucash - Financial Solutions",
+        alt: "KuCash - Financial Solutions",
       },
     ],
     locale: "en_IN",
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Kucash - Fast Personal & Business Loans",
+    title: "KuCash - Fast Personal & Business Loans",
     description: "Get instant loans with quick approval. Apply now!",
     images: ["https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=1200&h=630&fit=crop"],
   },

@@ -108,7 +108,7 @@ export function LoanApplicationForm() {
               <h3 className="text-2xl font-bold mb-4 text-foreground">Application Submitted Successfully!</h3>
               <p className="text-muted-foreground mb-6">
                 {
-                  "Thank you for choosing Kucash. Our team will review your application and contact you within 24 hours."
+                  "Thank you for choosing KuCash. Our team will review your application and contact you within 24 hours."
                 }
               </p>
               <p className="text-sm text-muted-foreground">

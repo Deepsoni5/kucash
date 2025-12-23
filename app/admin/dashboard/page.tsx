@@ -46,7 +46,7 @@ export default async function AdminDashboard() {
             Welcome back, {session.full_name}!
           </h2>
           <p className="text-muted-foreground text-sm sm:text-base">
-            Here's what's happening with your Kucash platform today.
+            Here's what's happening with your KuCash platform today.
           </p>
         </div>
 

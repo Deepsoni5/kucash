@@ -4,18 +4,18 @@ import { Footer } from "@/components/footer"
 import { WhatsAppButton } from "@/components/whatsapp-button"
 
 export const metadata: Metadata = {
-  title: "Privacy Policy | Kucash - Your Financial Privacy Matters",
+  title: "Privacy Policy | KuCash - Your Financial Privacy Matters",
   description:
-    "Read Kucash's privacy policy to understand how we collect, use, and protect your personal information. Your trust is our priority.",
+    "Read KuCash's privacy policy to understand how we collect, use, and protect your personal information. Your trust is our priority.",
   openGraph: {
-    title: "Privacy Policy | Kucash",
-    description: "Understanding how Kucash protects your personal information and maintains your privacy.",
+    title: "Privacy Policy | KuCash",
+    description: "Understanding how KuCash protects your personal information and maintains your privacy.",
     images: [
       {
         url: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=630&fit=crop&q=80",
         width: 1200,
         height: 630,
-        alt: "Kucash Privacy Policy",
+        alt: "KuCash Privacy Policy",
       },
     ],
   },

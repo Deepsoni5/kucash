@@ -40,7 +40,7 @@ export function Navbar() {
             <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-primary-foreground font-bold text-xl transition-transform group-hover:scale-105">
               K
             </div>
-            <span className="text-2xl font-bold text-primary">Kucash</span>
+            <span className="text-2xl font-bold text-primary">KuCash</span>
           </Link>
 
           {/* Desktop Navigation */}

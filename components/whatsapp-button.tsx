@@ -6,7 +6,7 @@ export function WhatsAppButton() {
   const handleWhatsAppClick = () => {
     const phoneNumber = "919008367818"
     const message = encodeURIComponent(
-      "Hi Kucash Team! I am interested in learning more about your loan products. Please help me with the details.",
+      "Hi KuCash Team! I am interested in learning more about your loan products. Please help me with the details.",
     )
     window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank")
   }

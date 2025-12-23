@@ -88,7 +88,7 @@ export function PartnersSection() {
               >
                 <img
                   src={partner.logo || "/placeholder.svg"}
-                  alt={`${partner.name} - Kucash partner`}
+                  alt={`${partner.name} - KuCash partner`}
                   className="w-full h-full object-cover"
                 />
               </div>

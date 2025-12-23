@@ -12,9 +12,9 @@ import { Home, Search, FileQuestion, ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "404 - Page Not Found | Kucash",
+  title: "404 - Page Not Found | KuCash",
   description:
-    "The page you're looking for doesn't exist. Return to Kucash homepage or explore our services.",
+    "The page you're looking for doesn't exist. Return to KuCash homepage or explore our services.",
 };
 
 export default function NotFound() {

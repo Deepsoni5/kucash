@@ -6,16 +6,16 @@ import { WhatsAppButton } from "@/components/whatsapp-button"
 export const metadata: Metadata = {
   title: "Terms and Conditions | Kucash - Loan Agreement Terms",
   description:
-    "Read Kucash's terms and conditions to understand the terms of service, loan agreements, and user responsibilities.",
+    "Read KuCash's terms and conditions to understand the terms of service, loan agreements, and user responsibilities.",
   openGraph: {
-    title: "Terms and Conditions | Kucash",
-    description: "Understanding the terms and conditions for using Kucash lending services.",
+    title: "Terms and Conditions | KuCash",
+    description: "Understanding the terms and conditions for using KuCash lending services.",
     images: [
       {
         url: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1200&h=630&fit=crop&q=80",
         width: 1200,
         height: 630,
-        alt: "Kucash Terms and Conditions",
+        alt: "KuCash Terms and Conditions",
       },
     ],
   },
@@ -35,7 +35,7 @@ export default function TermsAndConditionsPage() {
               <section>
                 <h2 className="text-2xl font-semibold mb-4 text-foreground">1. Acceptance of Terms</h2>
                 <p className="text-muted-foreground leading-relaxed">
-                  By accessing and using Kucash's services, you accept and agree to be bound by these Terms and
+                  By accessing and using KuCash's services, you accept and agree to be bound by these Terms and
                   Conditions. If you do not agree with any part of these terms, you should not use our services. These
                   terms apply to all users of the site, including borrowers, applicants, and visitors.
                 </p>
@@ -58,7 +58,7 @@ export default function TermsAndConditionsPage() {
 
               <section>
                 <h2 className="text-2xl font-semibold mb-4 text-foreground">3. Loan Application Process</h2>
-                <p className="text-muted-foreground leading-relaxed mb-4">When you apply for a loan through Kucash:</p>
+                <p className="text-muted-foreground leading-relaxed mb-4">When you apply for a loan through KuCash:</p>
                 <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
                   <li>You must provide accurate and complete information</li>
                   <li>We reserve the right to verify all information provided</li>
@@ -120,8 +120,8 @@ export default function TermsAndConditionsPage() {
               <section>
                 <h2 className="text-2xl font-semibold mb-4 text-foreground">8. Intellectual Property</h2>
                 <p className="text-muted-foreground leading-relaxed">
-                  All content on the Kucash website, including text, graphics, logos, icons, images, and software, is
-                  the property of Kucash and is protected by copyright and intellectual property laws. You may not
+                  All content on the KuCash website, including text, graphics, logos, icons, images, and software, is
+                  the property of KuCash and is protected by copyright and intellectual property laws. You may not
                   reproduce, distribute, or create derivative works without our express written permission.
                 </p>
               </section>
@@ -129,7 +129,7 @@ export default function TermsAndConditionsPage() {
               <section>
                 <h2 className="text-2xl font-semibold mb-4 text-foreground">9. Limitation of Liability</h2>
                 <p className="text-muted-foreground leading-relaxed">
-                  Kucash shall not be liable for any indirect, incidental, special, consequential, or punitive damages
+                  KuCash shall not be liable for any indirect, incidental, special, consequential, or punitive damages
                   arising from your use of our services. Our total liability to you for any claims arising from the use
                   of our services shall not exceed the amount of fees you paid to us in the preceding 12 months.
                 </p>
@@ -138,7 +138,7 @@ export default function TermsAndConditionsPage() {
               <section>
                 <h2 className="text-2xl font-semibold mb-4 text-foreground">10. Regulatory Compliance</h2>
                 <p className="text-muted-foreground leading-relaxed">
-                  Kucash is a registered LSP loan service provider. We comply with all applicable laws, regulations, and guidelines governing lending activities in
+                  KuCash is a registered LSP loan service provider. We comply with all applicable laws, regulations, and guidelines governing lending activities in
                   India, including but not limited to the Fair Practices Code and consumer protection laws.
                 </p>
               </section>
@@ -167,7 +167,7 @@ export default function TermsAndConditionsPage() {
                   For questions about these Terms and Conditions, please contact us:
                 </p>
                 <div className="bg-muted/50 rounded-2xl p-6 space-y-2">
-                  <p className="text-foreground font-medium">Kucash</p>
+                  <p className="text-foreground font-medium">KuCash</p>
                   <p className="text-muted-foreground">Email: wecare@kucash.in</p>
                   <p className="text-muted-foreground">Phone: +91 9008367818</p>
                   <p className="text-muted-foreground">
