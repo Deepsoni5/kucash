@@ -8,16 +8,88 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Upload, CheckCircle2, ChevronDown, ChevronUp } from "lucide-react"
+import { Upload, CheckCircle2, ChevronDown, ChevronUp, Loader2 } from "lucide-react"
+import { submitLoanApplication, type LoanApplicationData } from "@/app/actions/loan-application"
+import { useToast } from "@/hooks/use-toast"
 
 export function LoanApplicationForm() {
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [openSection, setOpenSection] = useState<number>(1)
+  const [applicationId, setApplicationId] = useState<string>("")
+  const { toast } = useToast()
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Form state
+  const [formData, setFormData] = useState<LoanApplicationData>({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    dateOfBirth: "",
+    loanType: "",
+    loanAmount: 0,
+    tenure: "",
+    purpose: "",
+    employmentType: "",
+    monthlyIncome: 0,
+    companyName: "",
+  })
+
+  const handleInputChange = (field: keyof LoanApplicationData, value: string | number) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }))
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setIsSubmitted(true)
-    setTimeout(() => setIsSubmitted(false), 5000)
+    setIsSubmitting(true)
+
+    try {
+      const result = await submitLoanApplication(formData)
+
+      if (result.success) {
+        setIsSubmitted(true)
+        setApplicationId(result.applicationId || "")
+        toast({
+          title: "Success!",
+          description: "Your loan application has been submitted successfully.",
+        })
+        setTimeout(() => {
+          setIsSubmitted(false)
+          // Reset form
+          setFormData({
+            firstName: "",
+            lastName: "",
+            email: "",
+            phone: "",
+            dateOfBirth: "",
+            loanType: "",
+            loanAmount: 0,
+            tenure: "",
+            purpose: "",
+            employmentType: "",
+            monthlyIncome: 0,
+            companyName: "",
+          })
+        }, 10000)
+      } else {
+        toast({
+          title: "Error",
+          description: result.error || "Failed to submit application. Please try again.",
+          variant: "destructive",
+        })
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const toggleSection = (section: number) => {
@@ -41,7 +113,7 @@ export function LoanApplicationForm() {
               </p>
               <p className="text-sm text-muted-foreground">
                 {"Application ID: #KC"}
-                {Math.random().toString(36).substr(2, 9).toUpperCase()}
+                {applicationId.substring(0, 8).toUpperCase()}
               </p>
             </CardContent>
           </Card>

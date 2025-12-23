@@ -1,12 +1,9 @@
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { WhatsAppButton } from "@/components/whatsapp-button"
+import { ContactForm } from "@/components/contact-form"
 import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Mail, Phone, MapPin, Clock, MessageSquare, Send } from "lucide-react"
+import { Mail, Phone, MapPin, Clock, MessageSquare } from "lucide-react"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
@@ -111,69 +108,7 @@ export default function ContactPage() {
             <div className="grid lg:grid-cols-5 gap-12">
               {/* Contact Form - Larger */}
               <div className="lg:col-span-3">
-                <Card className="shadow-2xl border-border/50">
-                  <CardContent className="p-8 lg:p-10">
-                    <div className="mb-8">
-                      <h2 className="text-2xl lg:text-3xl font-bold mb-3 text-foreground">Send us a Message</h2>
-                      <p className="text-muted-foreground">
-                        {"Fill out the form below and we'll get back to you within 24 hours"}
-                      </p>
-                    </div>
-                    <form className="space-y-6">
-                      <div className="grid sm:grid-cols-2 gap-6">
-                        <div className="space-y-2">
-                          <Label htmlFor="contact-name">Full Name *</Label>
-                          <Input id="contact-name" placeholder="John Doe" required className="h-12" />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="contact-phone">Phone Number *</Label>
-                          <Input
-                            id="contact-phone"
-                            type="tel"
-                            placeholder="+91 XXXXX XXXXX"
-                            required
-                            className="h-12"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="contact-email">Email Address *</Label>
-                        <Input
-                          id="contact-email"
-                          type="email"
-                          placeholder="your.email@example.com"
-                          required
-                          className="h-12"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="contact-subject">Subject *</Label>
-                        <Input id="contact-subject" placeholder="How can we help you?" required className="h-12" />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="contact-message">Message *</Label>
-                        <Textarea
-                          id="contact-message"
-                          placeholder="Tell us more about your query..."
-                          rows={6}
-                          required
-                        />
-                      </div>
-
-                      <Button
-                        type="submit"
-                        size="lg"
-                        className="w-full rounded-full bg-primary hover:bg-primary/90 h-14"
-                      >
-                        <Send className="mr-2 h-5 w-5" />
-                        Send Message
-                      </Button>
-                    </form>
-                  </CardContent>
-                </Card>
+                <ContactForm />
               </div>
 
               {/* Contact Information - Sidebar */}
