@@ -129,12 +129,10 @@ export default function EMICalculatorPage() {
           {
             name: "Principal",
             value: calculation.principalAmount,
-            color: "#22C55E",
           },
           {
             name: "Interest",
             value: calculation.totalInterest,
-            color: "#F59E0B",
           },
         ]
       : activeTab === "amount" && amountCalculation
@@ -142,23 +140,22 @@ export default function EMICalculatorPage() {
           {
             name: "Principal",
             value: amountCalculation.maxLoanAmount,
-            color: "#22C55E",
           },
           {
             name: "Interest",
             value: amountCalculation.totalInterest,
-            color: "#F59E0B",
           },
         ]
       : [];
 
+  const COLORS = ["#22C55E", "#F59E0B"];
+
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
-      const data = payload[0];
       return (
         <div className="bg-white dark:bg-gray-800 p-3 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
           <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
-            {data.name}: {formatCurrency(data.value)}
+            {payload[0].name}: {formatCurrency(payload[0].value)}
           </p>
         </div>
       );
@@ -327,33 +324,36 @@ export default function EMICalculatorPage() {
                       <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                         Loan Tenure
                       </Label>
-                      <div className="flex items-center gap-3 mb-3"></div>
-                      <span className="text-xs text-gray-500 dark:text-gray-400">
-                        6M
-                      </span>
-                      <Slider
-                        value={[loanTenure]}
-                        onValueChange={(value) => setLoanTenure(value[0])}
-                        max={360}
-                        min={6}
-                        step={1}
-                        className="flex-1"
-                      />
-                      <span className="text-xs text-gray-500 dark:text-gray-400">
-                        360M
-                      </span>
-                    </div>
-                    <div className="relative">
-                      <Input
-                        type="number"
-                        value={loanTenure}
-                        onChange={(e) => setLoanTenure(Number(e.target.value))}
-                        className="pr-16 h-12 text-lg bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
-                        placeholder="120"
-                      />
-                      <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400">
-                        Months
-                      </span>
+                      <div className="flex items-center gap-3 mb-3">
+                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                          6M
+                        </span>
+                        <Slider
+                          value={[loanTenure]}
+                          onValueChange={(value) => setLoanTenure(value[0])}
+                          max={360}
+                          min={6}
+                          step={1}
+                          className="flex-1"
+                        />
+                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                          360M
+                        </span>
+                      </div>
+                      <div className="relative">
+                        <Input
+                          type="number"
+                          value={loanTenure}
+                          onChange={(e) =>
+                            setLoanTenure(Number(e.target.value))
+                          }
+                          className="pr-16 h-12 text-lg bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
+                          placeholder="120"
+                        />
+                        <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                          Months
+                        </span>
+                      </div>
                     </div>
                   </div>
                 ) : (
@@ -504,13 +504,16 @@ export default function EMICalculatorPage() {
                             dataKey="value"
                           >
                             {pieData.map((entry, index) => (
-                              <Cell key={`cell-${index}`} fill={entry.color} />
+                              <Cell
+                                key={`cell-${index}`}
+                                fill={COLORS[index]}
+                              />
                             ))}
                           </Pie>
                           <Tooltip content={<CustomTooltip />} />
                         </PieChart>
                       </ResponsiveContainer>
-                      <div className="absolute inset-0 flex flex-col items-center justify-center">
+                      <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
                         <div className="text-2xl font-bold text-gray-900 dark:text-white">
                           {activeTab === "emi" && calculation
                             ? `₹${formatNumber(calculation.emi)}`
