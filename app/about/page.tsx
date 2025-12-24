@@ -97,7 +97,7 @@ export default function AboutPage() {
                     &quot;To build an India where accessing credit is as dignified and simple as spending your own money—free from harassment, confusion, and fear.&quot;
                   </h3>
                   <p className="text-muted-foreground leading-relaxed">
-                    We envision a financial ecosystem where a borrower never has to beg for a loan. By leveraging the <span className="text-foreground font-semibold">Account Aggregator (AA) framework</span> and our <span className="text-foreground font-semibold">Partnership with 100+ banks, NBFC and financial institutions</span>, we aim to make credit invisible, instant, and inclusive for every Indian.
+                    We envision a financial ecosystem where a borrower never has to beg for a loan. By leveraging the <span className="text-foreground font-semibold">Account Aggregator (AA) framework</span> and our partnerships with giants like <span className="text-foreground font-semibold">Oxyzo</span> and <span className="text-foreground font-semibold">V2s Fin Assist</span>, we aim to make credit invisible, instant, and inclusive for every Indian.
                   </p>
                 </div>
               </div>
@@ -173,7 +173,7 @@ export default function AboutPage() {
                 {
                   icon: Handshake,
                   title: "The Power of Partnership",
-                  desc: "We have a Partnership with 100+ banks, NBFC and financial institutions. This network allows us to say \"Yes\" when others say \"No.\"",
+                  desc: "We have partnered with India's most respected financial institutions: Oxyzo Financial Services (bringing A+ rated corporate financing) and V2s Fin Assist (regional reach). This network allows us to say \"Yes\" when others say \"No.\"",
                   color: "purple"
                 },
                 {

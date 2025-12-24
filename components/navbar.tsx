@@ -1,66 +1,69 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Menu, X, Moon, Sun } from "lucide-react"
-import { useTheme } from "next-themes"
-import { useRouter, usePathname } from "next/navigation"
+import Link from "next/link";
+import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Menu, X, Moon, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
+import router from "next/router";
 
 export function Navbar() {
-  const [isOpen, setIsOpen] = useState(false)
-  const [isScrolled, setIsScrolled] = useState(false)
-  const { theme, setTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
-  const router = useRouter()
-  const pathname = usePathname()
+  const [isOpen, setIsOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
-    setMounted(true)
+    setMounted(true);
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20)
-    }
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     if (pathname === "/") {
-      const hash = window.location.hash
+      const hash = window.location.hash;
       if (hash === "#apply") {
         setTimeout(() => {
-          const element = document.getElementById("apply")
+          const element = document.getElementById("apply");
           if (element) {
-            element.scrollIntoView({ behavior: "smooth" })
+            element.scrollIntoView({ behavior: "smooth" });
           }
-        }, 500)
+        }, 500);
       }
     }
-  }, [pathname])
+  }, [pathname]);
 
   const handleApplyClick = () => {
-    setIsOpen(false)
+    setIsOpen(false);
     if (pathname === "/") {
-      const element = document.getElementById("apply")
+      const element = document.getElementById("apply");
       if (element) {
-        element.scrollIntoView({ behavior: "smooth" })
+        element.scrollIntoView({ behavior: "smooth" });
       }
     } else {
-      router.push("/#apply")
+      router.push("/#apply");
     }
-  }
+  };
 
   const navLinks = [
     { name: "Home", href: "/" },
     { name: "Services", href: "/services" },
     { name: "About Us", href: "/about" },
     { name: "Contact", href: "/contact" },
-  ]
+  ];
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled || isOpen ? "bg-background/95 backdrop-blur-lg border-b border-border shadow-sm" : "bg-transparent"
-        }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled || isOpen
+          ? "bg-background/95 backdrop-blur-lg border-b border-border shadow-sm"
+          : "bg-transparent"
+      }`}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 md:h-20">
@@ -97,7 +100,11 @@ export function Navbar() {
                 className="rounded-full"
                 aria-label="Toggle theme"
               >
-                {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+                {theme === "dark" ? (
+                  <Sun className="h-5 w-5" />
+                ) : (
+                  <Moon className="h-5 w-5" />
+                )}
               </Button>
             )}
 
@@ -108,12 +115,11 @@ export function Navbar() {
               </Button>
             </Link>
 
-            <Button
-              onClick={handleApplyClick}
-              className="hidden md:block rounded-full bg-primary hover:bg-primary/90"
-            >
-              Apply Now
-            </Button>
+            <Link href="#apply" className="hidden md:block">
+              <Button className="rounded-full bg-primary hover:bg-primary/90">
+                Apply Now
+              </Button>
+            </Link>
 
             {/* Mobile Menu Toggle */}
             <Button
@@ -123,7 +129,11 @@ export function Navbar() {
               onClick={() => setIsOpen(!isOpen)}
               aria-label="Toggle menu"
             >
-              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {isOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
             </Button>
           </div>
         </div>
@@ -141,17 +151,30 @@ export function Navbar() {
                 {link.name}
               </Link>
             ))}
-            <Link href="/login" className="block" onClick={() => setIsOpen(false)}>
-              <Button variant="outline" className="w-full rounded-full bg-transparent">
+            <Link
+              href="/login"
+              className="block"
+              onClick={() => setIsOpen(false)}
+            >
+              <Button
+                variant="outline"
+                className="w-full rounded-full bg-transparent"
+              >
                 Login
               </Button>
             </Link>
-            <Button onClick={handleApplyClick} className="w-full rounded-full bg-primary">
-              Apply Now
-            </Button>
+            <Link
+              href="#apply"
+              className="block"
+              onClick={() => setIsOpen(false)}
+            >
+              <Button className="w-full rounded-full bg-primary">
+                Apply Now
+              </Button>
+            </Link>
           </div>
         )}
       </div>
     </nav>
-  )
+  );
 }

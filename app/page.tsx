@@ -1,19 +1,24 @@
-import { Navbar } from "@/components/navbar"
-import { HeroSection } from "@/components/hero-section"
-import { PartnersSection } from "@/components/partners-section"
-import { LoanProductsSection } from "@/components/loan-products-section"
-import { HowItWorksSection } from "@/components/how-it-works-section"
-import { FeaturesSection } from "@/components/features-section"
-import { StatsSection } from "@/components/stats-section"
-import { EMICTASection } from "@/components/emi-cta-section"
-import { TestimonialsSection } from "@/components/testimonials-section"
-import { LoanApplicationForm } from "@/components/loan-application-form"
-import { FAQSection } from "@/components/faq-section"
-import { CTASection } from "@/components/cta-section"
-import { Footer } from "@/components/footer"
-import { WhatsAppButton } from "@/components/whatsapp-button"
+import { Navbar } from "@/components/navbar";
+import { HeroSection } from "@/components/hero-section";
+import { PartnersSection } from "@/components/partners-section";
+import { LoanProductsSection } from "@/components/loan-products-section";
+import { HowItWorksSection } from "@/components/how-it-works-section";
+import { FeaturesSection } from "@/components/features-section";
+import { StatsSection } from "@/components/stats-section";
+import { EMICTASection } from "@/components/emi-cta-section";
+import { TestimonialsSection } from "@/components/testimonials-section";
+import { BlogSection } from "@/components/blog-section";
+import { LoanApplicationForm } from "@/components/loan-application-form";
+import { FAQSection } from "@/components/faq-section";
+import { CTASection } from "@/components/cta-section";
+import { Footer } from "@/components/footer";
+import { WhatsAppButton } from "@/components/whatsapp-button";
+import { getFeaturedPosts } from "@/app/actions/blog-actions";
 
-export default function HomePage() {
+export default async function HomePage() {
+  // Fetch featured blog posts for the blog section
+  const featuredPosts = await getFeaturedPosts();
+
   return (
     <>
       <Navbar />
@@ -25,6 +30,7 @@ export default function HomePage() {
         <FeaturesSection />
         <StatsSection />
         <EMICTASection />
+        <BlogSection posts={featuredPosts.slice(0, 3)} />
         <TestimonialsSection />
         <LoanApplicationForm />
         <FAQSection />
@@ -33,5 +39,5 @@ export default function HomePage() {
       <Footer />
       <WhatsAppButton />
     </>
-  )
+  );
 }

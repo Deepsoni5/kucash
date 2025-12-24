@@ -18,6 +18,8 @@ import {
   ChevronRight,
   LogOut,
   Menu,
+  FolderOpen,
+  Edit3,
 } from "lucide-react";
 import { adminLogout } from "@/app/actions/admin-auth";
 
@@ -41,6 +43,16 @@ const navigation = [
     href: "/admin/contacts",
     icon: MessageSquare,
     badge: true,
+  },
+  {
+    name: "Categories",
+    href: "/admin/categories",
+    icon: FolderOpen,
+  },
+  {
+    name: "Posts",
+    href: "/admin/posts",
+    icon: Edit3,
   },
   {
     name: "Users",
