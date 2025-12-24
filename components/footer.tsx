@@ -80,13 +80,13 @@ export function Footer() {
 
           {/* Loan Products */}
           <div>
-            <h3 className="font-semibold text-foreground mb-4">Loan Products</h3>
+            <h3 className="font-semibold text-foreground mb-4">Our Products</h3>
             <ul className="space-y-3">
               <li className="text-muted-foreground">Personal Loan</li>
               <li className="text-muted-foreground">Business Loan</li>
               <li className="text-muted-foreground">Loan Against Property</li>
               <li className="text-muted-foreground">Vehicle Loan</li>
-              <li className="text-muted-foreground">Invoice Discounting</li>
+              <li className="text-muted-foreground">M&A Advisory</li>
               <li className="text-muted-foreground">Working Capital Loan</li>
             </ul>
           </div>

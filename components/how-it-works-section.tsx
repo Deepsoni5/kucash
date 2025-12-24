@@ -6,25 +6,25 @@ const steps = [
   {
     icon: UserCheck,
     title: "Check Eligibility",
-    description: "Enter basic details in our simple form. Our smart algorithm matches your profile with 100+ banking partners instantly.",
+    description: "Enter basic details in our simple form. Our smart algorithm matches your profile with 100+ banking partners instantly to find your best fit.",
     step: "01",
   },
   {
     icon: ShieldCheck,
     title: "Paperless Verification",
-    description: "No physical documents required. We use secure Account Aggregator technology to verify your income and KYC safely.",
+    description: "No physical documents required. We use Account Aggregator technology to verify your income and KYC securely.",
     step: "02",
   },
   {
     icon: ListChecks,
-    title: "Select Your Offer",
+    title: "Unlock Your Offers",
     description: "Compare interest rates and terms from top lenders. View the Key Fact Statement (KFS) before you decide.",
     step: "03",
   },
   {
     icon: Banknote,
     title: "Direct Bank Transfer",
-    description: "Once e-signed, the loan amount is credited directly from the bank to your account within 24 hours. No wallet, no middleman.",
+    description: "Once e-signed and fully verified the loan amount is credited directly from the bank to your account. No wallets, no third-party holding accounts.",
     step: "04",
   },
 ]

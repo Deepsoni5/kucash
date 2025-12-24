@@ -307,6 +307,20 @@ export default function ServicesPage() {
             </div>
           </div>
         </section>
+
+        {/* Disclaimer Section */}
+        <section className="py-12 bg-background border-t border-border/50">
+          <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-4xl mx-auto text-center">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-muted text-muted-foreground text-xs font-bold uppercase tracking-widest mb-4">
+                <ShieldCheck className="w-3 h-3" /> Important Notice
+              </div>
+              <p className="text-sm text-muted-foreground leading-relaxed italic">
+                <strong>Disclaimer:</strong> KuCash is a Loan Service Provider (LSP) partnering with RBI-regulated Banks and NBFCs. We facilitate loan applications but do not directly lend money or hold deposits. Approval, interest rates, and disbursal are at the sole discretion of our partner lenders. Please read the Key Fact Statement (KFS) carefully before signing any agreement.
+              </p>
+            </div>
+          </div>
+        </section>
       </main>
       <Footer />
       <WhatsAppButton />
