@@ -25,14 +25,14 @@ export default function AboutPage() {
             <div className="max-w-4xl mx-auto text-center space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 backdrop-blur-sm">
                 < Award className="w-4 h-4 text-primary" />
-                <span className="text-sm font-semibold text-primary uppercase tracking-wider">Since 2010</span>
+                <span className="text-sm font-semibold text-primary uppercase tracking-wider">Top Digital LSP</span>
               </div>
               <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-foreground text-balance">
                 About <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic pr-4">KuCash</span>
               </h1>
               <p className="text-xl sm:text-2xl text-muted-foreground font-medium leading-relaxed text-pretty">
                 15 Years of Finance. 5,000+ Stories. <br className="hidden sm:block" />
-                <span className="text-foreground font-bold">One Mission: To Fix Borrowing in India.</span>
+                <span className="text-foreground font-bold">One Mission -&gt; To Fix Borrowing in India.</span>
               </p>
             </div>
           </div>
@@ -97,7 +97,7 @@ export default function AboutPage() {
                     &quot;To build an India where accessing credit is as dignified and simple as spending your own money—free from harassment, confusion, and fear.&quot;
                   </h3>
                   <p className="text-muted-foreground leading-relaxed">
-                    We envision a financial ecosystem where a borrower never has to beg for a loan. By leveraging the <span className="text-foreground font-semibold">Account Aggregator (AA) framework</span> and our partnerships with giants like <span className="text-foreground font-semibold">Oxyzo</span> and <span className="text-foreground font-semibold">V2s Fin Assist</span>, we aim to make credit invisible, instant, and inclusive for every Indian.
+                    We envision a financial ecosystem where a borrower never has to beg for a loan. By leveraging the <span className="text-foreground font-semibold">Account Aggregator (AA) framework</span> and our <span className="text-foreground font-semibold">Partnership with 100+ banks, NBFC and financial institutions</span>, we aim to make credit invisible, instant, and inclusive for every Indian.
                   </p>
                 </div>
               </div>
@@ -173,7 +173,7 @@ export default function AboutPage() {
                 {
                   icon: Handshake,
                   title: "The Power of Partnership",
-                  desc: "We have partnered with India's most respected financial institutions: Oxyzo Financial Services (bringing A+ rated corporate financing) and V2s Fin Assist (regional reach). This network allows us to say \"Yes\" when others say \"No.\"",
+                  desc: "We have a Partnership with 100+ banks, NBFC and financial institutions. This network allows us to say \"Yes\" when others say \"No.\"",
                   color: "purple"
                 },
                 {
