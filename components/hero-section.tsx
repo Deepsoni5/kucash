@@ -52,7 +52,7 @@ export function HeroSection() {
                 </div>
                 <div>
                   <div className="font-semibold text-foreground text-sm lg:text-base">Instant</div>
-                  <div className="text-xs lg:text-sm text-muted-foreground">Approval</div>
+                  <div className="text-xs lg:text-sm text-muted-foreground">Eligibility Check</div>
                 </div>
               </div>
               <div className="flex items-center gap-3 p-3 lg:p-4 rounded-2xl bg-card border border-border hover:border-primary/50 transition-all">
@@ -61,7 +61,7 @@ export function HeroSection() {
                 </div>
                 <div>
                   <div className="font-semibold text-foreground text-sm lg:text-base">Low Interest</div>
-                  <div className="text-xs lg:text-sm text-muted-foreground">Starting 9%</div>
+                  <div className="text-xs lg:text-sm text-muted-foreground">starting from 10.5%</div>
                 </div>
               </div>
               <div className="flex items-center gap-3 p-3 lg:p-4 rounded-2xl bg-card border border-border hover:border-primary/50 transition-all">
@@ -70,7 +70,7 @@ export function HeroSection() {
                 </div>
                 <div>
                   <div className="font-semibold text-foreground text-sm lg:text-base">100% Secure</div>
-                  <div className="text-xs lg:text-sm text-muted-foreground">LSP loan service provider</div>
+                  <div className="text-xs lg:text-sm text-muted-foreground">Registered Loan Service Provider</div>
                 </div>
               </div>
             </div>
