@@ -5,12 +5,15 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Menu, X, Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
+import { useRouter, usePathname } from "next/navigation"
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
+  const router = useRouter()
+  const pathname = usePathname()
 
   useEffect(() => {
     setMounted(true)
@@ -20,6 +23,32 @@ export function Navbar() {
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
+
+  useEffect(() => {
+    if (pathname === "/") {
+      const hash = window.location.hash
+      if (hash === "#apply") {
+        setTimeout(() => {
+          const element = document.getElementById("apply")
+          if (element) {
+            element.scrollIntoView({ behavior: "smooth" })
+          }
+        }, 500)
+      }
+    }
+  }, [pathname])
+
+  const handleApplyClick = () => {
+    setIsOpen(false)
+    if (pathname === "/") {
+      const element = document.getElementById("apply")
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" })
+      }
+    } else {
+      router.push("/#apply")
+    }
+  }
 
   const navLinks = [
     { name: "Home", href: "/" },
@@ -79,9 +108,12 @@ export function Navbar() {
               </Button>
             </Link>
 
-            <Link href="#apply" className="hidden md:block">
-              <Button className="rounded-full bg-primary hover:bg-primary/90">Apply Now</Button>
-            </Link>
+            <Button
+              onClick={handleApplyClick}
+              className="hidden md:block rounded-full bg-primary hover:bg-primary/90"
+            >
+              Apply Now
+            </Button>
 
             {/* Mobile Menu Toggle */}
             <Button
@@ -114,9 +146,9 @@ export function Navbar() {
                 Login
               </Button>
             </Link>
-            <Link href="#apply" className="block" onClick={() => setIsOpen(false)}>
-              <Button className="w-full rounded-full bg-primary">Apply Now</Button>
-            </Link>
+            <Button onClick={handleApplyClick} className="w-full rounded-full bg-primary">
+              Apply Now
+            </Button>
           </div>
         )}
       </div>
