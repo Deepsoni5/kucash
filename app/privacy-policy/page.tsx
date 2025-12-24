@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: "Privacy Policy | KuCash - Your Financial Privacy Matters",
   description:
     "Read KuCash's privacy policy to understand how we collect, use, and protect your personal information. Your trust is our priority.",
+  "Learn about how KuCash protects your data and privacy. We follow the highest security standards to ensure your information is safe.",
   openGraph: {
     title: "Privacy Policy | KuCash",
     description: "Understanding how KuCash protects your personal information and maintains your privacy.",
@@ -16,6 +17,7 @@ export const metadata: Metadata = {
         width: 1200,
         height: 630,
         alt: "KuCash Privacy Policy",
+        title: "Privacy Policy - KuCash | Secure & Transparent Financing",
       },
     ],
   },
@@ -23,19 +25,23 @@ export const metadata: Metadata = {
 
 export default function PrivacyPolicyPage() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <>
       <Navbar />
-      <main className="flex-1">
-        <section className="py-16 lg:py-24">
+      <main className="pt-20">
+        <section className="py-20 bg-muted/30">
           <div className="container max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h1 className="text-4xl lg:text-5xl font-bold mb-6 text-foreground">Privacy Policy</h1>
-            <p className="text-muted-foreground mb-8">Last updated: December 22, 2025</p>
-
-            <div className="prose prose-lg dark:prose-invert max-w-none space-y-8">
+            <h1 className="text-4xl font-bold mb-8 text-foreground">Privacy Policy</h1>
+            <div className="prose prose-slate dark:prose-invert max-w-none space-y-8">
               <section>
-                <h2 className="text-2xl font-semibold mb-4 text-foreground">1. Introduction</h2>
                 <p className="text-muted-foreground leading-relaxed">
-                  Kucash ("we," "us," or "our") is committed to protecting your privacy. This Privacy Policy explains
+                  Last Updated: {new Date().toLocaleDateString("en-IN", { month: "long", day: "numeric", year: "numeric" })}
+                </p>
+                <p className="text-muted-foreground leading-relaxed">
+                  At KuCash, we are committed to protecting your privacy and ensuring the security of your personal
+                  information. This Privacy Policy outlines how we collect, use, and safeguard your data.
+                </p>
+                <p className="text-muted-foreground leading-relaxed">
+                  KuCash ("we," "us," or "our") is committed to protecting your privacy. This Privacy Policy explains
                   how we collect, use, disclose, and safeguard your information when you use our lending services and
                   website. Please read this privacy policy carefully.
                 </p>
@@ -140,6 +146,6 @@ export default function PrivacyPolicyPage() {
       </main>
       <Footer />
       <WhatsAppButton />
-    </div>
+    </div >
   )
 }

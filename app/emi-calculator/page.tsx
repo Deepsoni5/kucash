@@ -12,8 +12,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
-import { Calculator, CheckCircle, TrendingUp, Shield } from "lucide-react";
+import { Calculator, CheckCircle, TrendingUp, Shield, ArrowRight } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
+import Link from "next/link";
 
 interface EMICalculation {
   emi: number;
@@ -126,17 +127,17 @@ export default function EMICalculatorPage() {
   const pieData =
     activeTab === "emi" && calculation
       ? [
-          {
-            name: "Principal",
-            value: calculation.principalAmount,
-          },
-          {
-            name: "Interest",
-            value: calculation.totalInterest,
-          },
-        ]
+        {
+          name: "Principal",
+          value: calculation.principalAmount,
+        },
+        {
+          name: "Interest",
+          value: calculation.totalInterest,
+        },
+      ]
       : activeTab === "amount" && amountCalculation
-      ? [
+        ? [
           {
             name: "Principal",
             value: amountCalculation.maxLoanAmount,
@@ -146,7 +147,7 @@ export default function EMICalculatorPage() {
             value: amountCalculation.totalInterest,
           },
         ]
-      : [];
+        : [];
 
   const COLORS = ["#22C55E", "#F59E0B"];
 
@@ -214,21 +215,19 @@ export default function EMICalculatorPage() {
               <div className="flex">
                 <button
                   onClick={() => setActiveTab("emi")}
-                  className={`flex-1 px-6 py-4 text-center font-medium transition-colors ${
-                    activeTab === "emi"
+                  className={`flex-1 px-6 py-4 text-center font-medium transition-colors ${activeTab === "emi"
                       ? "bg-blue-600 text-white border-b-2 border-blue-600"
                       : "text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
-                  }`}
+                    }`}
                 >
                   Calculate Loan EMI
                 </button>
                 <button
                   onClick={() => setActiveTab("amount")}
-                  className={`flex-1 px-6 py-4 text-center font-medium transition-colors ${
-                    activeTab === "amount"
+                  className={`flex-1 px-6 py-4 text-center font-medium transition-colors ${activeTab === "amount"
                       ? "bg-blue-600 text-white border-b-2 border-blue-600"
                       : "text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
-                  }`}
+                    }`}
                 >
                   Calculate Loan Amount
                 </button>
@@ -518,10 +517,10 @@ export default function EMICalculatorPage() {
                           {activeTab === "emi" && calculation
                             ? `₹${formatNumber(calculation.emi)}`
                             : activeTab === "amount" && amountCalculation
-                            ? `₹${formatNumber(
+                              ? `₹${formatNumber(
                                 amountCalculation.maxLoanAmount
                               )}`
-                            : "₹0"}
+                              : "₹0"}
                         </div>
                         <div className="text-sm text-gray-600 dark:text-gray-300">
                           {activeTab === "emi" ? "Your EMI" : "Max Loan Amount"}

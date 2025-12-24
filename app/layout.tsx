@@ -6,9 +6,9 @@ import { ScrollToTop } from "@/components/scroll-to-top"
 import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "KuCash - Fast Personal & Business Loans in India | Instant Approval",
+  title: "KuCash | Instant Loans, Transparent Financing",
   description:
-    "Get instant personal loans, business loans, and loan against property with KuCash. Quick approval, minimal documentation, competitive interest rates. Apply online in minutes.",
+    "KuCash provides instant, transparent, and hassle-free loans in India. Get approved in minutes with our 100% digital process.",
   keywords:
     "personal loan, business loan, instant loan, loan against property, quick loan approval, online loan India, KuCash",
   authors: [{ name: "KuCash" }],

@@ -5,6 +5,7 @@ import { LoanProductsSection } from "@/components/loan-products-section"
 import { HowItWorksSection } from "@/components/how-it-works-section"
 import { FeaturesSection } from "@/components/features-section"
 import { StatsSection } from "@/components/stats-section"
+import { EMICTASection } from "@/components/emi-cta-section"
 import { TestimonialsSection } from "@/components/testimonials-section"
 import { LoanApplicationForm } from "@/components/loan-application-form"
 import { FAQSection } from "@/components/faq-section"
@@ -23,6 +24,7 @@ export default function HomePage() {
         <HowItWorksSection />
         <FeaturesSection />
         <StatsSection />
+        <EMICTASection />
         <TestimonialsSection />
         <LoanApplicationForm />
         <FAQSection />
