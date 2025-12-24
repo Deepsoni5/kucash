@@ -64,6 +64,11 @@ const loanProducts = [
     amount: "₹5 Cr – ₹500+ Cr",
     interest: "Retainer / Success Fee",
     tenure: "End-to-End Facilitation",
+    labels: {
+      amount: "DEAL SIZE",
+      interest: "ENGAGEMENT",
+      tenure: "PROCESS",
+    },
     color: "from-green-500 to-green-600",
     cta: "Explore Opportunities",
   },
@@ -122,7 +127,7 @@ export function LoanProductsSection() {
                   <div className="grid grid-cols-3 gap-2 text-sm border-y border-border/50 py-4 mb-4">
                     <div>
                       <div className="text-muted-foreground text-[10px] sm:text-xs mb-1 uppercase tracking-wider font-medium">
-                        Amount
+                        {product.labels?.amount || "Amount"}
                       </div>
                       <div className="font-semibold text-foreground text-xs sm:text-sm">
                         {product.amount}
@@ -130,7 +135,7 @@ export function LoanProductsSection() {
                     </div>
                     <div>
                       <div className="text-muted-foreground text-[10px] sm:text-xs mb-1 uppercase tracking-wider font-medium">
-                        Interest
+                        {product.labels?.interest || "Interest"}
                       </div>
                       <div className="font-semibold text-foreground text-xs sm:text-sm">
                         {product.interest}
@@ -138,7 +143,7 @@ export function LoanProductsSection() {
                     </div>
                     <div>
                       <div className="text-muted-foreground text-[10px] sm:text-xs mb-1 uppercase tracking-wider font-medium">
-                        Tenure
+                        {product.labels?.tenure || "Tenure"}
                       </div>
                       <div className="font-semibold text-foreground text-xs sm:text-sm">
                         {product.tenure}

@@ -14,6 +14,7 @@ import {
   CheckCircle2,
   Clock,
   LayoutDashboard,
+  Handshake,
 } from "lucide-react";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -21,7 +22,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Our Loan Services - KuCash | Fast & Transparent Financing",
   description:
-    "Explore KuCash's wide range of loan services including Personal Loans, Business Loans, Vehicle Loans, Working Capital, and Invoice Discounting. 100% digital process with 24h disbursal.",
+    "Explore KuCash's wide range of loan services including Personal Loans, Business Loans, Vehicle Loans, Working Capital, and M&A Advisory. 100% digital process with 24h disbursal.",
 };
 
 const services = [
@@ -118,23 +119,23 @@ const services = [
     color: "orange",
   },
   {
-    id: "invoice-discounting",
-    icon: FileText,
-    headline: "Unlock Cash Stuck in Unpaid Invoices.",
-    subHeadline: "Don’t Wait 90 Days. Get Paid Today.",
-    tagline: "Don’t Wait 90 Days. Get Paid Today.",
+    id: "ma-advisory",
+    icon: Handshake,
+    headline: "M&A Advisory & Deal Facilitation.",
+    subHeadline: "Strategic Growth & Exits.",
+    tagline: "₹5 Cr – ₹500+ Cr. End-to-End Facilitation.",
     description:
-      "Your sales are done, but your money is stuck with the client. Why wait? Convert your valid unpaid invoices into immediate working capital. This is not a loan; it’s an advance on your own hard-earned money. Through our partnership with valuable Lenders, we offer discounting solutions that help you negotiate cash discounts with your own suppliers by paying them early.",
+      "Turn strategic opportunities into successful transactions. We help businesses identify the right buyers, investors, or partners and facilitate smooth mergers, acquisitions, and strategic exits with confidentiality and precision.",
     details: [
-      { label: "Loan Amount", value: "₹1 Lakh – ₹50 Lakhs" },
-      { label: "Interest Rate", value: "Starting from 12% p.a." },
-      { label: "Tenure", value: "Up to 90 Days (Matches your invoice cycle)." },
+      { label: "DEAL SIZE", value: "₹5 Cr – ₹500+ Cr" },
+      { label: "ENGAGEMENT", value: "Retainer / Success Fee" },
+      { label: "PROCESS", value: "End-to-End Facilitation" },
       {
-        label: "Zero Collateral",
-        value: "Your invoice is the collateral. No other asset required.",
+        label: "Strategic Advisory",
+        value: "Expert guidance on mergers, acquisitions, and capital raising.",
       },
     ],
-    color: "rose",
+    color: "green",
   },
 ];
 
@@ -180,15 +181,13 @@ export default function ServicesPage() {
             <section
               key={service.id}
               id={service.id}
-              className={`py-24 lg:py-40 border-b border-border/50 ${
-                !isEven ? "bg-muted/30" : "bg-background"
-              }`}
+              className={`py-24 lg:py-40 border-b border-border/50 ${!isEven ? "bg-muted/30" : "bg-background"
+                }`}
             >
               <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div
-                  className={`grid lg:grid-cols-2 gap-16 lg:gap-24 items-center ${
-                    !isEven ? "lg:flex-row-reverse" : ""
-                  }`}
+                  className={`grid lg:grid-cols-2 gap-16 lg:gap-24 items-center ${!isEven ? "lg:flex-row-reverse" : ""
+                    }`}
                 >
                   {/* Content Side */}
                   <div className={`space-y-8 ${!isEven ? "lg:order-2" : ""}`}>
@@ -248,19 +247,18 @@ export default function ServicesPage() {
                       <div
                         className="absolute inset-0 bg-cover bg-center group-hover:scale-110 transition-transform duration-700"
                         style={{
-                          backgroundImage: `url('${
-                            service.id === "personal-loan"
-                              ? "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3"
-                              : service.id === "business-loan"
+                          backgroundImage: `url('${service.id === "personal-loan"
+                            ? "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3"
+                            : service.id === "business-loan"
                               ? "https://images.unsplash.com/photo-1563013544-824ae1b704d3?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3"
                               : service.id === "vehicle-loan"
-                              ? "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.0.3"
-                              : service.id === "working-capital"
-                              ? "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3"
-                              : service.id === "invoice-discounting"
-                              ? "https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3"
-                              : "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3"
-                          }')`,
+                                ? "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.0.3"
+                                : service.id === "working-capital"
+                                  ? "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3"
+                                  : service.id === "ma-advisory"
+                                    ? "https://images.pexels.com/photos/7414275/pexels-photo-7414275.jpeg?_gl=1*aecqf0*_ga*NDI3MTcyODI5LjE3NjI2OTAxOTg.*_ga_8JE65Q40S6*czE3NjY1NzkxMzgkbzMkZzEkdDE3NjY1NzkxNTAkajQ4JGwwJGgw?q=80&w=2070&auto=format&fit=crop"
+                                    : "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=2070&auto=format&fit=crop"
+                            }')`,
                         }}
                       />
                     </div>

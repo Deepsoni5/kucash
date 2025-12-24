@@ -28,7 +28,7 @@ export default function AboutPage() {
                 <span className="text-sm font-semibold text-primary uppercase tracking-wider">Since 2010</span>
               </div>
               <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-foreground text-balance">
-                About <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">KuCash</span>
+                About <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic pr-4">KuCash</span>
               </h1>
               <p className="text-xl sm:text-2xl text-muted-foreground font-medium leading-relaxed text-pretty">
                 15 Years of Finance. 5,000+ Stories. <br className="hidden sm:block" />
