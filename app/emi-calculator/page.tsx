@@ -149,13 +149,13 @@ export default function EMICalculatorPage() {
         ]
         : [];
 
-  const COLORS = ["#22C55E", "#F59E0B"];
+  const COLORS = ["#0066FF", "#00C2FF"]; // Brand primaries
 
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-white dark:bg-gray-800 p-3 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
-          <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+        <div className="bg-white dark:bg-slate-800 p-3 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700">
+          <p className="text-sm font-medium text-slate-900 dark:text-slate-100">
             {payload[0].name}: {formatCurrency(payload[0].value)}
           </p>
         </div>
@@ -167,37 +167,37 @@ export default function EMICalculatorPage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <main className="min-h-screen bg-slate-50 dark:bg-slate-950">
         {/* Header Section */}
-        <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+        <div className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
           <div className="max-w-6xl mx-auto px-4 py-16">
             <div className="text-center">
-              <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4 mt-8">
-                Business Loan EMI Calculator
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-slate-900 dark:text-white mb-4 mt-8">
+                Smart <span className="text-primary italic">EMI Calculator</span>
               </h1>
-              <p className="text-lg text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
-                Plan your installments with the business loan EMI calculator and
-                apply for a business loan today!
+              <p className="text-lg text-slate-600 dark:text-slate-400 mb-8 max-w-2xl mx-auto">
+                Plan your installments with the KuCash smart EMI calculator and
+                apply for a loan today!
               </p>
 
               <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8 mb-8">
                 <Badge
                   variant="secondary"
-                  className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
+                  className="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700"
                 >
                   <Shield className="h-4 w-4" />
                   Top Digital LSP
                 </Badge>
                 <Badge
                   variant="secondary"
-                  className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
+                  className="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700"
                 >
                   <TrendingUp className="h-4 w-4" />
-                  5000+ SMEs Trust Us
+                  5,000+ Stories of Trust
                 </Badge>
                 <Badge
                   variant="secondary"
-                  className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
+                  className="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700"
                 >
                   <CheckCircle className="h-4 w-4" />
                   ₹500+ Cr Loans Disbursed
@@ -209,24 +209,24 @@ export default function EMICalculatorPage() {
 
         {/* Calculator Section */}
         <div className="max-w-6xl mx-auto px-4 py-12">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-200 dark:border-gray-700">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl overflow-hidden border border-slate-200 dark:border-slate-800">
             {/* Tab Navigation */}
-            <div className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+            <div className="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
               <div className="flex">
                 <button
                   onClick={() => setActiveTab("emi")}
-                  className={`flex-1 px-6 py-4 text-center font-medium transition-colors ${activeTab === "emi"
-                      ? "bg-blue-600 text-white border-b-2 border-blue-600"
-                      : "text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
+                  className={`flex-1 px-6 py-4 text-center font-bold transition-all ${activeTab === "emi"
+                    ? "bg-primary text-white"
+                    : "text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary hover:bg-primary/5"
                     }`}
                 >
                   Calculate Loan EMI
                 </button>
                 <button
                   onClick={() => setActiveTab("amount")}
-                  className={`flex-1 px-6 py-4 text-center font-medium transition-colors ${activeTab === "amount"
-                      ? "bg-blue-600 text-white border-b-2 border-blue-600"
-                      : "text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
+                  className={`flex-1 px-6 py-4 text-center font-bold transition-all ${activeTab === "amount"
+                    ? "bg-primary text-white"
+                    : "text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary hover:bg-primary/5"
                     }`}
                 >
                   Calculate Loan Amount
@@ -236,20 +236,20 @@ export default function EMICalculatorPage() {
 
             <div className="grid lg:grid-cols-2 gap-0">
               {/* Input Section */}
-              <div className="p-6 sm:p-8 border-r border-gray-200 dark:border-gray-700">
+              <div className="p-6 sm:p-8 border-r border-slate-200 dark:border-slate-800">
                 {activeTab === "emi" ? (
                   <div className="space-y-8">
-                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
+                    <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6">
                       Loan Details
                     </h3>
 
                     {/* Loan Amount */}
                     <div className="space-y-4">
-                      <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      <Label className="text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-tight">
                         Loan Amount
                       </Label>
                       <div className="flex items-center gap-3 mb-3">
-                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                        <span className="text-xs text-slate-400 font-bold">
                           ₹1L
                         </span>
                         <Slider
@@ -260,12 +260,12 @@ export default function EMICalculatorPage() {
                           step={50000}
                           className="flex-1"
                         />
-                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                        <span className="text-xs text-slate-400 font-bold">
                           ₹1Cr
                         </span>
                       </div>
                       <div className="relative">
-                        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 font-bold">
                           ₹
                         </span>
                         <Input
@@ -274,7 +274,7 @@ export default function EMICalculatorPage() {
                           onChange={(e) =>
                             setLoanAmount(Number(e.target.value))
                           }
-                          className="pl-8 h-12 text-lg bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
+                          className="pl-8 h-12 text-lg bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-bold"
                           placeholder="1000000"
                         />
                       </div>
@@ -282,11 +282,11 @@ export default function EMICalculatorPage() {
 
                     {/* Interest Rate */}
                     <div className="space-y-4">
-                      <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Interest Rate
+                      <Label className="text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-tight">
+                        Interest Rate (p.a.)
                       </Label>
                       <div className="flex items-center gap-3 mb-3">
-                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                        <span className="text-xs text-slate-400 font-bold">
                           5%
                         </span>
                         <Slider
@@ -297,7 +297,7 @@ export default function EMICalculatorPage() {
                           step={0.1}
                           className="flex-1"
                         />
-                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                        <span className="text-xs text-slate-400 font-bold">
                           30%
                         </span>
                       </div>
@@ -309,10 +309,10 @@ export default function EMICalculatorPage() {
                             setInterestRate(Number(e.target.value))
                           }
                           step="0.1"
-                          className="pr-8 h-12 text-lg bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
+                          className="pr-8 h-12 text-lg bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-bold"
                           placeholder="12"
                         />
-                        <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                        <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 font-bold">
                           %
                         </span>
                       </div>
@@ -320,11 +320,11 @@ export default function EMICalculatorPage() {
 
                     {/* Loan Tenure */}
                     <div className="space-y-4">
-                      <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Loan Tenure
+                      <Label className="text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-tight">
+                        Loan Tenure (Months)
                       </Label>
                       <div className="flex items-center gap-3 mb-3">
-                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                        <span className="text-xs text-slate-400 font-bold">
                           6M
                         </span>
                         <Slider
@@ -335,7 +335,7 @@ export default function EMICalculatorPage() {
                           step={1}
                           className="flex-1"
                         />
-                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                        <span className="text-xs text-slate-400 font-bold">
                           360M
                         </span>
                       </div>
@@ -346,10 +346,10 @@ export default function EMICalculatorPage() {
                           onChange={(e) =>
                             setLoanTenure(Number(e.target.value))
                           }
-                          className="pr-16 h-12 text-lg bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
+                          className="pr-20 h-12 text-lg bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-bold"
                           placeholder="120"
                         />
-                        <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                        <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 font-bold">
                           Months
                         </span>
                       </div>
@@ -357,17 +357,17 @@ export default function EMICalculatorPage() {
                   </div>
                 ) : (
                   <div className="space-y-8">
-                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
+                    <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6">
                       EMI Details
                     </h3>
 
                     {/* Desired EMI */}
                     <div className="space-y-4">
-                      <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      <Label className="text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-tight">
                         Desired EMI
                       </Label>
                       <div className="flex items-center gap-3 mb-3">
-                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                        <span className="text-xs text-slate-400 font-bold">
                           ₹5K
                         </span>
                         <Slider
@@ -378,12 +378,12 @@ export default function EMICalculatorPage() {
                           step={1000}
                           className="flex-1"
                         />
-                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                        <span className="text-xs text-slate-400 font-bold">
                           ₹1L
                         </span>
                       </div>
                       <div className="relative">
-                        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 font-bold">
                           ₹
                         </span>
                         <Input
@@ -392,7 +392,7 @@ export default function EMICalculatorPage() {
                           onChange={(e) =>
                             setDesiredEMI(Number(e.target.value))
                           }
-                          className="pl-8 h-12 text-lg bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
+                          className="pl-8 h-12 text-lg bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-bold"
                           placeholder="15000"
                         />
                       </div>
@@ -400,11 +400,11 @@ export default function EMICalculatorPage() {
 
                     {/* Interest Rate */}
                     <div className="space-y-4">
-                      <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Interest Rate
+                      <Label className="text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-tight">
+                        Interest Rate (p.a.)
                       </Label>
                       <div className="flex items-center gap-3 mb-3">
-                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                        <span className="text-xs text-slate-400 font-bold">
                           5%
                         </span>
                         <Slider
@@ -417,7 +417,7 @@ export default function EMICalculatorPage() {
                           step={0.1}
                           className="flex-1"
                         />
-                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                        <span className="text-xs text-slate-400 font-bold">
                           30%
                         </span>
                       </div>
@@ -429,10 +429,10 @@ export default function EMICalculatorPage() {
                             setAmountInterestRate(Number(e.target.value))
                           }
                           step="0.1"
-                          className="pr-8 h-12 text-lg bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
+                          className="pr-8 h-12 text-lg bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-bold"
                           placeholder="12"
                         />
-                        <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                        <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 font-bold">
                           %
                         </span>
                       </div>
@@ -440,11 +440,11 @@ export default function EMICalculatorPage() {
 
                     {/* Loan Tenure */}
                     <div className="space-y-4">
-                      <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Loan Tenure
+                      <Label className="text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-tight">
+                        Loan Tenure (Months)
                       </Label>
                       <div className="flex items-center gap-3 mb-3">
-                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                        <span className="text-xs text-slate-400 font-bold">
                           6M
                         </span>
                         <Slider
@@ -455,7 +455,7 @@ export default function EMICalculatorPage() {
                           step={1}
                           className="flex-1"
                         />
-                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                        <span className="text-xs text-slate-400 font-bold">
                           360M
                         </span>
                       </div>
@@ -466,10 +466,10 @@ export default function EMICalculatorPage() {
                           onChange={(e) =>
                             setAmountTenure(Number(e.target.value))
                           }
-                          className="pr-16 h-12 text-lg bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
+                          className="pr-20 h-12 text-lg bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-bold"
                           placeholder="120"
                         />
-                        <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                        <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 font-bold">
                           Months
                         </span>
                       </div>
@@ -479,15 +479,15 @@ export default function EMICalculatorPage() {
               </div>
 
               {/* Results Section */}
-              <div className="p-6 sm:p-8 bg-gradient-to-br from-blue-50 to-green-50 dark:from-gray-800 dark:to-gray-700">
+              <div className="p-6 sm:p-8 bg-gradient-to-br from-primary/5 to-accent/5 dark:from-slate-800 dark:to-slate-800">
                 <div className="space-y-6">
                   {/* Main Result */}
                   <div className="text-center">
-                    <div className="inline-flex items-center gap-2 text-green-600 dark:text-green-400 mb-2">
-                      <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                      <span className="text-sm font-medium">Principal</span>
-                      <span className="w-2 h-2 bg-orange-400 rounded-full ml-4"></span>
-                      <span className="text-sm font-medium">Interest</span>
+                    <div className="inline-flex items-center gap-2 text-slate-600 dark:text-slate-400 mb-2">
+                      <span className="w-2 h-2 bg-primary rounded-full"></span>
+                      <span className="text-xs font-bold uppercase tracking-widest">Principal</span>
+                      <span className="w-2 h-2 bg-accent rounded-full ml-4"></span>
+                      <span className="text-xs font-bold uppercase tracking-widest">Interest</span>
                     </div>
 
                     <div className="relative w-48 h-48 mx-auto mb-6">
@@ -513,7 +513,7 @@ export default function EMICalculatorPage() {
                         </PieChart>
                       </ResponsiveContainer>
                       <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                        <div className="text-2xl font-bold text-gray-900 dark:text-white">
+                        <div className="text-2xl font-black text-slate-900 dark:text-white">
                           {activeTab === "emi" && calculation
                             ? `₹${formatNumber(calculation.emi)}`
                             : activeTab === "amount" && amountCalculation
@@ -522,8 +522,8 @@ export default function EMICalculatorPage() {
                               )}`
                               : "₹0"}
                         </div>
-                        <div className="text-sm text-gray-600 dark:text-gray-300">
-                          {activeTab === "emi" ? "Your EMI" : "Max Loan Amount"}
+                        <div className="text-xs font-bold text-slate-500 uppercase">
+                          {activeTab === "emi" ? "Expected EMI" : "Max Amount"}
                         </div>
                       </div>
                     </div>
@@ -533,54 +533,54 @@ export default function EMICalculatorPage() {
                   <div className="space-y-4">
                     {activeTab === "emi" && calculation ? (
                       <>
-                        <div className="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-600">
-                          <span className="text-gray-600 dark:text-gray-300">
+                        <div className="flex justify-between items-center py-3 border-b border-slate-200 dark:border-slate-700">
+                          <span className="text-slate-600 dark:text-slate-400 font-medium">
                             Principal Amount
                           </span>
-                          <span className="font-semibold text-gray-900 dark:text-white">
+                          <span className="font-bold text-slate-900 dark:text-white">
                             {formatCurrency(calculation.principalAmount)}
                           </span>
                         </div>
-                        <div className="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-600">
-                          <span className="text-gray-600 dark:text-gray-300">
+                        <div className="flex justify-between items-center py-3 border-b border-slate-200 dark:border-slate-700">
+                          <span className="text-slate-600 dark:text-slate-400 font-medium">
                             Interest Amount
                           </span>
-                          <span className="font-semibold text-gray-900 dark:text-white">
+                          <span className="font-bold text-slate-900 dark:text-white">
                             {formatCurrency(calculation.totalInterest)}
                           </span>
                         </div>
-                        <div className="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-600">
-                          <span className="text-gray-600 dark:text-gray-300">
-                            Total Payable Amount
+                        <div className="flex justify-between items-center py-4 bg-primary/10 rounded-xl px-4 mt-2">
+                          <span className="text-primary font-bold">
+                            Total Payable
                           </span>
-                          <span className="font-semibold text-gray-900 dark:text-white">
+                          <span className="font-black text-primary text-xl">
                             {formatCurrency(calculation.totalAmount)}
                           </span>
                         </div>
                       </>
                     ) : activeTab === "amount" && amountCalculation ? (
                       <>
-                        <div className="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-600">
-                          <span className="text-gray-600 dark:text-gray-300">
+                        <div className="flex justify-between items-center py-3 border-b border-slate-200 dark:border-slate-700">
+                          <span className="text-slate-600 dark:text-slate-400 font-medium">
                             Max Loan Amount
                           </span>
-                          <span className="font-semibold text-gray-900 dark:text-white">
+                          <span className="font-bold text-slate-900 dark:text-white">
                             {formatCurrency(amountCalculation.maxLoanAmount)}
                           </span>
                         </div>
-                        <div className="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-600">
-                          <span className="text-gray-600 dark:text-gray-300">
+                        <div className="flex justify-between items-center py-3 border-b border-slate-200 dark:border-slate-700">
+                          <span className="text-slate-600 dark:text-slate-400 font-medium">
                             Interest Amount
                           </span>
-                          <span className="font-semibold text-gray-900 dark:text-white">
+                          <span className="font-bold text-slate-900 dark:text-white">
                             {formatCurrency(amountCalculation.totalInterest)}
                           </span>
                         </div>
-                        <div className="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-600">
-                          <span className="text-gray-600 dark:text-gray-300">
-                            Total Payable Amount
+                        <div className="flex justify-between items-center py-4 bg-primary/10 rounded-xl px-4 mt-2">
+                          <span className="text-primary font-bold">
+                            Total Payable
                           </span>
-                          <span className="font-semibold text-gray-900 dark:text-white">
+                          <span className="font-black text-primary text-xl">
                             {formatCurrency(amountCalculation.totalAmount)}
                           </span>
                         </div>
@@ -592,18 +592,24 @@ export default function EMICalculatorPage() {
             </div>
           </div>
 
+          <div className="mt-12 text-center">
+            <Link href="/#apply">
+              <Button size="lg" className="rounded-full px-12 py-8 text-xl font-black bg-primary text-white shadow-2xl hover:scale-105 transition-all">
+                APPLY NOW <ArrowRight className="ml-3 w-6 h-6" />
+              </Button>
+            </Link>
+          </div>
+
           {/* Disclaimer */}
           <div className="mt-8 text-center">
-            <p className="text-sm text-gray-500 dark:text-gray-400 max-w-4xl mx-auto">
-              This calculator provided above are for illustrative purposes only.
-              The actual amount and interest rates may vary based on factors
-              such as creditworthiness, industry, and business type.
+            <p className="text-sm text-slate-500 dark:text-slate-500 max-w-4xl mx-auto italic font-medium">
+              * This simulator is for illustrative purposes only.
+              Actual terms and interest rates will be subject to KuCash underwriting guidelines and regulated lender approvals.
+              Key Fact Statement (KFS) will be shared before final disbursal.
             </p>
           </div>
         </div>
       </main>
-
-      {/* Testimonials Section */}
       <TestimonialsSection />
 
       {/* FAQ Section */}

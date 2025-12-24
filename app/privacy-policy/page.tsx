@@ -6,8 +6,7 @@ import { WhatsAppButton } from "@/components/whatsapp-button"
 export const metadata: Metadata = {
   title: "Privacy Policy | KuCash - Your Financial Privacy Matters",
   description:
-    "Read KuCash's privacy policy to understand how we collect, use, and protect your personal information. Your trust is our priority.",
-  "Learn about how KuCash protects your data and privacy. We follow the highest security standards to ensure your information is safe.",
+    "Learn about how KuCash protects your data and privacy. We follow the highest security standards to ensure your information is safe.",
   openGraph: {
     title: "Privacy Policy | KuCash",
     description: "Understanding how KuCash protects your personal information and maintains your privacy.",
@@ -17,7 +16,6 @@ export const metadata: Metadata = {
         width: 1200,
         height: 630,
         alt: "KuCash Privacy Policy",
-        title: "Privacy Policy - KuCash | Secure & Transparent Financing",
       },
     ],
   },
@@ -131,7 +129,7 @@ export default function PrivacyPolicyPage() {
                   If you have questions or concerns about this privacy policy, please contact us:
                 </p>
                 <div className="bg-muted/50 rounded-2xl p-6 space-y-2">
-                  <p className="text-foreground font-medium">Kucash</p>
+                  <p className="text-foreground font-medium">KuCash</p>
                   <p className="text-muted-foreground">Email: wecare@kucash.in</p>
                   <p className="text-muted-foreground">Phone: +91 9008367818</p>
                   <p className="text-muted-foreground">
@@ -146,6 +144,6 @@ export default function PrivacyPolicyPage() {
       </main>
       <Footer />
       <WhatsAppButton />
-    </div >
+    </>
   )
 }
