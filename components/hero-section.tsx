@@ -31,7 +31,7 @@ export function HeroSection() {
             </div>
 
             {/* Main Heading */}
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-balance">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[2rem] xl:text-[3rem] font-bold leading-[1.2]">
               <span className="text-primary">Instant Loans</span>
               <br />
               <span className="text-foreground">That Power Your Dreams</span>
@@ -61,7 +61,7 @@ export function HeroSection() {
                 </div>
                 <div>
                   <div className="font-semibold text-foreground text-sm lg:text-base">Low Interest</div>
-                  <div className="text-xs lg:text-sm text-muted-foreground">starting from 10.5%</div>
+                  <div className="text-xs lg:text-sm text-muted-foreground">starting from 9.99%</div>
                 </div>
               </div>
               <div className="flex items-center gap-3 p-3 lg:p-4 rounded-2xl bg-card border border-border hover:border-primary/50 transition-all">

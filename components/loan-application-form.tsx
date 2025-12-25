@@ -1,27 +1,52 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Upload, CheckCircle2, ChevronDown, ChevronUp, Loader2, Plus, X, Trash2, Ticket } from "lucide-react"
-import { submitLoanApplication, type LoanApplicationData } from "@/app/actions/loan-application"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Upload,
+  CheckCircle2,
+  ChevronDown,
+  ChevronUp,
+  Loader2,
+  Plus,
+  X,
+  Trash2,
+  Ticket,
+} from "lucide-react";
+import {
+  submitLoanApplication,
+  type LoanApplicationData,
+} from "@/app/actions/loan-application";
 
 interface ExtendedLoanApplicationData extends LoanApplicationData {
-  otherDocuments?: { name: string; file: File | null }[]
+  otherDocuments?: { name: string; file: File | null }[];
 }
-import { useToast } from "@/hooks/use-toast"
+import { useToast } from "@/hooks/use-toast";
 
 export function LoanApplicationForm() {
-  const [isSubmitted, setIsSubmitted] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [openSection, setOpenSection] = useState<number>(1)
-  const [applicationId, setApplicationId] = useState<string>("")
-  const { toast } = useToast()
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [openSection, setOpenSection] = useState<number>(1);
+  const [applicationId, setApplicationId] = useState<string>("");
+  const { toast } = useToast();
 
   // Form state
   const [formData, setFormData] = useState<ExtendedLoanApplicationData>({
@@ -43,31 +68,34 @@ export function LoanApplicationForm() {
     companyName: "",
     referralCode: "",
     otherDocuments: [],
-  })
+  });
 
-  const handleInputChange = (field: keyof ExtendedLoanApplicationData, value: any) => {
+  const handleInputChange = (
+    field: keyof ExtendedLoanApplicationData,
+    value: any
+  ) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
-    }))
-  }
+    }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
+    e.preventDefault();
+    setIsSubmitting(true);
 
     try {
-      const result = await submitLoanApplication(formData)
+      const result = await submitLoanApplication(formData);
 
       if (result.success) {
-        setIsSubmitted(true)
-        setApplicationId(result.applicationId || "")
+        setIsSubmitted(true);
+        setApplicationId(result.applicationId || "");
         toast({
           title: "Success!",
           description: "Your loan application has been submitted successfully.",
-        })
+        });
         setTimeout(() => {
-          setIsSubmitted(false)
+          setIsSubmitted(false);
           // Reset form
           setFormData({
             fullName: "",
@@ -88,29 +116,30 @@ export function LoanApplicationForm() {
             companyName: "",
             referralCode: "",
             otherDocuments: [],
-          })
-        }, 10000)
+          });
+        }, 10000);
       } else {
         toast({
           title: "Error",
-          description: result.error || "Failed to submit application. Please try again.",
+          description:
+            result.error || "Failed to submit application. Please try again.",
           variant: "destructive",
-        })
+        });
       }
     } catch (error) {
       toast({
         title: "Error",
         description: "An unexpected error occurred. Please try again.",
         variant: "destructive",
-      })
+      });
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   const toggleSection = (section: number) => {
-    setOpenSection(openSection === section ? 0 : section)
-  }
+    setOpenSection(openSection === section ? 0 : section);
+  };
 
   if (isSubmitted) {
     return (
@@ -121,7 +150,9 @@ export function LoanApplicationForm() {
               <div className="w-20 h-20 mx-auto rounded-full bg-primary flex items-center justify-center mb-6">
                 <CheckCircle2 className="w-10 h-10 text-white" />
               </div>
-              <h3 className="text-2xl font-bold mb-4 text-foreground">Application Submitted Successfully!</h3>
+              <h3 className="text-2xl font-bold mb-4 text-foreground">
+                Application Submitted Successfully!
+              </h3>
               <p className="text-muted-foreground mb-6">
                 {
                   "Thank you for choosing KuCash. Our team will review your application and contact you within 24 hours."
@@ -135,7 +166,7 @@ export function LoanApplicationForm() {
           </Card>
         </div>
       </section>
-    )
+    );
   }
 
   return (
@@ -148,7 +179,9 @@ export function LoanApplicationForm() {
             <span className="text-primary">Your Loan</span>
           </h2>
           <p className="text-lg text-muted-foreground text-pretty">
-            {"Fill in your details and get instant approval. Our team will contact you within 24 hours."}
+            {
+              "Fill in your details and get instant approval. Our team will contact you within 24 hours."
+            }
           </p>
         </div>
 
@@ -179,7 +212,9 @@ export function LoanApplicationForm() {
                       placeholder="Enter your full name as it appears on your PAN card"
                       required
                       value={formData.fullName}
-                      onChange={(e) => handleInputChange("fullName", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("fullName", e.target.value)
+                      }
                     />
                   </div>
 
@@ -189,7 +224,9 @@ export function LoanApplicationForm() {
                       <Select
                         required
                         value={formData.gender}
-                        onValueChange={(val) => handleInputChange("gender", val)}
+                        onValueChange={(val) =>
+                          handleInputChange("gender", val)
+                        }
                       >
                         <SelectTrigger id="gender">
                           <SelectValue placeholder="Select gender" />
@@ -208,7 +245,9 @@ export function LoanApplicationForm() {
                         type="date"
                         required
                         value={formData.dateOfBirth}
-                        onChange={(e) => handleInputChange("dateOfBirth", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("dateOfBirth", e.target.value)
+                        }
                       />
                     </div>
                   </div>
@@ -222,7 +261,9 @@ export function LoanApplicationForm() {
                         placeholder="your.email@example.com"
                         required
                         value={formData.email}
-                        onChange={(e) => handleInputChange("email", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("email", e.target.value)
+                        }
                       />
                     </div>
                     <div className="space-y-2">
@@ -233,7 +274,9 @@ export function LoanApplicationForm() {
                         placeholder="+91 XXXXX XXXXX"
                         required
                         value={formData.phone}
-                        onChange={(e) => handleInputChange("phone", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("phone", e.target.value)
+                        }
                       />
                     </div>
                   </div>
@@ -247,7 +290,12 @@ export function LoanApplicationForm() {
                         required
                         className="uppercase"
                         value={formData.panNumber}
-                        onChange={(e) => handleInputChange("panNumber", e.target.value.toUpperCase())}
+                        onChange={(e) =>
+                          handleInputChange(
+                            "panNumber",
+                            e.target.value.toUpperCase()
+                          )
+                        }
                       />
                     </div>
                     <div className="space-y-2">
@@ -257,7 +305,9 @@ export function LoanApplicationForm() {
                         placeholder="XXXX XXXX XXXX"
                         required
                         value={formData.aadharNumber}
-                        onChange={(e) => handleInputChange("aadharNumber", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("aadharNumber", e.target.value)
+                        }
                       />
                     </div>
                   </div>
@@ -277,7 +327,11 @@ export function LoanApplicationForm() {
                     </div>
                     Address Details
                   </h3>
-                  {openSection === 2 ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                  {openSection === 2 ? (
+                    <ChevronUp className="w-5 h-5" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5" />
+                  )}
                 </button>
 
                 {openSection === 2 && (
@@ -289,17 +343,23 @@ export function LoanApplicationForm() {
                         placeholder="Enter your current residential address"
                         required
                         value={formData.currentAddress}
-                        onChange={(e) => handleInputChange("currentAddress", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("currentAddress", e.target.value)
+                        }
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="permanentAddress">Permanent Address *</Label>
+                      <Label htmlFor="permanentAddress">
+                        Permanent Address *
+                      </Label>
                       <Input
                         id="permanentAddress"
                         placeholder="Enter your permanent address as per documents"
                         required
                         value={formData.permanentAddress}
-                        onChange={(e) => handleInputChange("permanentAddress", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("permanentAddress", e.target.value)
+                        }
                       />
                     </div>
                   </div>
@@ -319,7 +379,11 @@ export function LoanApplicationForm() {
                     </div>
                     Loan Details
                   </h3>
-                  {openSection === 3 ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                  {openSection === 3 ? (
+                    <ChevronUp className="w-5 h-5" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5" />
+                  )}
                 </button>
 
                 {openSection === 3 && (
@@ -330,17 +394,29 @@ export function LoanApplicationForm() {
                         <Select
                           required
                           value={formData.loanType}
-                          onValueChange={(val) => handleInputChange("loanType", val)}
+                          onValueChange={(val) =>
+                            handleInputChange("loanType", val)
+                          }
                         >
                           <SelectTrigger id="loanType">
                             <SelectValue placeholder="Select loan type" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="personal">Personal Loan</SelectItem>
-                            <SelectItem value="business">Business Loan</SelectItem>
-                            <SelectItem value="property">Loan Against Property</SelectItem>
-                            <SelectItem value="working-capital">Working Capital</SelectItem>
-                            <SelectItem value="invoice">Invoice Discounting</SelectItem>
+                            <SelectItem value="personal">
+                              Personal Loan
+                            </SelectItem>
+                            <SelectItem value="business">
+                              Business Loan
+                            </SelectItem>
+                            <SelectItem value="property">
+                              Loan Against Property
+                            </SelectItem>
+                            <SelectItem value="working-capital">
+                              Working Capital
+                            </SelectItem>
+                            <SelectItem value="invoice">
+                              Invoice Discounting
+                            </SelectItem>
                             <SelectItem value="msme">MSME Loan</SelectItem>
                           </SelectContent>
                         </Select>
@@ -353,7 +429,12 @@ export function LoanApplicationForm() {
                           placeholder="500000"
                           required
                           value={formData.loanAmount || ""}
-                          onChange={(e) => handleInputChange("loanAmount", Number(e.target.value))}
+                          onChange={(e) =>
+                            handleInputChange(
+                              "loanAmount",
+                              Number(e.target.value)
+                            )
+                          }
                         />
                       </div>
                     </div>
@@ -364,7 +445,9 @@ export function LoanApplicationForm() {
                         <Select
                           required
                           value={formData.tenure}
-                          onValueChange={(val) => handleInputChange("tenure", val)}
+                          onValueChange={(val) =>
+                            handleInputChange("tenure", val)
+                          }
                         >
                           <SelectTrigger id="tenure">
                             <SelectValue placeholder="Select tenure" />
@@ -375,6 +458,10 @@ export function LoanApplicationForm() {
                             <SelectItem value="36">36 Months</SelectItem>
                             <SelectItem value="48">48 Months</SelectItem>
                             <SelectItem value="60">60 Months</SelectItem>
+                            <SelectItem value="72">72 Months</SelectItem>
+                            <SelectItem value="84">84 Months</SelectItem>
+                            <SelectItem value="120">120 Months</SelectItem>
+                            <SelectItem value="180">180 Months</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
@@ -385,7 +472,9 @@ export function LoanApplicationForm() {
                           placeholder="e.g., Business expansion"
                           required
                           value={formData.purpose}
-                          onChange={(e) => handleInputChange("purpose", e.target.value)}
+                          onChange={(e) =>
+                            handleInputChange("purpose", e.target.value)
+                          }
                         />
                       </div>
                     </div>
@@ -406,51 +495,76 @@ export function LoanApplicationForm() {
                     </div>
                     Employment & Income
                   </h3>
-                  {openSection === 4 ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                  {openSection === 4 ? (
+                    <ChevronUp className="w-5 h-5" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5" />
+                  )}
                 </button>
 
                 {openSection === 4 && (
                   <div className="p-4 pt-0 space-y-6">
                     <div className="grid md:grid-cols-2 gap-6">
                       <div className="space-y-2">
-                        <Label htmlFor="employmentType">Employment Type *</Label>
+                        <Label htmlFor="employmentType">
+                          Employment Type *
+                        </Label>
                         <Select
                           required
                           value={formData.employmentType}
-                          onValueChange={(val) => handleInputChange("employmentType", val)}
+                          onValueChange={(val) =>
+                            handleInputChange("employmentType", val)
+                          }
                         >
                           <SelectTrigger id="employmentType">
                             <SelectValue placeholder="Select employment type" />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="salaried">Salaried</SelectItem>
-                            <SelectItem value="self-employed">Self Employed</SelectItem>
-                            <SelectItem value="business">Business Owner</SelectItem>
-                            <SelectItem value="professional">Professional</SelectItem>
+                            <SelectItem value="self-employed">
+                              Self Employed
+                            </SelectItem>
+                            <SelectItem value="business">
+                              Business Owner
+                            </SelectItem>
+                            <SelectItem value="professional">
+                              Professional
+                            </SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="monthlyIncome">Monthly Income (₹) *</Label>
+                        <Label htmlFor="monthlyIncome">
+                          Monthly Income (₹) *
+                        </Label>
                         <Input
                           id="monthlyIncome"
                           type="number"
                           placeholder="50000"
                           required
                           value={formData.monthlyIncome || ""}
-                          onChange={(e) => handleInputChange("monthlyIncome", Number(e.target.value))}
+                          onChange={(e) =>
+                            handleInputChange(
+                              "monthlyIncome",
+                              Number(e.target.value)
+                            )
+                          }
                         />
                       </div>
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="companyName">Company/Business Name *</Label>
+                      <Label htmlFor="companyName">
+                        Company/Business Name *
+                      </Label>
                       <Input
                         id="companyName"
                         placeholder="Enter company or business name"
                         required
                         value={formData.companyName}
-                        onChange={(e) => handleInputChange("companyName", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("companyName", e.target.value)
+                        }
                       />
                     </div>
                   </div>
@@ -470,7 +584,11 @@ export function LoanApplicationForm() {
                     </div>
                     Document Upload
                   </h3>
-                  {openSection === 5 ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                  {openSection === 5 ? (
+                    <ChevronUp className="w-5 h-5" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5" />
+                  )}
                 </button>
 
                 {openSection === 5 && (
@@ -517,7 +635,9 @@ export function LoanApplicationForm() {
                           />
                           <Upload className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
                         </div>
-                        <p className="text-xs text-muted-foreground">{"(Salary slip, ITR, or Bank Statement)"}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {"(Salary slip, ITR, or Bank Statement)"}
+                        </p>
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="addressProof">Address Proof</Label>
@@ -536,14 +656,19 @@ export function LoanApplicationForm() {
                     {/* Dynamic Other Documents */}
                     <div className="space-y-4 pt-4 border-t border-border/50">
                       <div className="flex items-center justify-between">
-                        <Label className="text-base font-bold">Other Documents (Optional)</Label>
+                        <Label className="text-base font-bold">
+                          Other Documents (Optional)
+                        </Label>
                         <Button
                           type="button"
                           variant="outline"
                           size="sm"
                           onClick={() => {
-                            const currentDocs = formData.otherDocuments || []
-                            handleInputChange("otherDocuments", [...currentDocs, { name: "", file: null }])
+                            const currentDocs = formData.otherDocuments || [];
+                            handleInputChange("otherDocuments", [
+                              ...currentDocs,
+                              { name: "", file: null },
+                            ]);
                           }}
                           className="rounded-full border-primary/30 text-primary hover:bg-primary/5 gap-2"
                         >
@@ -553,13 +678,21 @@ export function LoanApplicationForm() {
 
                       <div className="grid md:grid-cols-2 gap-4">
                         {(formData.otherDocuments || []).map((doc, idx) => (
-                          <div key={idx} className="p-4 rounded-2xl bg-muted/30 border border-dashed border-border relative group">
+                          <div
+                            key={idx}
+                            className="p-4 rounded-2xl bg-muted/30 border border-dashed border-border relative group"
+                          >
                             <button
                               type="button"
                               onClick={() => {
-                                const currentDocs = [...(formData.otherDocuments || [])]
-                                currentDocs.splice(idx, 1)
-                                handleInputChange("otherDocuments", currentDocs)
+                                const currentDocs = [
+                                  ...(formData.otherDocuments || []),
+                                ];
+                                currentDocs.splice(idx, 1);
+                                handleInputChange(
+                                  "otherDocuments",
+                                  currentDocs
+                                );
                               }}
                               className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-destructive text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
                             >
@@ -567,29 +700,44 @@ export function LoanApplicationForm() {
                             </button>
                             <div className="space-y-4">
                               <div className="space-y-2">
-                                <Label className="text-xs uppercase tracking-wider font-semibold opacity-70">Document Name</Label>
+                                <Label className="text-xs uppercase tracking-wider font-semibold opacity-70">
+                                  Document Name
+                                </Label>
                                 <Input
                                   placeholder="e.g. GST Certificate"
                                   className="bg-background/50"
                                   value={doc.name}
                                   onChange={(e) => {
-                                    const currentDocs = [...(formData.otherDocuments || [])]
-                                    currentDocs[idx].name = e.target.value
-                                    handleInputChange("otherDocuments", currentDocs)
+                                    const currentDocs = [
+                                      ...(formData.otherDocuments || []),
+                                    ];
+                                    currentDocs[idx].name = e.target.value;
+                                    handleInputChange(
+                                      "otherDocuments",
+                                      currentDocs
+                                    );
                                   }}
                                 />
                               </div>
                               <div className="space-y-2">
-                                <Label className="text-xs uppercase tracking-wider font-semibold opacity-70">Upload File</Label>
+                                <Label className="text-xs uppercase tracking-wider font-semibold opacity-70">
+                                  Upload File
+                                </Label>
                                 <div className="relative">
                                   <Input
                                     type="file"
                                     accept=".pdf,.jpg,.jpeg,.png"
                                     className="cursor-pointer bg-background/50"
                                     onChange={(e) => {
-                                      const currentDocs = [...(formData.otherDocuments || [])]
-                                      currentDocs[idx].file = e.target.files?.[0] || null
-                                      handleInputChange("otherDocuments", currentDocs)
+                                      const currentDocs = [
+                                        ...(formData.otherDocuments || []),
+                                      ];
+                                      currentDocs[idx].file =
+                                        e.target.files?.[0] || null;
+                                      handleInputChange(
+                                        "otherDocuments",
+                                        currentDocs
+                                      );
                                     }}
                                   />
                                   <Upload className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
@@ -612,8 +760,12 @@ export function LoanApplicationForm() {
                       <Ticket size={20} />
                     </div>
                     <div>
-                      <h4 className="font-bold text-foreground">Referral Code</h4>
-                      <p className="text-xs text-muted-foreground">Optional: Enter Agent ID if you have one</p>
+                      <h4 className="font-bold text-foreground">
+                        Referral Code
+                      </h4>
+                      <p className="text-xs text-muted-foreground">
+                        Optional: Enter Agent ID if you have one
+                      </p>
                     </div>
                   </div>
                   <div className="relative group">
@@ -622,7 +774,12 @@ export function LoanApplicationForm() {
                       placeholder="Enter 6 Digit Agent ID (e.g. AKN001)"
                       className="rounded-2xl border-primary/20 bg-background/50 focus-visible:ring-primary pl-12 h-14 text-lg tracking-wider"
                       value={formData.referralCode}
-                      onChange={(e) => handleInputChange("referralCode", e.target.value.toUpperCase())}
+                      onChange={(e) =>
+                        handleInputChange(
+                          "referralCode",
+                          e.target.value.toUpperCase()
+                        )
+                      }
                     />
                     <Ticket className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/40 group-focus-within:text-primary transition-colors" />
                   </div>
@@ -647,7 +804,9 @@ export function LoanApplicationForm() {
                   )}
                 </Button>
                 <p className="text-center text-sm text-muted-foreground mt-4">
-                  {"By submitting, you agree to our Terms & Conditions and Privacy Policy"}
+                  {
+                    "By submitting, you agree to our Terms & Conditions and Privacy Policy"
+                  }
                 </p>
               </div>
             </form>
@@ -655,5 +814,5 @@ export function LoanApplicationForm() {
         </Card>
       </div>
     </section>
-  )
+  );
 }

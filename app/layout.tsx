@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     siteName: "KuCash",
     images: [
       {
-        url: "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=1200&h=630&fit=crop",
+        url: "/logo_k_8.png",
         width: 1200,
         height: 630,
         alt: "KuCash - Financial Solutions",
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "KuCash - Fast Personal & Business Loans",
     description: "Get instant loans with quick approval. Apply now!",
-    images: ["https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=1200&h=630&fit=crop"],
+    images: ["/logo_k_8.png"],
   },
   robots: {
     index: true,
@@ -54,19 +54,8 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: [
-      {
-        url: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=32&h=32&fit=crop",
-        sizes: "32x32",
-        type: "image/png",
-      },
-      {
-        url: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=16&h=16&fit=crop",
-        sizes: "16x16",
-        type: "image/png",
-      },
-    ],
-    apple: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=180&h=180&fit=crop",
+    icon: "/logo_k_8.png",
+    apple: "/logo_k_8.png",
   },
   verification: {
     google: "your-google-verification-code",

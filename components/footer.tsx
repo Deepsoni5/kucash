@@ -12,12 +12,13 @@ export function Footer() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Company Info */}
           <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-primary-foreground font-bold text-xl">
-                K
-              </div>
-              <span className="text-2xl font-bold text-primary">KuCash</span>
-            </div>
+            <Link href="/" className="flex items-center gap-2">
+              <img
+                src="/logo_k_4.png"
+                alt="KuCash Logo"
+                className="h-20 w-auto object-contain"
+              />
+            </Link>
             <p className="text-muted-foreground text-sm leading-relaxed">
               {
                 "Your trusted partner for quick and hassle-free loans. Empowering dreams with instant financial solutions."

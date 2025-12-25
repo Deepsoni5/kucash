@@ -59,20 +59,20 @@ export function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled || isOpen
-          ? "bg-background/95 backdrop-blur-lg border-b border-border shadow-sm"
-          : "bg-transparent"
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled || isOpen
+        ? "bg-background/95 backdrop-blur-lg border-b border-border shadow-sm"
+        : "bg-transparent"
+        }`}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 md:h-20">
+        <div className="flex items-center justify-between h-20 md:h-24">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-primary-foreground font-bold text-xl transition-transform group-hover:scale-105">
-              K
-            </div>
-            <span className="text-2xl font-bold text-primary">KuCash</span>
+          <Link href="/" className="flex items-center gap-2">
+            <img
+              src="/logo_k_4.png"
+              alt="KuCash Logo"
+              className="h-20 md:h-24 w-auto object-contain"
+            />
           </Link>
 
           {/* Desktop Navigation */}

@@ -71,7 +71,7 @@ export function PartnersSection() {
                 <img
                   src={partner.logo || "/placeholder.svg"}
                   alt={`${partner.name} - KuCash partner`}
-                  className="h-12 sm:h-16 md:h-28 w-auto object-contain transition-all duration-700 hover:scale-110 filter drop-shadow-sm hover:drop-shadow-xl"
+                  className="h-32 sm:h-28 md:h-28 w-auto object-contain transition-all duration-700 hover:scale-110 filter drop-shadow-sm hover:drop-shadow-xl"
                 />
               </div>
             ))}
