@@ -3,38 +3,16 @@
 import { useEffect, useRef } from "react"
 
 const partners = [
-  {
-    name: "Oxyzo",
-    logo: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=300&h=150&fit=crop&q=80",
-  },
-  {
-    name: "Finlander",
-    logo: "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=300&h=150&fit=crop&q=80",
-  },
-  {
-    name: "FlexiLoans",
-    logo: "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=300&h=150&fit=crop&q=80",
-  },
-  {
-    name: "Capital Float",
-    logo: "https://images.unsplash.com/photo-1551836022-4c4c79ecde51?w=300&h=150&fit=crop&q=80",
-  },
-  {
-    name: "Lendingkart",
-    logo: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=300&h=150&fit=crop&q=80",
-  },
-  {
-    name: "NeoGrowth",
-    logo: "https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?w=300&h=150&fit=crop&q=80",
-  },
-  {
-    name: "Indifi",
-    logo: "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=300&h=150&fit=crop&q=80",
-  },
-  {
-    name: "Capital Trust",
-    logo: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=300&h=150&fit=crop&q=80",
-  },
+  { name: "Partner 1", logo: "/p1.png" },
+  { name: "Partner 2", logo: "/p2.png" },
+  { name: "Partner 3", logo: "/p3.png" },
+  { name: "Partner 4", logo: "/p4.png" },
+  { name: "Partner 6", logo: "/p6.png" },
+  { name: "Partner 7", logo: "/p7.png" },
+  { name: "Partner 8", logo: "/p8.png" },
+  { name: "Partner 9", logo: "/p9.png" },
+  { name: "Partner 10", logo: "/p10.png" },
+  { name: "Partner 11", logo: "/p11.png" },
 ]
 
 export function PartnersSection() {
@@ -67,29 +45,33 @@ export function PartnersSection() {
       <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 text-foreground">Our Official Partners</h2>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-foreground">Our Lending Partners</h2>
           <p className="text-base lg:text-lg text-muted-foreground text-pretty">
             {"Trusted collaborations with India's leading financial institutions"}
           </p>
         </div>
 
-        <div className="relative overflow-hidden">
+        <div className="relative mt-8 md:mt-12">
+          {/* Fades for smooth entry/exit */}
+          <div className="absolute left-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-r from-muted/30 to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-l from-muted/30 to-transparent z-10 pointer-events-none" />
+
           <div
             ref={scrollRef}
-            className="flex gap-12 overflow-x-hidden"
+            className="flex items-center gap-12 md:gap-24 overflow-x-hidden py-8 md:py-16"
             style={{
               scrollBehavior: "auto",
             }}
           >
-            {[...partners, ...partners].map((partner, index) => (
+            {[...partners, ...partners, ...partners].map((partner, index) => (
               <div
                 key={index}
-                className="flex-shrink-0 w-52 h-28 rounded-2xl overflow-hidden hover:scale-105 transition-transform duration-300"
+                className="flex-shrink-0"
               >
                 <img
                   src={partner.logo || "/placeholder.svg"}
                   alt={`${partner.name} - KuCash partner`}
-                  className="w-full h-full object-cover"
+                  className="h-12 sm:h-16 md:h-28 w-auto object-contain transition-all duration-700 hover:scale-110 filter drop-shadow-sm hover:drop-shadow-xl"
                 />
               </div>
             ))}
@@ -98,7 +80,7 @@ export function PartnersSection() {
 
         {/* Trust Badge */}
         <div className="mt-16 text-center">
-          <p className="text-sm text-muted-foreground">{"Partnered with 100+ Banks, NBFCs, and Financial Institutions."}</p>
+          <p className="text-sm font-medium text-muted-foreground">{"Collaborating with 100+ Banks, NBFCs, and Financial Institutions."}</p>
         </div>
       </div>
     </section>

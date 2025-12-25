@@ -239,7 +239,7 @@ export default function PrivacyPolicyPage() {
                 <div className="space-y-6">
                   <div className="p-6 rounded-2xl bg-muted/50 border border-border/50 space-y-1 group hover:bg-muted transition-colors">
                     <span className="text-[10px] uppercase font-bold text-primary tracking-widest">Officer Name</span>
-                    <p className="text-2xl font-bold tracking-tight italic">Mr/Ms Grievance Officer</p>
+                    <p className="text-2xl font-bold tracking-tight italic">Mr. Kiran Biradar</p>
                     <p className="text-sm font-medium text-muted-foreground">Grievance Redressal Officer</p>
                   </div>
                   <div className="space-y-4">

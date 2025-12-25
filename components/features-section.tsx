@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   Layers,
@@ -9,52 +9,52 @@ import {
   Network,
   Banknote,
   Award,
-} from "lucide-react"
+} from "lucide-react";
 
 const features = [
   {
     icon: Layers,
     title: "One Application, Multiple Chances",
-    description: "Don't run from bank to bank. Submit your details once, and we match you with the right lender for your profile.",
+    description:
+      "Don't run from bank to bank. Submit your details once, and we match you with the right lender for your profile.",
     color: "from-blue-500 to-blue-600",
   },
   {
     icon: Zap,
     title: "Paperless & Fast",
-    description: "We prioritize digital-first lenders. Upload your documents from your phone and get approvals faster.",
+    description:
+      "We prioritize digital-first lenders. Upload your documents from your phone and get approvals faster.",
     color: "from-orange-500 to-orange-600",
   },
   {
     icon: ShieldCheck,
     title: "Data Security Guarantee",
-    description: "We are an ethical Lending Service Provider (LSP). Your data is shared only with the lender you choose, securely and with your consent.",
+    description:
+      "We are an ethical Lending Service Provider (LSP). Your data is shared only with the lender you choose, securely and with your consent.",
     color: "from-green-500 to-green-600",
   },
   {
     icon: Users,
     title: "Options for Everyone",
-    description: "From salaried professionals to business owners, we have a loan product for every need.",
+    description:
+      "From salaried professionals to business owners, we have a loan product for every need.",
     color: "from-purple-500 to-purple-600",
   },
   {
     icon: PhoneOff,
     title: "No Spam Guarantee",
-    description: "We respect your privacy. You will never receive unsolicited robocalls from us. We speak only when you want us to.",
+    description:
+      "We respect your privacy. You will never receive unsolicited robocalls from us. We speak only when you want us to.",
     color: "from-teal-500 to-teal-600",
   },
   {
     icon: Network,
     title: "The Aggregator Advantage",
-    description: "Why apply to one bank when you can access 100? From the powerhouse lending of KuCash.",
+    description:
+      "Why apply to one bank when you can access 100? From the powerhouse lending of KuCash.",
     color: "from-pink-500 to-pink-600",
   },
-  {
-    icon: Banknote,
-    title: "Zero Hidden Fees",
-    description: "We display the 'All-Inclusive APR.' Processing fees, insurance, and penal charges are visible upfront in your KFS Menu.",
-    color: "from-indigo-500 to-indigo-600",
-  },
-]
+];
 
 export function FeaturesSection() {
   return (
@@ -80,12 +80,15 @@ export function FeaturesSection() {
         {/* Features Grid - 3 column layout for better visual */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
           {features.map((feature, index) => {
-            const Icon = feature.icon
+            const Icon = feature.icon;
             return (
               <div
                 key={index}
-                className={`group relative p-6 lg:p-8 rounded-3xl bg-card border border-border hover:border-primary/50 hover:shadow-2xl transition-all duration-300 overflow-hidden ${index === features.length - 1 && features.length % 3 === 1 ? "lg:col-start-2" : ""
-                  }`}
+                className={`group relative p-6 lg:p-8 rounded-3xl bg-card border border-border hover:border-primary/50 hover:shadow-2xl transition-all duration-300 overflow-hidden ${
+                  index === features.length - 1 && features.length % 3 === 1
+                    ? "lg:col-start-2"
+                    : ""
+                }`}
               >
                 {/* Gradient Background on Hover */}
                 <div
@@ -106,13 +109,15 @@ export function FeaturesSection() {
                   </p>
                 </div>
               </div>
-            )
+            );
           })}
         </div>
 
         {/* Bottom CTA */}
         <div className="mt-16 text-center">
-          <p className="text-muted-foreground mb-6 text-lg">{"Ready to experience hassle-free lending?"}</p>
+          <p className="text-muted-foreground mb-6 text-lg">
+            {"Ready to experience hassle-free lending?"}
+          </p>
           <a
             href="#apply"
             className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-primary hover:bg-primary/90 text-white font-semibold transition-all hover:scale-105 shadow-lg"
@@ -122,5 +127,5 @@ export function FeaturesSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }

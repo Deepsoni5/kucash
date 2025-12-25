@@ -4,11 +4,15 @@ import { createClient } from "@/lib/supabase/server"
 import { revalidatePath } from "next/cache"
 
 export interface LoanApplicationData {
-    firstName: string
-    lastName: string
+    fullName: string
     email: string
     phone: string
+    gender: string
     dateOfBirth: string
+    currentAddress: string
+    permanentAddress: string
+    panNumber: string
+    aadharNumber: string
     loanType: string
     loanAmount: number
     tenure: string
@@ -16,6 +20,7 @@ export interface LoanApplicationData {
     employmentType: string
     monthlyIncome: number
     companyName: string
+    referralCode?: string
 }
 
 export async function submitLoanApplication(data: LoanApplicationData) {
@@ -24,15 +29,22 @@ export async function submitLoanApplication(data: LoanApplicationData) {
 
         // Prepare the data for insertion
         const applicationData = {
-            full_name: `${data.firstName} ${data.lastName}`,
+            full_name: data.fullName,
             email: data.email,
             phone: data.phone,
+            gender: data.gender,
+            date_of_birth: data.dateOfBirth,
+            current_address: data.currentAddress,
+            permanent_address: data.permanentAddress,
+            pan_number: data.panNumber,
+            aadhar_number: data.aadharNumber,
             loan_type: data.loanType,
             loan_amount: data.loanAmount,
             loan_purpose: data.purpose,
             employment_type: data.employmentType,
             monthly_income: data.monthlyIncome,
             company_name: data.companyName,
+            referral_code: data.referralCode,
             status: "pending",
         }
 

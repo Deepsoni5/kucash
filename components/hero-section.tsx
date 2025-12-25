@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { ArrowRight, TrendingUp, Shield, Zap } from "lucide-react"
+import { ArrowRight, TrendingUp, Shield, Zap, Calculator } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 
@@ -76,21 +76,30 @@ export function HeroSection() {
             </div>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3 lg:gap-4">
+            <div className="flex flex-col sm:flex-row flex-wrap gap-3 lg:gap-4">
               <Link href="#apply" className="w-full sm:w-auto">
                 <Button
                   size="lg"
-                  className="w-full rounded-full bg-primary hover:bg-primary/90 text-base lg:text-lg px-6 lg:px-8 py-5 lg:py-6 hover:scale-105 transition-transform"
+                  className="w-full rounded-full bg-primary hover:bg-primary/90 text-base lg:text-lg px-6 lg:px-8 py-5 lg:py-6 hover:scale-105 transition-transform shadow-lg shadow-primary/20"
                 >
                   Apply Now
                   <ArrowRight className="ml-2 h-4 w-4 lg:h-5 lg:w-5" />
                 </Button>
               </Link>
-              <Link href="#how-it-works" className="w-full sm:w-auto">
+              <Link href="/emi-calculator" className="w-full sm:w-auto">
                 <Button
                   size="lg"
                   variant="outline"
-                  className="w-full rounded-full text-base lg:text-lg px-6 lg:px-8 py-5 lg:py-6 hover:bg-muted bg-transparent"
+                  className="w-full rounded-full text-base lg:text-lg px-6 lg:px-8 py-5 lg:py-6 bg-transparent border-primary/30 hover:bg-primary hover:text-white hover:scale-105 transition-all text-primary shadow-sm hover:shadow-primary/20"
+                >
+                  <Calculator className="mr-2 h-4 w-4 lg:h-5 lg:w-5" />
+                  EMI Calculator
+                </Button>
+              </Link>
+              <Link href="#how-it-works" className="w-full sm:w-auto">
+                <Button
+                  size="lg"
+                  className="w-full rounded-full bg-primary hover:bg-primary/90 text-base lg:text-lg px-6 lg:px-8 py-5 lg:py-6 hover:scale-105 transition-transform shadow-lg shadow-primary/20"
                 >
                   How It Works
                 </Button>
