@@ -1,8 +1,7 @@
 "use client";
 
 import type React from "react";
-
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,28 +27,35 @@ import {
   Loader2,
   Plus,
   X,
-  Trash2,
   Ticket,
+  LogIn,
+  UserPlus,
+  Lock,
 } from "lucide-react";
 import {
   submitLoanApplication,
-  type LoanApplicationData,
+  validateReferralCode,
 } from "@/app/actions/loan-application";
-
-interface ExtendedLoanApplicationData extends LoanApplicationData {
-  otherDocuments?: { name: string; file: File | null }[];
-}
+import { useAuth } from "@/contexts/auth-context";
+import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
 
+interface OtherDocument {
+  name: string;
+  file: File | null;
+}
+
 export function LoanApplicationForm() {
+  // ALL HOOKS MUST BE AT THE TOP - BEFORE ANY EARLY RETURNS
+  const { user, loading } = useAuth();
+  const { toast } = useToast();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [openSection, setOpenSection] = useState<number>(1);
+  const [openSection, setOpenSection] = useState<number>(-1); // -1 means all sections collapsed by default
   const [applicationId, setApplicationId] = useState<string>("");
-  const { toast } = useToast();
 
   // Form state
-  const [formData, setFormData] = useState<ExtendedLoanApplicationData>({
+  const [formData, setFormData] = useState({
     fullName: "",
     email: "",
     phone: "",
@@ -60,20 +66,89 @@ export function LoanApplicationForm() {
     panNumber: "",
     aadharNumber: "",
     loanType: "",
-    loanAmount: 0,
+    loanAmount: "",
     tenure: "",
     purpose: "",
     employmentType: "",
-    monthlyIncome: 0,
+    monthlyIncome: "",
     companyName: "",
     referralCode: "",
-    otherDocuments: [],
   });
 
-  const handleInputChange = (
-    field: keyof ExtendedLoanApplicationData,
-    value: any
-  ) => {
+  // Prefill user data when user is available
+  useEffect(() => {
+    if (user && !loading) {
+      setFormData((prev) => ({
+        ...prev,
+        email: user.email || "",
+        phone: user.mobileNumber || "",
+        fullName: user.fullName || "",
+      }));
+    }
+  }, [user, loading]);
+
+  const [otherDocuments, setOtherDocuments] = useState<OtherDocument[]>([]);
+  const [selectedFiles, setSelectedFiles] = useState<{
+    panCard: File | null;
+    aadharCard: File | null;
+    incomeProof: File | null;
+    addressProof: File | null;
+  }>({
+    panCard: null,
+    aadharCard: null,
+    incomeProof: null,
+    addressProof: null,
+  });
+
+  // File input refs to clear them after submission
+  const panCardRef = useRef<HTMLInputElement>(null);
+  const aadharCardRef = useRef<HTMLInputElement>(null);
+  const incomeProofRef = useRef<HTMLInputElement>(null);
+  const addressProofRef = useRef<HTMLInputElement>(null);
+
+  // Effect to restore file input values when section reopens
+  useEffect(() => {
+    if (openSection === 5) {
+      // Use setTimeout to ensure DOM is ready
+      setTimeout(() => {
+        if (selectedFiles.panCard && panCardRef.current) {
+          // Create a new FileList with the selected file
+          const dt = new DataTransfer();
+          dt.items.add(selectedFiles.panCard);
+          panCardRef.current.files = dt.files;
+        }
+        if (selectedFiles.aadharCard && aadharCardRef.current) {
+          const dt = new DataTransfer();
+          dt.items.add(selectedFiles.aadharCard);
+          aadharCardRef.current.files = dt.files;
+        }
+        if (selectedFiles.incomeProof && incomeProofRef.current) {
+          const dt = new DataTransfer();
+          dt.items.add(selectedFiles.incomeProof);
+          incomeProofRef.current.files = dt.files;
+        }
+        if (selectedFiles.addressProof && addressProofRef.current) {
+          const dt = new DataTransfer();
+          dt.items.add(selectedFiles.addressProof);
+          addressProofRef.current.files = dt.files;
+        }
+      }, 0);
+    }
+  }, [openSection, selectedFiles]);
+
+  const [referralValidation, setReferralValidation] = useState<{
+    isValidating: boolean;
+    isValid: boolean | null;
+    error: string | null;
+    agentName: string | null;
+  }>({
+    isValidating: false,
+    isValid: null,
+    error: null,
+    agentName: null,
+  });
+
+  const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
@@ -85,22 +160,69 @@ export function LoanApplicationForm() {
     setIsSubmitting(true);
 
     try {
-      const result = await submitLoanApplication(formData);
+      // Validate referral code if provided
+      if (formData.referralCode && referralValidation.isValid !== true) {
+        toast({
+          title: "Invalid Referral Code",
+          description: "Please enter a valid referral code or leave it empty.",
+          variant: "destructive",
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
+      const form = e.target as HTMLFormElement;
+      const formDataToSubmit = new FormData(form);
+
+      // Add files from state instead of relying on form elements
+      if (selectedFiles.panCard) {
+        formDataToSubmit.set("panCard", selectedFiles.panCard);
+      }
+      if (selectedFiles.aadharCard) {
+        formDataToSubmit.set("aadharCard", selectedFiles.aadharCard);
+      }
+      if (selectedFiles.incomeProof) {
+        formDataToSubmit.set("incomeProof", selectedFiles.incomeProof);
+      }
+      if (selectedFiles.addressProof) {
+        formDataToSubmit.set("addressProof", selectedFiles.addressProof);
+      }
+
+      // Debug: Log all form data being submitted
+      console.log("=== FORM DATA BEING SUBMITTED ===");
+      for (const [key, value] of formDataToSubmit.entries()) {
+        console.log(`${key}:`, value);
+      }
+      console.log("=== END FORM DATA ===");
+
+      // Add other documents count and data
+      formDataToSubmit.append(
+        "otherDocsCount",
+        otherDocuments.length.toString()
+      );
+      otherDocuments.forEach((doc, index) => {
+        if (doc.name && doc.file) {
+          formDataToSubmit.append(`otherDocName_${index}`, doc.name);
+          formDataToSubmit.append(`otherDocFile_${index}`, doc.file);
+        }
+      });
+
+      const result = await submitLoanApplication(formDataToSubmit);
 
       if (result.success) {
         setIsSubmitted(true);
         setApplicationId(result.applicationId || "");
         toast({
           title: "Success!",
-          description: "Your loan application has been submitted successfully.",
+          description: `Your loan application has been submitted successfully. Your Loan ID is: ${result.applicationId}`,
         });
         setTimeout(() => {
           setIsSubmitted(false);
-          // Reset form
+          // Reset form but keep user's prefilled data
           setFormData({
-            fullName: "",
-            email: "",
-            phone: "",
+            fullName: user?.fullName || "",
+            email: user?.email || "",
+            phone: user?.mobileNumber || "",
             gender: "",
             dateOfBirth: "",
             currentAddress: "",
@@ -108,14 +230,31 @@ export function LoanApplicationForm() {
             panNumber: "",
             aadharNumber: "",
             loanType: "",
-            loanAmount: 0,
+            loanAmount: "",
             tenure: "",
             purpose: "",
             employmentType: "",
-            monthlyIncome: 0,
+            monthlyIncome: "",
             companyName: "",
             referralCode: "",
-            otherDocuments: [],
+          });
+          setOtherDocuments([]);
+          setSelectedFiles({
+            panCard: null,
+            aadharCard: null,
+            incomeProof: null,
+            addressProof: null,
+          });
+          // Clear file input values
+          if (panCardRef.current) panCardRef.current.value = "";
+          if (aadharCardRef.current) aadharCardRef.current.value = "";
+          if (incomeProofRef.current) incomeProofRef.current.value = "";
+          if (addressProofRef.current) addressProofRef.current.value = "";
+          setReferralValidation({
+            isValidating: false,
+            isValid: null,
+            error: null,
+            agentName: null,
           });
         }, 10000);
       } else {
@@ -141,6 +280,175 @@ export function LoanApplicationForm() {
     setOpenSection(openSection === section ? 0 : section);
   };
 
+  const addOtherDocument = () => {
+    setOtherDocuments([...otherDocuments, { name: "", file: null }]);
+  };
+
+  const removeOtherDocument = (index: number) => {
+    const newDocs = otherDocuments.filter((_, i) => i !== index);
+    setOtherDocuments(newDocs);
+  };
+
+  const updateOtherDocument = (
+    index: number,
+    field: "name" | "file",
+    value: string | File
+  ) => {
+    const newDocs = [...otherDocuments];
+    newDocs[index] = { ...newDocs[index], [field]: value };
+    setOtherDocuments(newDocs);
+  };
+
+  // Debounced referral code validation
+  const validateReferralCodeDebounced = async (code: string) => {
+    if (!code || code.trim() === "") {
+      setReferralValidation({
+        isValidating: false,
+        isValid: null,
+        error: null,
+        agentName: null,
+      });
+      return;
+    }
+
+    setReferralValidation((prev) => ({ ...prev, isValidating: true }));
+
+    try {
+      const result = await validateReferralCode(code);
+
+      if (result.valid) {
+        setReferralValidation({
+          isValidating: false,
+          isValid: true,
+          error: null,
+          agentName: result.agent?.name || null,
+        });
+      } else {
+        setReferralValidation({
+          isValidating: false,
+          isValid: false,
+          error: result.error || "Invalid referral code",
+          agentName: null,
+        });
+      }
+    } catch (error) {
+      setReferralValidation({
+        isValidating: false,
+        isValid: false,
+        error: "Unable to validate referral code",
+        agentName: null,
+      });
+    }
+  };
+
+  // Debounce referral code validation
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (formData.referralCode) {
+        validateReferralCodeDebounced(formData.referralCode);
+      }
+    }, 500); // 500ms delay
+
+    return () => clearTimeout(timeoutId);
+  }, [formData.referralCode]);
+
+  // NOW SAFE TO DO CONDITIONAL RENDERING AFTER ALL HOOKS
+  // Show loading state while checking authentication
+  if (loading) {
+    return (
+      <section id="apply" className="py-20 lg:py-32 bg-muted/30">
+        <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-balance">
+              <span className="text-foreground">Apply for </span>
+              <span className="text-primary">Your Loan</span>
+            </h2>
+            <p className="text-lg text-muted-foreground text-pretty">
+              Fill in your details and get instant approval. Our team will
+              contact you within 24 hours.
+            </p>
+          </div>
+          <Card className="max-w-2xl mx-auto text-center">
+            <CardContent className="p-12">
+              <Loader2 className="w-8 h-8 mx-auto animate-spin mb-4" />
+              <p className="text-muted-foreground">Loading...</p>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+    );
+  }
+
+  // Show login prompt for non-authenticated users
+  if (!user) {
+    return (
+      <section id="apply" className="py-20 lg:py-32 bg-muted/30">
+        <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Section Header */}
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-balance">
+              <span className="text-foreground">Apply for </span>
+              <span className="text-primary">Your Loan</span>
+            </h2>
+            <p className="text-lg text-muted-foreground text-pretty">
+              Fill in your details and get instant approval. Our team will
+              contact you within 24 hours.
+            </p>
+          </div>
+
+          {/* Login Prompt Card */}
+          <Card className="max-w-2xl mx-auto text-center border-2 border-primary/20 shadow-2xl">
+            <CardContent className="p-12">
+              <div className="w-20 h-20 mx-auto rounded-full bg-primary/10 flex items-center justify-center mb-6">
+                <Lock className="w-10 h-10 text-primary" />
+              </div>
+              <h3 className="text-2xl font-bold mb-4 text-foreground">
+                Please Login to Apply for Loan
+              </h3>
+              <p className="text-muted-foreground mb-8 text-lg">
+                To ensure the security of your application and provide you with
+                the best service, please login to your account or create a new
+                one to continue with your loan application.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Link href="/login">
+                  <Button size="lg" className="w-full sm:w-auto">
+                    <LogIn className="mr-2 h-5 w-5" />
+                    Login to Apply
+                  </Button>
+                </Link>
+                <Link href="/signup">
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="w-full sm:w-auto"
+                  >
+                    <UserPlus className="mr-2 h-5 w-5" />
+                    Create Account
+                  </Button>
+                </Link>
+              </div>
+
+              <div className="mt-8 p-4 bg-muted/50 rounded-lg">
+                <p className="text-sm text-muted-foreground">
+                  <strong>Why do I need to login?</strong>
+                  <br />
+                  • Secure application process
+                  <br />
+                  • Track your application status
+                  <br />
+                  • Faster processing with saved details
+                  <br />• Direct communication with our team
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+    );
+  }
+
   if (isSubmitted) {
     return (
       <section id="apply" className="py-20 lg:py-32 bg-background">
@@ -160,7 +468,7 @@ export function LoanApplicationForm() {
               </p>
               <p className="text-sm text-muted-foreground">
                 {"Application ID: #KC"}
-                {applicationId.substring(0, 8).toUpperCase()}
+                {applicationId}
               </p>
             </CardContent>
           </Card>
@@ -195,6 +503,46 @@ export function LoanApplicationForm() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Hidden inputs to ensure all data is submitted regardless of section state */}
+              <div className="hidden">
+                <input
+                  type="hidden"
+                  name="currentAddress"
+                  value={formData.currentAddress}
+                />
+                <input
+                  type="hidden"
+                  name="permanentAddress"
+                  value={formData.permanentAddress}
+                />
+                <input
+                  type="hidden"
+                  name="loanType"
+                  value={formData.loanType}
+                />
+                <input
+                  type="hidden"
+                  name="loanAmount"
+                  value={formData.loanAmount}
+                />
+                <input type="hidden" name="tenure" value={formData.tenure} />
+                <input type="hidden" name="purpose" value={formData.purpose} />
+                <input
+                  type="hidden"
+                  name="employmentType"
+                  value={formData.employmentType}
+                />
+                <input
+                  type="hidden"
+                  name="monthlyIncome"
+                  value={formData.monthlyIncome}
+                />
+                <input
+                  type="hidden"
+                  name="companyName"
+                  value={formData.companyName}
+                />
+              </div>
               {/* Section 1: Personal & Identity Information */}
               <div className="space-y-6">
                 <h3 className="text-xl font-semibold text-foreground flex items-center gap-2">
@@ -209,6 +557,7 @@ export function LoanApplicationForm() {
                     <Label htmlFor="fullName">Full Name (As per PAN) *</Label>
                     <Input
                       id="fullName"
+                      name="fullName"
                       placeholder="Enter your full name as it appears on your PAN card"
                       required
                       value={formData.fullName}
@@ -237,11 +586,17 @@ export function LoanApplicationForm() {
                           <SelectItem value="other">Other</SelectItem>
                         </SelectContent>
                       </Select>
+                      <input
+                        type="hidden"
+                        name="gender"
+                        value={formData.gender}
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="dateOfBirth">Date of Birth *</Label>
                       <Input
                         id="dateOfBirth"
+                        name="dateOfBirth"
                         type="date"
                         required
                         value={formData.dateOfBirth}
@@ -257,6 +612,7 @@ export function LoanApplicationForm() {
                       <Label htmlFor="email">Email Address *</Label>
                       <Input
                         id="email"
+                        name="email"
                         type="email"
                         placeholder="your.email@example.com"
                         required
@@ -270,6 +626,7 @@ export function LoanApplicationForm() {
                       <Label htmlFor="phone">Contact Number *</Label>
                       <Input
                         id="phone"
+                        name="phone"
                         type="tel"
                         placeholder="+91 XXXXX XXXXX"
                         required
@@ -286,6 +643,7 @@ export function LoanApplicationForm() {
                       <Label htmlFor="panNumber">PAN Number *</Label>
                       <Input
                         id="panNumber"
+                        name="panNumber"
                         placeholder="ABCDE1234F"
                         required
                         className="uppercase"
@@ -302,6 +660,7 @@ export function LoanApplicationForm() {
                       <Label htmlFor="aadharNumber">Aadhaar Number *</Label>
                       <Input
                         id="aadharNumber"
+                        name="aadharNumber"
                         placeholder="XXXX XXXX XXXX"
                         required
                         value={formData.aadharNumber}
@@ -340,6 +699,7 @@ export function LoanApplicationForm() {
                       <Label htmlFor="currentAddress">Current Address *</Label>
                       <Input
                         id="currentAddress"
+                        name="currentAddress"
                         placeholder="Enter your current residential address"
                         required
                         value={formData.currentAddress}
@@ -354,6 +714,7 @@ export function LoanApplicationForm() {
                       </Label>
                       <Input
                         id="permanentAddress"
+                        name="permanentAddress"
                         placeholder="Enter your permanent address as per documents"
                         required
                         value={formData.permanentAddress}
@@ -420,20 +781,23 @@ export function LoanApplicationForm() {
                             <SelectItem value="msme">MSME Loan</SelectItem>
                           </SelectContent>
                         </Select>
+                        <input
+                          type="hidden"
+                          name="loanType"
+                          value={formData.loanType}
+                        />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="loanAmount">Loan Amount (₹) *</Label>
                         <Input
                           id="loanAmount"
+                          name="loanAmount"
                           type="number"
                           placeholder="500000"
                           required
-                          value={formData.loanAmount || ""}
+                          value={formData.loanAmount}
                           onChange={(e) =>
-                            handleInputChange(
-                              "loanAmount",
-                              Number(e.target.value)
-                            )
+                            handleInputChange("loanAmount", e.target.value)
                           }
                         />
                       </div>
@@ -464,11 +828,17 @@ export function LoanApplicationForm() {
                             <SelectItem value="180">180 Months</SelectItem>
                           </SelectContent>
                         </Select>
+                        <input
+                          type="hidden"
+                          name="tenure"
+                          value={formData.tenure}
+                        />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="purpose">Loan Purpose *</Label>
                         <Input
                           id="purpose"
+                          name="purpose"
                           placeholder="e.g., Business expansion"
                           required
                           value={formData.purpose}
@@ -530,8 +900,16 @@ export function LoanApplicationForm() {
                             <SelectItem value="professional">
                               Professional
                             </SelectItem>
+                            <SelectItem value="freelancer">
+                              Freelancer
+                            </SelectItem>
                           </SelectContent>
                         </Select>
+                        <input
+                          type="hidden"
+                          name="employmentType"
+                          value={formData.employmentType}
+                        />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="monthlyIncome">
@@ -539,15 +917,13 @@ export function LoanApplicationForm() {
                         </Label>
                         <Input
                           id="monthlyIncome"
+                          name="monthlyIncome"
                           type="number"
                           placeholder="50000"
                           required
-                          value={formData.monthlyIncome || ""}
+                          value={formData.monthlyIncome}
                           onChange={(e) =>
-                            handleInputChange(
-                              "monthlyIncome",
-                              Number(e.target.value)
-                            )
+                            handleInputChange("monthlyIncome", e.target.value)
                           }
                         />
                       </div>
@@ -559,6 +935,7 @@ export function LoanApplicationForm() {
                       </Label>
                       <Input
                         id="companyName"
+                        name="companyName"
                         placeholder="Enter company or business name"
                         required
                         value={formData.companyName}
@@ -599,26 +976,88 @@ export function LoanApplicationForm() {
                         <div className="relative">
                           <Input
                             id="panCard"
+                            name="panCard"
                             type="file"
                             accept=".pdf,.jpg,.jpeg,.png"
                             required
                             className="cursor-pointer"
+                            ref={panCardRef}
+                            key={`panCard-${
+                              selectedFiles.panCard?.name || "empty"
+                            }`}
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file && file.size > 2 * 1024 * 1024) {
+                                // 2MB limit
+                                toast({
+                                  title: "File too large",
+                                  description:
+                                    "PAN Card file must be less than 2MB",
+                                  variant: "destructive",
+                                });
+                                e.target.value = "";
+                              } else {
+                                setSelectedFiles((prev) => ({
+                                  ...prev,
+                                  panCard: file || null,
+                                }));
+                              }
+                            }}
                           />
                           <Upload className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
                         </div>
+                        {selectedFiles.panCard && (
+                          <p className="text-sm text-green-600 mt-1">
+                            ✓ Selected: {selectedFiles.panCard.name}
+                          </p>
+                        )}
+                        <p className="text-xs text-muted-foreground">
+                          Max size: 2MB
+                        </p>
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="aadharCard">Aadhaar Card *</Label>
                         <div className="relative">
                           <Input
                             id="aadharCard"
+                            name="aadharCard"
                             type="file"
                             accept=".pdf,.jpg,.jpeg,.png"
                             required
                             className="cursor-pointer"
+                            ref={aadharCardRef}
+                            key={`aadharCard-${
+                              selectedFiles.aadharCard?.name || "empty"
+                            }`}
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file && file.size > 2 * 1024 * 1024) {
+                                // 2MB limit
+                                toast({
+                                  title: "File too large",
+                                  description:
+                                    "Aadhaar Card file must be less than 2MB",
+                                  variant: "destructive",
+                                });
+                                e.target.value = "";
+                              } else {
+                                setSelectedFiles((prev) => ({
+                                  ...prev,
+                                  aadharCard: file || null,
+                                }));
+                              }
+                            }}
                           />
                           <Upload className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
                         </div>
+                        {selectedFiles.aadharCard && (
+                          <p className="text-sm text-green-600 mt-1">
+                            ✓ Selected: {selectedFiles.aadharCard.name}
+                          </p>
+                        )}
+                        <p className="text-xs text-muted-foreground">
+                          Max size: 2MB
+                        </p>
                       </div>
                     </div>
 
@@ -628,15 +1067,45 @@ export function LoanApplicationForm() {
                         <div className="relative">
                           <Input
                             id="incomeProof"
+                            name="incomeProof"
                             type="file"
                             accept=".pdf,.jpg,.jpeg,.png"
                             required
                             className="cursor-pointer"
+                            ref={incomeProofRef}
+                            key={`incomeProof-${
+                              selectedFiles.incomeProof?.name || "empty"
+                            }`}
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file && file.size > 2 * 1024 * 1024) {
+                                // 2MB limit
+                                toast({
+                                  title: "File too large",
+                                  description:
+                                    "Income Proof file must be less than 2MB",
+                                  variant: "destructive",
+                                });
+                                e.target.value = "";
+                              } else {
+                                setSelectedFiles((prev) => ({
+                                  ...prev,
+                                  incomeProof: file || null,
+                                }));
+                              }
+                            }}
                           />
                           <Upload className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
                         </div>
+                        {selectedFiles.incomeProof && (
+                          <p className="text-sm text-green-600 mt-1">
+                            ✓ Selected: {selectedFiles.incomeProof.name}
+                          </p>
+                        )}
                         <p className="text-xs text-muted-foreground">
-                          {"(Salary slip, ITR, or Bank Statement)"}
+                          {
+                            "(Salary slip, ITR, or Bank Statement) - Max size: 2MB"
+                          }
                         </p>
                       </div>
                       <div className="space-y-2">
@@ -644,12 +1113,43 @@ export function LoanApplicationForm() {
                         <div className="relative">
                           <Input
                             id="addressProof"
+                            name="addressProof"
                             type="file"
                             accept=".pdf,.jpg,.jpeg,.png"
                             className="cursor-pointer"
+                            ref={addressProofRef}
+                            key={`addressProof-${
+                              selectedFiles.addressProof?.name || "empty"
+                            }`}
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file && file.size > 2 * 1024 * 1024) {
+                                // 2MB limit
+                                toast({
+                                  title: "File too large",
+                                  description:
+                                    "Address Proof file must be less than 2MB",
+                                  variant: "destructive",
+                                });
+                                e.target.value = "";
+                              } else {
+                                setSelectedFiles((prev) => ({
+                                  ...prev,
+                                  addressProof: file || null,
+                                }));
+                              }
+                            }}
                           />
                           <Upload className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
                         </div>
+                        {selectedFiles.addressProof && (
+                          <p className="text-sm text-green-600 mt-1">
+                            ✓ Selected: {selectedFiles.addressProof.name}
+                          </p>
+                        )}
+                        <p className="text-xs text-muted-foreground">
+                          Max size: 2MB
+                        </p>
                       </div>
                     </div>
 
@@ -663,13 +1163,7 @@ export function LoanApplicationForm() {
                           type="button"
                           variant="outline"
                           size="sm"
-                          onClick={() => {
-                            const currentDocs = formData.otherDocuments || [];
-                            handleInputChange("otherDocuments", [
-                              ...currentDocs,
-                              { name: "", file: null },
-                            ]);
-                          }}
+                          onClick={addOtherDocument}
                           className="rounded-full border-primary/30 text-primary hover:bg-primary/5 gap-2"
                         >
                           <Plus className="w-4 h-4" /> Add More
@@ -677,27 +1171,19 @@ export function LoanApplicationForm() {
                       </div>
 
                       <div className="grid md:grid-cols-2 gap-4">
-                        {(formData.otherDocuments || []).map((doc, idx) => (
+                        {otherDocuments.map((doc, idx) => (
                           <div
                             key={idx}
                             className="p-4 rounded-2xl bg-muted/30 border border-dashed border-border relative group"
                           >
                             <button
                               type="button"
-                              onClick={() => {
-                                const currentDocs = [
-                                  ...(formData.otherDocuments || []),
-                                ];
-                                currentDocs.splice(idx, 1);
-                                handleInputChange(
-                                  "otherDocuments",
-                                  currentDocs
-                                );
-                              }}
+                              onClick={() => removeOtherDocument(idx)}
                               className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-destructive text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
                             >
                               <X className="w-3 h-3" />
                             </button>
+
                             <div className="space-y-4">
                               <div className="space-y-2">
                                 <Label className="text-xs uppercase tracking-wider font-semibold opacity-70">
@@ -707,18 +1193,16 @@ export function LoanApplicationForm() {
                                   placeholder="e.g. GST Certificate"
                                   className="bg-background/50"
                                   value={doc.name}
-                                  onChange={(e) => {
-                                    const currentDocs = [
-                                      ...(formData.otherDocuments || []),
-                                    ];
-                                    currentDocs[idx].name = e.target.value;
-                                    handleInputChange(
-                                      "otherDocuments",
-                                      currentDocs
-                                    );
-                                  }}
+                                  onChange={(e) =>
+                                    updateOtherDocument(
+                                      idx,
+                                      "name",
+                                      e.target.value
+                                    )
+                                  }
                                 />
                               </div>
+
                               <div className="space-y-2">
                                 <Label className="text-xs uppercase tracking-wider font-semibold opacity-70">
                                   Upload File
@@ -729,19 +1213,30 @@ export function LoanApplicationForm() {
                                     accept=".pdf,.jpg,.jpeg,.png"
                                     className="cursor-pointer bg-background/50"
                                     onChange={(e) => {
-                                      const currentDocs = [
-                                        ...(formData.otherDocuments || []),
-                                      ];
-                                      currentDocs[idx].file =
-                                        e.target.files?.[0] || null;
-                                      handleInputChange(
-                                        "otherDocuments",
-                                        currentDocs
+                                      const file = e.target.files?.[0] || null;
+                                      if (file && file.size > 2 * 1024 * 1024) {
+                                        // 2MB limit
+                                        toast({
+                                          title: "File too large",
+                                          description:
+                                            "File must be less than 2MB",
+                                          variant: "destructive",
+                                        });
+                                        e.target.value = "";
+                                        return;
+                                      }
+                                      updateOtherDocument(
+                                        idx,
+                                        "file",
+                                        file as File
                                       );
                                     }}
                                   />
                                   <Upload className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
                                 </div>
+                                <p className="text-xs text-muted-foreground">
+                                  Max size: 2MB
+                                </p>
                               </div>
                             </div>
                           </div>
@@ -771,8 +1266,15 @@ export function LoanApplicationForm() {
                   <div className="relative group">
                     <Input
                       id="referralCode"
+                      name="referralCode"
                       placeholder="Enter 6 Digit Agent ID (e.g. AKN001)"
-                      className="rounded-2xl border-primary/20 bg-background/50 focus-visible:ring-primary pl-12 h-14 text-lg tracking-wider"
+                      className={`rounded-2xl border-primary/20 bg-background/50 focus-visible:ring-primary pl-12 pr-12 h-14 text-lg tracking-wider ${
+                        referralValidation.isValid === false
+                          ? "border-red-300 focus-visible:ring-red-500"
+                          : referralValidation.isValid === true
+                          ? "border-green-300 focus-visible:ring-green-500"
+                          : ""
+                      }`}
                       value={formData.referralCode}
                       onChange={(e) =>
                         handleInputChange(
@@ -782,7 +1284,36 @@ export function LoanApplicationForm() {
                       }
                     />
                     <Ticket className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-primary/40 group-focus-within:text-primary transition-colors" />
+
+                    {/* Validation Status Icon */}
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                      {referralValidation.isValidating && (
+                        <Loader2 className="w-5 h-5 animate-spin text-primary" />
+                      )}
+                      {referralValidation.isValid === true && (
+                        <CheckCircle2 className="w-5 h-5 text-green-500" />
+                      )}
+                      {referralValidation.isValid === false && (
+                        <X className="w-5 h-5 text-red-500" />
+                      )}
+                    </div>
                   </div>
+
+                  {/* Validation Messages */}
+                  {referralValidation.error && (
+                    <p className="text-sm text-red-500 mt-2 flex items-center gap-2">
+                      <X className="w-4 h-4" />
+                      {referralValidation.error}
+                    </p>
+                  )}
+                  {referralValidation.isValid === true &&
+                    referralValidation.agentName && (
+                      <p className="text-sm text-green-600 mt-2 flex items-center gap-2">
+                        <CheckCircle2 className="w-4 h-4" />
+                        Valid referral code - Agent:{" "}
+                        {referralValidation.agentName}
+                      </p>
+                    )}
                 </div>
               </div>
 
@@ -791,7 +1322,11 @@ export function LoanApplicationForm() {
                 <Button
                   type="submit"
                   size="lg"
-                  disabled={isSubmitting}
+                  disabled={
+                    isSubmitting ||
+                    (formData.referralCode.trim() !== "" &&
+                      referralValidation.isValid === false)
+                  }
                   className="w-full rounded-full bg-primary hover:bg-primary/90 text-lg py-6 hover:scale-105 transition-transform disabled:opacity-70"
                 >
                   {isSubmitting ? (
@@ -803,6 +1338,12 @@ export function LoanApplicationForm() {
                     "Submit Application"
                   )}
                 </Button>
+                {formData.referralCode.trim() !== "" &&
+                  referralValidation.isValid === false && (
+                    <p className="text-center text-sm text-red-500 mt-2">
+                      Please enter a valid referral code or leave it empty
+                    </p>
+                  )}
                 <p className="text-center text-sm text-muted-foreground mt-4">
                   {
                     "By submitting, you agree to our Terms & Conditions and Privacy Policy"

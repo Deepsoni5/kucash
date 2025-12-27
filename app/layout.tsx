@@ -1,9 +1,11 @@
-import type React from "react"
-import type { Metadata } from "next"
-import { Analytics } from "@vercel/analytics/next"
-import { ThemeProvider } from "@/components/theme-provider"
-import { ScrollToTop } from "@/components/scroll-to-top"
-import "./globals.css"
+import type React from "react";
+import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
+import { ThemeProvider } from "@/components/theme-provider";
+import { ScrollToTop } from "@/components/scroll-to-top";
+import { Toaster } from "@/components/ui/toaster";
+import { AuthProvider } from "@/contexts/auth-context";
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "KuCash | Instant Loans, Transparent Financing",
@@ -22,7 +24,8 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://kucash.in"),
   openGraph: {
     title: "KuCash - Fast Personal & Business Loans in India",
-    description: "Get instant loans with quick approval. Minimal documentation, competitive rates. Apply now!",
+    description:
+      "Get instant loans with quick approval. Minimal documentation, competitive rates. Apply now!",
     url: "https://kucash.in",
     siteName: "KuCash",
     images: [
@@ -60,31 +63,53 @@ export const metadata: Metadata = {
   verification: {
     google: "your-google-verification-code",
   },
-
-}
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet"
+        />
         <link rel="canonical" href="https://kucash.in" />
-        <meta name="theme-color" content="#0066FF" media="(prefers-color-scheme: light)" />
-        <meta name="theme-color" content="#1a1f2e" media="(prefers-color-scheme: dark)" />
+        <meta
+          name="theme-color"
+          content="#0066FF"
+          media="(prefers-color-scheme: light)"
+        />
+        <meta
+          name="theme-color"
+          content="#1a1f2e"
+          media="(prefers-color-scheme: dark)"
+        />
       </head>
       <body className="font-sans antialiased">
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-          <ScrollToTop />
-          {children}
-          <Analytics />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AuthProvider>
+            <ScrollToTop />
+            {children}
+            <Toaster />
+            <Analytics />
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>
-  )
+  );
 }

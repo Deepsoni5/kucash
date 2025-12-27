@@ -6,14 +6,25 @@ import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
+import { useAuth } from "@/contexts/auth-context";
+import { UserProfileDropdown } from "@/components/user-profile-dropdown";
 import router from "next/router";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const { theme, setTheme } = useTheme();
+  const { user, loading } = useAuth();
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
+
+  // Debug logging
+  useEffect(() => {
+    // console.log("🔍 NAVBAR DEBUG - Auth state:", {
+    //   user: user?.fullName || "No user",
+    //   loading,
+    // });
+  }, [user, loading]);
 
   useEffect(() => {
     setMounted(true);
@@ -59,10 +70,11 @@ export function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled || isOpen
-        ? "bg-background/95 backdrop-blur-lg border-b border-border shadow-sm"
-        : "bg-transparent"
-        }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled || isOpen
+          ? "bg-background/95 backdrop-blur-lg border-b border-border shadow-sm"
+          : "bg-transparent"
+      }`}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20 md:h-24">
@@ -71,7 +83,7 @@ export function Navbar() {
             <img
               src="/logo_k_4.png"
               alt="KuCash Logo"
-              className="h-20 md:h-24 w-auto object-contain"
+              className="h-24 md:h-32 w-auto object-contain"
             />
           </Link>
 
@@ -108,12 +120,23 @@ export function Navbar() {
               </Button>
             )}
 
-            {/* Login Button */}
-            <Link href="/login" className="hidden md:block">
-              <Button variant="outline" className="rounded-full bg-transparent">
-                Login
-              </Button>
-            </Link>
+            {/* Auth Section */}
+            {!loading && (
+              <>
+                {user ? (
+                  <UserProfileDropdown />
+                ) : (
+                  <Link href="/login" className="hidden md:block">
+                    <Button
+                      variant="outline"
+                      className="rounded-full bg-transparent"
+                    >
+                      Login
+                    </Button>
+                  </Link>
+                )}
+              </>
+            )}
 
             <Link href="#apply" className="hidden md:block">
               <Button className="rounded-full bg-primary hover:bg-primary/90">
@@ -151,18 +174,59 @@ export function Navbar() {
                 {link.name}
               </Link>
             ))}
-            <Link
-              href="/login"
-              className="block"
-              onClick={() => setIsOpen(false)}
-            >
-              <Button
-                variant="outline"
-                className="w-full rounded-full bg-transparent"
-              >
-                Login
-              </Button>
-            </Link>
+
+            {/* Mobile Auth Section */}
+            {!loading && (
+              <>
+                {user ? (
+                  <div className="space-y-2 pt-2 border-t border-border">
+                    <div className="px-2 py-1">
+                      <p className="text-sm font-medium">{user.fullName}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {user.email}
+                      </p>
+                      {user.agentId && (
+                        <p className="text-xs text-muted-foreground">
+                          Agent ID: {user.agentId}
+                        </p>
+                      )}
+                    </div>
+                    <Link
+                      href={
+                        user.role === "admin"
+                          ? "/admin/dashboard"
+                          : user.role === "agent"
+                          ? "/agent/dashboard"
+                          : "/customer/dashboard"
+                      }
+                      onClick={() => setIsOpen(false)}
+                    >
+                      <Button variant="outline" className="w-full rounded-full">
+                        {user.role === "admin"
+                          ? "Admin Dashboard"
+                          : user.role === "agent"
+                          ? "Agent Dashboard"
+                          : "Customer Dashboard"}
+                      </Button>
+                    </Link>
+                  </div>
+                ) : (
+                  <Link
+                    href="/login"
+                    className="block"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    <Button
+                      variant="outline"
+                      className="w-full rounded-full bg-transparent"
+                    >
+                      Login
+                    </Button>
+                  </Link>
+                )}
+              </>
+            )}
+
             <Link
               href="#apply"
               className="block"
