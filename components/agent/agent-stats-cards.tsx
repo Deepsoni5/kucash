@@ -83,7 +83,7 @@ export function AgentStatsCards() {
                 className={
                   stat.changeType === "positive"
                     ? "text-green-600"
-                    : stat.changeType === "negative"
+                    : stat.changeType === "neutral"
                     ? "text-red-600"
                     : "text-muted-foreground"
                 }
