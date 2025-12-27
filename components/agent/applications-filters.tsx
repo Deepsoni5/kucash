@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,23 +22,102 @@ import {
 import { CalendarIcon, Filter, Download, RefreshCw } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { exportApplicationsToCSV } from "@/app/actions/agent-applications-actions";
+import { useAuth } from "@/contexts/auth-context";
 
 export function ApplicationsFilters() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const { user } = useAuth();
+
   const [dateFrom, setDateFrom] = useState<Date>();
   const [dateTo, setDateTo] = useState<Date>();
   const [status, setStatus] = useState<string>("all");
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [isExporting, setIsExporting] = useState(false);
+
+  // Initialize filters from URL params
+  useEffect(() => {
+    const search = searchParams.get("search") || "";
+    const statusParam = searchParams.get("status") || "all";
+    const dateFromParam = searchParams.get("dateFrom");
+    const dateToParam = searchParams.get("dateTo");
+
+    setSearchTerm(search);
+    setStatus(statusParam);
+
+    if (dateFromParam) {
+      setDateFrom(new Date(dateFromParam));
+    }
+
+    if (dateToParam) {
+      setDateTo(new Date(dateToParam));
+    }
+  }, [searchParams]);
+
+  const handleApplyFilters = () => {
+    const params = new URLSearchParams();
+
+    if (searchTerm.trim()) params.set("search", searchTerm.trim());
+    if (status !== "all") params.set("status", status);
+    if (dateFrom) params.set("dateFrom", dateFrom.toISOString().split("T")[0]);
+    if (dateTo) params.set("dateTo", dateTo.toISOString().split("T")[0]);
+
+    const queryString = params.toString();
+    const url = queryString
+      ? `/agent/applications?${queryString}`
+      : "/agent/applications";
+
+    console.log("Applying filters:", { searchTerm, status, dateFrom, dateTo });
+    console.log("URL:", url);
+
+    router.push(url);
+  };
 
   const handleReset = () => {
     setDateFrom(undefined);
     setDateTo(undefined);
     setStatus("all");
     setSearchTerm("");
+    router.push("/agent/applications");
   };
 
-  const handleExport = () => {
-    // TODO: Implement export functionality
-    console.log("Exporting applications...");
+  const handleExport = async () => {
+    if (!user?.agentId) return;
+
+    setIsExporting(true);
+    try {
+      const filters = {
+        search: searchTerm || undefined,
+        status: status !== "all" ? status : undefined,
+        dateFrom: dateFrom?.toISOString().split("T")[0],
+        dateTo: dateTo?.toISOString().split("T")[0],
+      };
+
+      const csvContent = await exportApplicationsToCSV(user.agentId, filters);
+
+      if (csvContent) {
+        // Create and download CSV file
+        const blob = new Blob([csvContent], {
+          type: "text/csv;charset=utf-8;",
+        });
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute(
+          "download",
+          `loan-applications-${new Date().toISOString().split("T")[0]}.csv`
+        );
+        link.style.visibility = "hidden";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    } catch (error) {
+      console.error("Error exporting applications:", error);
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   return (
@@ -93,7 +173,6 @@ export function ApplicationsFilters() {
                     mode="single"
                     selected={dateFrom}
                     onSelect={setDateFrom}
-                    initialFocus
                   />
                 </PopoverContent>
               </Popover>
@@ -119,7 +198,6 @@ export function ApplicationsFilters() {
                     mode="single"
                     selected={dateTo}
                     onSelect={setDateTo}
-                    initialFocus
                   />
                 </PopoverContent>
               </Popover>
@@ -128,7 +206,7 @@ export function ApplicationsFilters() {
 
           {/* Action Buttons */}
           <div className="flex flex-wrap gap-2">
-            <Button variant="default">
+            <Button variant="default" onClick={handleApplyFilters}>
               <Filter className="mr-2 h-4 w-4" />
               Apply Filters
             </Button>
@@ -138,9 +216,13 @@ export function ApplicationsFilters() {
               Reset
             </Button>
 
-            <Button variant="outline" onClick={handleExport}>
+            <Button
+              variant="outline"
+              onClick={handleExport}
+              disabled={isExporting}
+            >
               <Download className="mr-2 h-4 w-4" />
-              Export
+              {isExporting ? "Exporting..." : "Export"}
             </Button>
           </div>
         </div>

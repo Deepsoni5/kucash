@@ -2,16 +2,13 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, UserCheck, UserX, TrendingUp } from "lucide-react";
+import { CustomerStats } from "@/app/actions/agent-customers-actions";
 
-// Mock data - replace with real data from your API
-const statsData = {
-  totalCustomers: 89,
-  activeCustomers: 67,
-  inactiveCustomers: 22,
-  newThisMonth: 12,
-};
+interface CustomersStatsProps {
+  stats: CustomerStats;
+}
 
-export function CustomersStats() {
+export function CustomersStats({ stats }: CustomersStatsProps) {
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       <Card>
@@ -20,7 +17,7 @@ export function CustomersStats() {
           <Users className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{statsData.totalCustomers}</div>
+          <div className="text-2xl font-bold">{stats.totalCustomers}</div>
           <p className="text-xs text-muted-foreground">
             All customers under your agent ID
           </p>
@@ -36,14 +33,15 @@ export function CustomersStats() {
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold text-green-600">
-            {statsData.activeCustomers}
+            {stats.activeCustomers}
           </div>
           <p className="text-xs text-muted-foreground">
-            {(
-              (statsData.activeCustomers / statsData.totalCustomers) *
-              100
-            ).toFixed(1)}
-            % of total
+            {stats.totalCustomers > 0
+              ? `${(
+                  (stats.activeCustomers / stats.totalCustomers) *
+                  100
+                ).toFixed(1)}% of total`
+              : "0% of total"}
           </p>
         </CardContent>
       </Card>
@@ -57,14 +55,15 @@ export function CustomersStats() {
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold text-orange-600">
-            {statsData.inactiveCustomers}
+            {stats.inactiveCustomers}
           </div>
           <p className="text-xs text-muted-foreground">
-            {(
-              (statsData.inactiveCustomers / statsData.totalCustomers) *
-              100
-            ).toFixed(1)}
-            % of total
+            {stats.totalCustomers > 0
+              ? `${(
+                  (stats.inactiveCustomers / stats.totalCustomers) *
+                  100
+                ).toFixed(1)}% of total`
+              : "0% of total"}
           </p>
         </CardContent>
       </Card>
@@ -76,15 +75,14 @@ export function CustomersStats() {
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold text-blue-600">
-            {statsData.newThisMonth}
+            {stats.newThisMonth}
           </div>
           <p className="text-xs text-muted-foreground">
-            +
-            {(
-              (statsData.newThisMonth / statsData.totalCustomers) *
-              100
-            ).toFixed(1)}
-            % growth
+            {stats.totalCustomers > 0
+              ? `+${((stats.newThisMonth / stats.totalCustomers) * 100).toFixed(
+                  1
+                )}% growth`
+              : "No growth data"}
           </p>
         </CardContent>
       </Card>

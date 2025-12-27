@@ -3,8 +3,53 @@ import { Users, FileText, TrendingUp, Clock } from "lucide-react";
 import { AgentStatsCards } from "@/components/agent/agent-stats-cards";
 import { RecentApplications } from "@/components/agent/recent-applications";
 import { PerformanceChart } from "@/components/agent/performance-chart";
+import { CommissionBreakdownChart } from "@/components/agent/commission-breakdown-chart";
+import { LoanTypeDistribution } from "@/components/agent/loan-type-distribution";
+import { GoalProgressCards } from "@/components/agent/goal-progress-cards";
+import { WeeklyActivityHeatmap } from "@/components/agent/weekly-activity-heatmap";
+import {
+  getAgentStats,
+  getRecentApplications,
+  getMonthlyPerformance,
+} from "@/app/actions/agent-dashboard-actions";
+import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 
-export default function AgentDashboard() {
+export default async function AgentDashboard() {
+  // Get current user and verify they are an agent
+  const supabase = await createClient();
+  const {
+    data: { user: authUser },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !authUser) {
+    redirect("/login");
+  }
+
+  // Get user profile to get agent_id
+  const { data: userProfile, error: profileError } = await supabase
+    .from("users")
+    .select("*")
+    .eq("user_id", authUser.id)
+    .single();
+
+  if (
+    profileError ||
+    !userProfile ||
+    userProfile.role !== "agent" ||
+    !userProfile.agent_id
+  ) {
+    redirect("/login");
+  }
+
+  // Fetch dashboard data
+  const [stats, recentApplications, monthlyPerformance] = await Promise.all([
+    getAgentStats(userProfile.agent_id),
+    getRecentApplications(userProfile.agent_id, 4),
+    getMonthlyPerformance(userProfile.agent_id),
+  ]);
+
   return (
     <div className="space-y-6">
       {/* Page Header */}
@@ -15,14 +60,29 @@ export default function AgentDashboard() {
         </p>
       </div>
 
-      {/* Stats Cards */}
-      <AgentStatsCards />
+      {/* Goal Progress Cards */}
+      <GoalProgressCards stats={stats} />
 
-      {/* Charts and Recent Activity */}
+      {/* Stats Cards */}
+      <AgentStatsCards stats={stats} />
+
+      {/* Charts Row 1 */}
       <div className="grid gap-6 lg:grid-cols-2">
-        <PerformanceChart />
-        <RecentApplications />
+        <PerformanceChart monthlyData={monthlyPerformance} stats={stats} />
+        <CommissionBreakdownChart stats={stats} />
       </div>
+
+      {/* Charts Row 2 */}
+      <div className="grid gap-6 lg:grid-cols-2">
+        <LoanTypeDistribution agentId={userProfile.agent_id} />
+        <WeeklyActivityHeatmap agentId={userProfile.agent_id} />
+      </div>
+
+      {/* Recent Applications */}
+      <RecentApplications
+        applications={recentApplications}
+        agentId={userProfile.agent_id}
+      />
 
       {/* Quick Actions */}
       <Card>
@@ -74,8 +134,8 @@ export default function AgentDashboard() {
             >
               <TrendingUp className="h-8 w-8 text-green-500" />
               <div>
-                <p className="font-medium">Reports</p>
-                <p className="text-sm text-muted-foreground">View analytics</p>
+                <p className="font-medium">Commission Reports</p>
+                <p className="text-sm text-muted-foreground">View earnings</p>
               </div>
             </a>
           </div>

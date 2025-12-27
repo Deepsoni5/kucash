@@ -1,29 +1,76 @@
-import { ReportsFilters } from "@/components/agent/reports-filters";
-import { ReportsTable } from "@/components/agent/reports-table";
-import { ReportsStats } from "@/components/agent/reports-stats";
+import { CommissionStats } from "@/components/agent/commission-stats";
+import { CommissionTable } from "@/components/agent/commission-table";
+import { CommissionFilters } from "@/components/agent/commission-filters";
+import { CommissionChart } from "@/components/agent/commission-chart";
+import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 
-export default function AgentReports() {
+interface SearchParams {
+  status?: string;
+  dateFrom?: string;
+  dateTo?: string;
+  searchTerm?: string;
+}
+
+interface AgentReportsProps {
+  searchParams: Promise<SearchParams>;
+}
+
+export default async function AgentReports({
+  searchParams,
+}: AgentReportsProps) {
+  // Get current user and verify they are an agent
+  const supabase = await createClient();
+  const {
+    data: { user: authUser },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !authUser) {
+    redirect("/login");
+  }
+
+  // Get user profile to get agent_id
+  const { data: userProfile, error: profileError } = await supabase
+    .from("users")
+    .select("*")
+    .eq("user_id", authUser.id)
+    .single();
+
+  if (
+    profileError ||
+    !userProfile ||
+    userProfile.role !== "agent" ||
+    !userProfile.agent_id
+  ) {
+    redirect("/login");
+  }
+
+  const params = await searchParams;
+
   return (
     <div className="space-y-6">
       {/* Page Header */}
       <div>
         <h1 className="text-3xl font-bold text-foreground">
-          Reports & Analytics
+          Commission & Earnings
         </h1>
         <p className="text-muted-foreground">
-          View detailed reports of your loan applications and commission
-          earnings
+          Track your commission earnings and income from loan applications
         </p>
       </div>
 
-      {/* Reports Stats */}
-      <ReportsStats />
+      {/* Commission Stats */}
+      <CommissionStats agentId={userProfile.agent_id} />
+
+      {/* Commission Chart */}
+      <CommissionChart agentId={userProfile.agent_id} />
 
       {/* Filters */}
-      <ReportsFilters />
+      <CommissionFilters />
 
-      {/* Reports Table */}
-      <ReportsTable />
+      {/* Commission Table */}
+      <CommissionTable agentId={userProfile.agent_id} filters={params} />
     </div>
   );
 }

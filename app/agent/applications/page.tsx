@@ -1,7 +1,56 @@
 import { ApplicationsTable } from "@/components/agent/applications-table";
 import { ApplicationsFilters } from "@/components/agent/applications-filters";
+import { getAgentApplications } from "@/app/actions/agent-applications-actions";
+import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 
-export default function AgentApplications() {
+interface SearchParams {
+  search?: string;
+  status?: string;
+  dateFrom?: string;
+  dateTo?: string;
+}
+
+interface AgentApplicationsProps {
+  searchParams: Promise<SearchParams>;
+}
+
+export default async function AgentApplications({
+  searchParams,
+}: AgentApplicationsProps) {
+  // Await searchParams
+  const params = await searchParams;
+
+  // Get current user and verify they are an agent
+  const supabase = await createClient();
+  const {
+    data: { user: authUser },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !authUser) {
+    redirect("/login");
+  }
+
+  // Get user profile to get agent_id
+  const { data: userProfile, error: profileError } = await supabase
+    .from("users")
+    .select("*")
+    .eq("user_id", authUser.id)
+    .single();
+
+  if (
+    profileError ||
+    !userProfile ||
+    userProfile.role !== "agent" ||
+    !userProfile.agent_id
+  ) {
+    redirect("/login");
+  }
+
+  // Fetch applications with filters
+  const applications = await getAgentApplications(userProfile.agent_id, params);
+
   return (
     <div className="space-y-6">
       {/* Page Header */}
@@ -18,7 +67,10 @@ export default function AgentApplications() {
       <ApplicationsFilters />
 
       {/* Applications Table */}
-      <ApplicationsTable />
+      <ApplicationsTable
+        applications={applications}
+        agentId={userProfile.agent_id}
+      />
     </div>
   );
 }

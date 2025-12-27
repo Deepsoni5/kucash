@@ -1,7 +1,59 @@
 import { CustomersTable } from "@/components/agent/customers-table";
 import { CustomersStats } from "@/components/agent/customers-stats";
+import {
+  getAgentCustomerStats,
+  getAgentCustomers,
+} from "@/app/actions/agent-customers-actions";
+import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 
-export default function AgentCustomers() {
+interface SearchParams {
+  search?: string;
+}
+
+interface AgentCustomersProps {
+  searchParams: Promise<SearchParams>;
+}
+
+export default async function AgentCustomers({
+  searchParams,
+}: AgentCustomersProps) {
+  // Await searchParams
+  const params = await searchParams;
+
+  // Get current user and verify they are an agent
+  const supabase = await createClient();
+  const {
+    data: { user: authUser },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !authUser) {
+    redirect("/login");
+  }
+
+  // Get user profile to get agent_id
+  const { data: userProfile, error: profileError } = await supabase
+    .from("users")
+    .select("*")
+    .eq("user_id", authUser.id)
+    .single();
+
+  if (
+    profileError ||
+    !userProfile ||
+    userProfile.role !== "agent" ||
+    !userProfile.agent_id
+  ) {
+    redirect("/login");
+  }
+
+  // Fetch customer data
+  const [customerStats, customers] = await Promise.all([
+    getAgentCustomerStats(userProfile.agent_id),
+    getAgentCustomers(userProfile.agent_id, params.search),
+  ]);
+
   return (
     <div className="space-y-6">
       {/* Page Header */}
@@ -15,10 +67,10 @@ export default function AgentCustomers() {
       </div>
 
       {/* Customer Stats */}
-      <CustomersStats />
+      <CustomersStats stats={customerStats} />
 
       {/* Customers Table */}
-      <CustomersTable />
+      <CustomersTable customers={customers} />
     </div>
   );
 }

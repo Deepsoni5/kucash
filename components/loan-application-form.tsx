@@ -45,7 +45,15 @@ interface OtherDocument {
   file: File | null;
 }
 
-export function LoanApplicationForm() {
+interface LoanApplicationFormProps {
+  skipUserPrefill?: boolean;
+  agentReferralCode?: string;
+}
+
+export function LoanApplicationForm({
+  skipUserPrefill = false,
+  agentReferralCode,
+}: LoanApplicationFormProps) {
   // ALL HOOKS MUST BE AT THE TOP - BEFORE ANY EARLY RETURNS
   const { user, loading } = useAuth();
   const { toast } = useToast();
@@ -75,9 +83,9 @@ export function LoanApplicationForm() {
     referralCode: "",
   });
 
-  // Prefill user data when user is available
+  // Prefill user data when user is available (unless skipUserPrefill is true)
   useEffect(() => {
-    if (user && !loading) {
+    if (user && !loading && !skipUserPrefill) {
       setFormData((prev) => ({
         ...prev,
         email: user.email || "",
@@ -85,7 +93,15 @@ export function LoanApplicationForm() {
         fullName: user.fullName || "",
       }));
     }
-  }, [user, loading]);
+
+    // Prefill agent referral code if provided
+    if (agentReferralCode) {
+      setFormData((prev) => ({
+        ...prev,
+        referralCode: agentReferralCode,
+      }));
+    }
+  }, [user, loading, skipUserPrefill, agentReferralCode]);
 
   const [otherDocuments, setOtherDocuments] = useState<OtherDocument[]>([]);
   const [selectedFiles, setSelectedFiles] = useState<{
@@ -214,15 +230,17 @@ export function LoanApplicationForm() {
         setApplicationId(result.applicationId || "");
         toast({
           title: "Success!",
-          description: `Your loan application has been submitted successfully. Your Loan ID is: ${result.applicationId}`,
+          description: skipUserPrefill
+            ? `Customer loan application has been submitted successfully. Loan ID: ${result.applicationId}`
+            : `Your loan application has been submitted successfully. Your Loan ID is: ${result.applicationId}`,
         });
         setTimeout(() => {
           setIsSubmitted(false);
-          // Reset form but keep user's prefilled data
+          // Reset form but keep user's prefilled data (unless skipUserPrefill is true)
           setFormData({
-            fullName: user?.fullName || "",
-            email: user?.email || "",
-            phone: user?.mobileNumber || "",
+            fullName: skipUserPrefill ? "" : user?.fullName || "",
+            email: skipUserPrefill ? "" : user?.email || "",
+            phone: skipUserPrefill ? "" : user?.mobileNumber || "",
             gender: "",
             dateOfBirth: "",
             currentAddress: "",
@@ -236,7 +254,7 @@ export function LoanApplicationForm() {
             employmentType: "",
             monthlyIncome: "",
             companyName: "",
-            referralCode: "",
+            referralCode: agentReferralCode || "",
           });
           setOtherDocuments([]);
           setSelectedFiles({
@@ -361,11 +379,14 @@ export function LoanApplicationForm() {
           <div className="text-center max-w-3xl mx-auto mb-12">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-balance">
               <span className="text-foreground">Apply for </span>
-              <span className="text-primary">Your Loan</span>
+              <span className="text-primary">
+                {skipUserPrefill ? "Customer Loan" : "Your Loan"}
+              </span>
             </h2>
             <p className="text-lg text-muted-foreground text-pretty">
-              Fill in your details and get instant approval. Our team will
-              contact you within 24 hours.
+              {skipUserPrefill
+                ? "Fill in customer details and get instant approval. Our team will contact them within 24 hours."
+                : "Fill in your details and get instant approval. Our team will contact you within 24 hours."}
             </p>
           </div>
           <Card className="max-w-2xl mx-auto text-center">
@@ -379,8 +400,8 @@ export function LoanApplicationForm() {
     );
   }
 
-  // Show login prompt for non-authenticated users
-  if (!user) {
+  // Show login prompt for non-authenticated users (unless skipUserPrefill is true for agents)
+  if (!user && !skipUserPrefill) {
     return (
       <section id="apply" className="py-20 lg:py-32 bg-muted/30">
         <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -388,11 +409,14 @@ export function LoanApplicationForm() {
           <div className="text-center max-w-3xl mx-auto mb-12">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-balance">
               <span className="text-foreground">Apply for </span>
-              <span className="text-primary">Your Loan</span>
+              <span className="text-primary">
+                {skipUserPrefill ? "Customer Loan" : "Your Loan"}
+              </span>
             </h2>
             <p className="text-lg text-muted-foreground text-pretty">
-              Fill in your details and get instant approval. Our team will
-              contact you within 24 hours.
+              {skipUserPrefill
+                ? "Fill in customer details and get instant approval. Our team will contact them within 24 hours."
+                : "Fill in your details and get instant approval. Our team will contact you within 24 hours."}
             </p>
           </div>
 
@@ -462,9 +486,9 @@ export function LoanApplicationForm() {
                 Application Submitted Successfully!
               </h3>
               <p className="text-muted-foreground mb-6">
-                {
-                  "Thank you for choosing KuCash. Our team will review your application and contact you within 24 hours."
-                }
+                {skipUserPrefill
+                  ? "Thank you for submitting the customer's application. Our team will review it and contact the customer within 24 hours."
+                  : "Thank you for choosing KuCash. Our team will review your application and contact you within 24 hours."}
               </p>
               <p className="text-sm text-muted-foreground">
                 {"Application ID: #KC"}
@@ -484,12 +508,14 @@ export function LoanApplicationForm() {
         <div className="text-center max-w-3xl mx-auto mb-12">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-balance">
             <span className="text-foreground">Apply for </span>
-            <span className="text-primary">Your Loan</span>
+            <span className="text-primary">
+              {skipUserPrefill ? "Customer Loan" : "Your Loan"}
+            </span>
           </h2>
           <p className="text-lg text-muted-foreground text-pretty">
-            {
-              "Fill in your details and get instant approval. Our team will contact you within 24 hours."
-            }
+            {skipUserPrefill
+              ? "Fill in customer details and get instant approval. Our team will contact them within 24 hours."
+              : "Fill in your details and get instant approval. Our team will contact you within 24 hours."}
           </p>
         </div>
 
@@ -1259,7 +1285,9 @@ export function LoanApplicationForm() {
                         Referral Code
                       </h4>
                       <p className="text-xs text-muted-foreground">
-                        Optional: Enter Agent ID if you have one
+                        {agentReferralCode
+                          ? "Agent ID (automatically filled)"
+                          : "Optional: Enter Agent ID if you have one"}
                       </p>
                     </div>
                   </div>
@@ -1274,8 +1302,9 @@ export function LoanApplicationForm() {
                           : referralValidation.isValid === true
                           ? "border-green-300 focus-visible:ring-green-500"
                           : ""
-                      }`}
+                      } ${agentReferralCode ? "opacity-60" : ""}`}
                       value={formData.referralCode}
+                      disabled={!!agentReferralCode}
                       onChange={(e) =>
                         handleInputChange(
                           "referralCode",
