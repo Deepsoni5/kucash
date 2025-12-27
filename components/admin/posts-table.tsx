@@ -1,6 +1,6 @@
 "use client";
 
-import { BlogPost, BlogCategory } from "@/app/actions/blog-actions";
+import { BlogCategory } from "@/app/actions/blog-actions";
 import { deletePost, Post } from "@/app/actions/post-actions";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,7 +18,7 @@ import { EditPostDialog } from "./edit-post-dialog";
 import Link from "next/link";
 
 interface PostsTableProps {
-  posts: BlogPost[];
+  posts: Post[];
   categories: BlogCategory[];
 }
 
@@ -93,7 +93,7 @@ export function PostsTable({ posts, categories }: PostsTableProps) {
                 </TableCell>
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-2">
-                    {post.status === "PUBLISHED" && (
+                    {post.status === "published" && (
                       <Button variant="outline" size="sm" asChild>
                         <Link href={`/blog/${post.slug}`} target="_blank">
                           <Eye className="h-4 w-4" />

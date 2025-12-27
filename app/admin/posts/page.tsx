@@ -1,6 +1,7 @@
 import { requireAdminAuth } from "@/app/actions/admin-auth";
 import { AdminLayout } from "@/components/admin/admin-layout";
 import { getPosts, getPostStats } from "@/app/actions/post-actions";
+import { getCategories } from "@/app/actions/category-actions";
 import { PostsTable } from "@/components/admin/posts-table";
 import { CreatePostDialog } from "@/components/admin/create-post-dialog";
 import { Button } from "@/components/ui/button";
@@ -19,7 +20,11 @@ export const dynamic = "force-dynamic";
 export default async function PostsPage() {
   await requireAdminAuth();
 
-  const [posts, stats] = await Promise.all([getPosts(), getPostStats()]);
+  const [posts, stats, categories] = await Promise.all([
+    getPosts(),
+    getPostStats(),
+    getCategories(),
+  ]);
 
   return (
     <AdminLayout>
@@ -100,7 +105,7 @@ export default async function PostsPage() {
             <CardDescription>View and manage all blog posts</CardDescription>
           </CardHeader>
           <CardContent>
-            <PostsTable posts={posts} />
+            <PostsTable posts={posts} categories={categories} />
           </CardContent>
         </Card>
       </div>
