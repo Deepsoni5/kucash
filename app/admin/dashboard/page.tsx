@@ -263,11 +263,19 @@ export default async function AdminDashboard() {
                           >
                             {post.status}
                           </Badge>
-                          {post.categories && (
-                            <Badge variant="outline">
-                              {post.categories.name}
-                            </Badge>
-                          )}
+                          {post.categories &&
+                            Array.isArray(post.categories) &&
+                            post.categories.length > 0 && (
+                              <Badge variant="outline">
+                                {post.categories[0].name}
+                              </Badge>
+                            )}
+                          {post.categories &&
+                            !Array.isArray(post.categories) && (
+                              <Badge variant="outline">
+                                {(post.categories as any).name}
+                              </Badge>
+                            )}
                         </div>
                       </div>
                       <div className="flex items-center gap-4 text-sm text-muted-foreground">
