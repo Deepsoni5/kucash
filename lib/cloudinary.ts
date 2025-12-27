@@ -43,10 +43,11 @@ export async function uploadToCloudinary(
       ...options,
     };
 
-    const fileToUpload: string =
+    const fileToUpload: string = (
       file instanceof Buffer
         ? `data:image/jpeg;base64,${file.toString("base64")}`
-        : file;
+        : file
+    ) as string;
 
     const result = await cloudinary.uploader.upload(
       fileToUpload,
