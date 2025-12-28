@@ -1,5 +1,10 @@
 import { requireAdminAuth } from "@/app/actions/admin-auth";
 import { AdminLayout } from "@/components/admin/admin-layout";
+import { getDashboardStats } from "@/app/actions/admin-dashboard-actions";
+import { DashboardStats } from "@/components/admin/dashboard-stats";
+import { DashboardCharts } from "@/components/admin/dashboard-charts";
+import { RecentActivity } from "@/components/admin/recent-activity";
+import { createClient } from "@/lib/supabase/server";
 import {
   Card,
   CardContent,
@@ -7,21 +12,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Shield,
-  Users,
-  MessageSquare,
-  Settings,
-  TrendingUp,
-  FileText,
-  FolderOpen,
-  Eye,
-  Heart,
-  Calendar,
-  BarChart3,
-} from "lucide-react";
-import { createClient } from "@/lib/supabase/server";
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import {
+  BarChart3,
+  TrendingUp,
+  Users,
+  FileText,
+  MessageSquare,
+} from "lucide-react";
+import Link from "next/link";
 
 // Force dynamic rendering since we use cookies
 export const dynamic = "force-dynamic";
@@ -30,347 +30,350 @@ export default async function AdminDashboard() {
   const session = await requireAdminAuth();
   const supabase = await createClient();
 
-  // Get dashboard stats
-  const { count: contactCount } = await supabase
-    .from("contact_submissions")
-    .select("*", { count: "exact", head: true });
+  // Get comprehensive dashboard stats
+  const dashboardData = await getDashboardStats();
 
-  const { count: newContactCount } = await supabase
-    .from("contact_submissions")
-    .select("*", { count: "exact", head: true })
-    .eq("status", "new");
-
-  const { count: userCount } = await supabase
-    .from("users")
-    .select("*", { count: "exact", head: true });
-
-  // Get blog stats
-  const { count: totalPosts } = await supabase
-    .from("posts")
-    .select("*", { count: "exact", head: true });
-
-  const { count: publishedPosts } = await supabase
-    .from("posts")
-    .select("*", { count: "exact", head: true })
-    .eq("status", "published");
-
-  const { count: draftPosts } = await supabase
-    .from("posts")
-    .select("*", { count: "exact", head: true })
-    .eq("status", "draft");
-
-  const { count: totalCategories } = await supabase
-    .from("categories")
-    .select("*", { count: "exact", head: true });
-
-  // Get total views and likes
-  const { data: blogStats } = await supabase
-    .from("posts")
-    .select("views, likes")
-    .eq("status", "published");
-
-  const totalViews =
-    blogStats?.reduce((sum, post) => sum + (post.views || 0), 0) || 0;
-  const totalLikes =
-    blogStats?.reduce((sum, post) => sum + (post.likes || 0), 0) || 0;
-
-  // Get recent posts
-  const { data: recentPosts } = await supabase
-    .from("posts")
+  // Get recent activity data
+  const { data: recentLoans } = await supabase
+    .from("loan_applications")
     .select(
-      `
-      id,
-      title,
-      status,
-      created_at,
-      views,
-      likes,
-      categories (name)
-    `
+      "id, loan_id, full_name, loan_type, loan_amount, status, created_at"
     )
     .order("created_at", { ascending: false })
-    .limit(5);
+    .limit(10);
 
-  // Get recent contacts
   const { data: recentContacts } = await supabase
     .from("contact_submissions")
     .select("id, name, email, status, created_at")
     .order("created_at", { ascending: false })
-    .limit(5);
+    .limit(10);
+
+  const { data: recentUsers } = await supabase
+    .from("users")
+    .select("id, full_name, email, role, is_active, created_at")
+    .order("created_at", { ascending: false })
+    .limit(10);
 
   return (
     <AdminLayout>
       <div className="p-4 sm:p-6 space-y-6">
-        {/* Welcome Section */}
-        <div className="mb-6 sm:mb-8">
-          <h2 className="text-2xl sm:text-3xl font-bold mb-2">
-            Welcome back, {session.full_name}!
-          </h2>
-          <p className="text-muted-foreground text-sm sm:text-base">
-            Here's what's happening with your KuCash platform today.
-          </p>
+        {/* Header Section */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold">
+              Welcome back, {session.full_name}!
+            </h1>
+            <p className="text-muted-foreground text-sm sm:text-base mt-1">
+              Here's your KuCash platform overview for today
+            </p>
+          </div>
         </div>
 
-        {/* Quick Stats */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-xs sm:text-sm font-medium">
-                Total Users
-              </CardTitle>
-              <Users className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-lg sm:text-2xl font-bold">
-                {userCount || 0}
-              </div>
-              <p className="text-xs text-muted-foreground">Registered users</p>
-            </CardContent>
-          </Card>
+        {/* Dashboard Stats */}
+        <DashboardStats data={dashboardData} />
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-xs sm:text-sm font-medium">
-                Blog Posts
-              </CardTitle>
-              <FileText className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-lg sm:text-2xl font-bold">
-                {publishedPosts || 0}
-              </div>
-              <p className="text-xs text-muted-foreground">
-                {draftPosts || 0} drafts, {totalCategories || 0} categories
-              </p>
-            </CardContent>
-          </Card>
+        {/* Quick Actions */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="w-5 h-5" />
+              Quick Actions
+            </CardTitle>
+            <CardDescription>
+              Common administrative tasks and shortcuts
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <Link href="/admin/loans">
+                <Button
+                  variant="outline"
+                  className="w-full h-20 flex flex-col gap-2"
+                >
+                  <FileText className="w-5 h-5" />
+                  <span className="text-xs">Manage Loans</span>
+                </Button>
+              </Link>
+              <Link href="/admin/users">
+                <Button
+                  variant="outline"
+                  className="w-full h-20 flex flex-col gap-2"
+                >
+                  <Users className="w-5 h-5" />
+                  <span className="text-xs">Manage Users</span>
+                </Button>
+              </Link>
+              <Link href="/admin/agents">
+                <Button
+                  variant="outline"
+                  className="w-full h-20 flex flex-col gap-2"
+                >
+                  <Users className="w-5 h-5" />
+                  <span className="text-xs">Manage Agents</span>
+                </Button>
+              </Link>
+              <Link href="/admin/contacts">
+                <Button
+                  variant="outline"
+                  className="w-full h-20 flex flex-col gap-2"
+                >
+                  <MessageSquare className="w-5 h-5" />
+                  <span className="text-xs">View Contacts</span>
+                </Button>
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-xs sm:text-sm font-medium">
-                Blog Views
-              </CardTitle>
-              <Eye className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-lg sm:text-2xl font-bold">
-                {totalViews.toLocaleString()}
-              </div>
-              <p className="text-xs text-muted-foreground">
-                {totalLikes} total likes
-              </p>
-            </CardContent>
-          </Card>
+        {/* Charts Section */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <BarChart3 className="w-5 h-5" />
+              Analytics & Insights
+            </CardTitle>
+            <CardDescription>
+              Visual representation of your platform's performance
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <DashboardCharts data={dashboardData.charts} />
+          </CardContent>
+        </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-xs sm:text-sm font-medium">
-                Contact Forms
-              </CardTitle>
-              <MessageSquare className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-lg sm:text-2xl font-bold">
-                {contactCount || 0}
-              </div>
-              <p className="text-xs text-muted-foreground">
-                {newContactCount || 0} new submissions
-              </p>
-            </CardContent>
-          </Card>
-        </div>
+        {/* Recent Activity */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="w-5 h-5" />
+              Recent Activity
+            </CardTitle>
+            <CardDescription>
+              Latest activities across your platform
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <RecentActivity
+              recentLoans={recentLoans || []}
+              recentContacts={recentContacts || []}
+              recentUsers={recentUsers || []}
+            />
+          </CardContent>
+        </Card>
 
-        {/* Secondary Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-6">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-xs sm:text-sm font-medium">
-                Categories
-              </CardTitle>
-              <FolderOpen className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-lg sm:text-2xl font-bold">
-                {totalCategories || 0}
-              </div>
-              <p className="text-xs text-muted-foreground">Blog categories</p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-xs sm:text-sm font-medium">
-                Engagement
-              </CardTitle>
-              <Heart className="h-3 w-3 sm:h-4 sm:w-4 text-red-500" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-lg sm:text-2xl font-bold text-red-500">
-                {totalLikes}
-              </div>
-              <p className="text-xs text-muted-foreground">Total likes</p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-xs sm:text-sm font-medium">
-                System Status
-              </CardTitle>
-              <Shield className="h-3 w-3 sm:h-4 sm:w-4 text-green-500" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-lg sm:text-2xl font-bold text-green-500">
-                Online
-              </div>
-              <p className="text-xs text-muted-foreground">
-                All systems operational
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Content Overview */}
+        {/* Performance Summary */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Recent Blog Posts */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="w-5 h-5" />
-                Recent Blog Posts
-              </CardTitle>
+              <CardTitle>Loan Performance</CardTitle>
               <CardDescription>
-                Latest blog posts and their performance
+                Key metrics for loan applications
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              {recentPosts && recentPosts.length > 0 ? (
-                <div className="space-y-4">
-                  {recentPosts.map((post) => (
-                    <div
-                      key={post.id}
-                      className="flex items-center justify-between p-3 border rounded-lg"
-                    >
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium truncate">{post.title}</p>
-                        <div className="flex items-center gap-2 mt-1">
-                          <Badge
-                            variant={
-                              post.status === "published"
-                                ? "default"
-                                : "secondary"
-                            }
-                          >
-                            {post.status}
-                          </Badge>
-                          {post.categories &&
-                            Array.isArray(post.categories) &&
-                            post.categories.length > 0 && (
-                              <Badge variant="outline">
-                                {post.categories[0].name}
-                              </Badge>
-                            )}
-                          {post.categories &&
-                            !Array.isArray(post.categories) && (
-                              <Badge variant="outline">
-                                {(post.categories as any).name}
-                              </Badge>
-                            )}
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                        <div className="flex items-center gap-1">
-                          <Eye className="w-3 h-3" />
-                          {post.views || 0}
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Heart className="w-3 h-3" />
-                          {post.likes || 0}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                  <div className="pt-2">
-                    <a
-                      href="/admin/posts"
-                      className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors text-sm"
-                    >
-                      <FileText className="w-4 h-4" />
-                      Manage All Posts
-                    </a>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium">Approval Rate</span>
+                <span className="text-sm font-bold">
+                  {dashboardData.loans.total > 0
+                    ? (
+                        (dashboardData.loans.approved /
+                          dashboardData.loans.total) *
+                        100
+                      ).toFixed(1)
+                    : 0}
+                  %
+                </span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div
+                  className="bg-green-500 h-2 rounded-full transition-all duration-300"
+                  style={{
+                    width: `${
+                      dashboardData.loans.total > 0
+                        ? (dashboardData.loans.approved /
+                            dashboardData.loans.total) *
+                          100
+                        : 0
+                    }%`,
+                  }}
+                />
+              </div>
+              <div className="grid grid-cols-3 gap-4 text-center">
+                <div>
+                  <div className="text-lg font-bold text-yellow-600">
+                    {dashboardData.loans.pending}
                   </div>
+                  <div className="text-xs text-muted-foreground">Pending</div>
                 </div>
-              ) : (
-                <div className="text-center py-8 text-muted-foreground">
-                  <FileText className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                  <p>No blog posts yet</p>
-                  <p className="text-sm mt-2">Create your first blog post</p>
+                <div>
+                  <div className="text-lg font-bold text-green-600">
+                    {dashboardData.loans.approved}
+                  </div>
+                  <div className="text-xs text-muted-foreground">Approved</div>
                 </div>
-              )}
+                <div>
+                  <div className="text-lg font-bold text-red-600">
+                    {dashboardData.loans.rejected}
+                  </div>
+                  <div className="text-xs text-muted-foreground">Rejected</div>
+                </div>
+              </div>
             </CardContent>
           </Card>
 
-          {/* Recent Contact Submissions */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <MessageSquare className="w-5 h-5" />
-                Recent Contact Submissions
-              </CardTitle>
+              <CardTitle>Agent Performance</CardTitle>
               <CardDescription>
-                Latest customer inquiries and messages
+                Top performing agents this month
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              {recentContacts && recentContacts.length > 0 ? (
-                <div className="space-y-4">
-                  {recentContacts.map((contact) => (
+            <CardContent className="space-y-4">
+              {dashboardData.agents.topPerformers
+                .slice(0, 3)
+                .map((agent, index) => {
+                  const getStatusBadge = (status: string) => {
+                    switch (status) {
+                      case "approved":
+                        return (
+                          <Badge
+                            variant="default"
+                            className="bg-green-100 text-green-800 border-green-200 text-xs mr-2"
+                          >
+                            Earned
+                          </Badge>
+                        );
+                      case "rejected":
+                        return (
+                          <Badge variant="destructive" className="text-xs mr-2">
+                            Rejected
+                          </Badge>
+                        );
+                      default:
+                        return (
+                          <Badge
+                            variant="secondary"
+                            className="bg-yellow-100 text-yellow-800 border-yellow-200 text-xs mr-2"
+                          >
+                            Pending
+                          </Badge>
+                        );
+                    }
+                  };
+
+                  return (
                     <div
-                      key={contact.id}
-                      className="flex items-center justify-between p-3 border rounded-lg"
+                      key={agent.id}
+                      className="flex items-center justify-between"
                     >
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium truncate">{contact.name}</p>
-                        <p className="text-sm text-muted-foreground truncate">
-                          {contact.email}
-                        </p>
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white text-xs font-medium">
+                          {index + 1}
+                        </div>
+                        <div>
+                          <div className="font-medium text-sm">
+                            {agent.name}
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            {agent.applications} applications • {agent.approved}{" "}
+                            approved
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Badge
-                          variant={
-                            contact.status === "new" ? "default" : "secondary"
-                          }
-                        >
-                          {contact.status}
-                        </Badge>
-                        <span className="text-xs text-muted-foreground">
-                          {new Date(contact.created_at).toLocaleDateString()}
-                        </span>
+                      <div className="text-right">
+                        <div className="flex items-center justify-end">
+                          {getStatusBadge(agent.status)}
+                          <span className="text-sm font-medium text-green-600">
+                            ₹{agent.commission.toLocaleString()}
+                          </span>
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          Commission
+                        </div>
                       </div>
                     </div>
-                  ))}
-                  <div className="pt-2">
-                    <a
-                      href="/admin/contacts"
-                      className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors text-sm"
-                    >
-                      <MessageSquare className="w-4 h-4" />
-                      View All Submissions
-                    </a>
-                  </div>
-                </div>
-              ) : (
-                <div className="text-center py-8 text-muted-foreground">
-                  <MessageSquare className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                  <p>No contact submissions yet</p>
-                  <p className="text-sm mt-2">
-                    New submissions will appear here
-                  </p>
+                  );
+                })}
+              {dashboardData.agents.topPerformers.length === 0 && (
+                <div className="text-center py-4 text-muted-foreground">
+                  <Users className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                  <p className="text-sm">No agent performance data yet</p>
                 </div>
               )}
             </CardContent>
           </Card>
         </div>
+
+        {/* Blog Insights - Full Width */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <FileText className="w-4 h-4" />
+              Blog Insights
+            </CardTitle>
+            <CardDescription>Top performing blog posts</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {dashboardData.blog.topPosts.slice(0, 3).map((post, index) => (
+              <div
+                key={post.id}
+                className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
+              >
+                <div className="flex items-center gap-3 min-w-0 flex-1">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-xs font-medium flex-shrink-0">
+                    {index + 1}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="font-medium text-sm truncate">
+                      {post.title}
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      {post.views} views • {post.likes} likes
+                    </div>
+                  </div>
+                </div>
+                <Badge
+                  variant="outline"
+                  className="text-xs self-start sm:self-center"
+                >
+                  {post.status}
+                </Badge>
+              </div>
+            ))}
+            {dashboardData.blog.topPosts.length === 0 && (
+              <div className="text-center py-4 text-muted-foreground">
+                <FileText className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                <p className="text-sm">No blog posts yet</p>
+              </div>
+            )}
+            <div className="pt-2 border-t">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+                <div>
+                  <div className="text-lg font-bold text-blue-600">
+                    {dashboardData.blog.totalViews.toLocaleString()}
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    Total Views
+                  </div>
+                </div>
+                <div>
+                  <div className="text-lg font-bold text-red-600">
+                    {dashboardData.blog.totalLikes}
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    Total Likes
+                  </div>
+                </div>
+                <div>
+                  <div className="text-lg font-bold text-green-600">
+                    {dashboardData.blog.published}
+                  </div>
+                  <div className="text-xs text-muted-foreground">Published</div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </AdminLayout>
   );

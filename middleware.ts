@@ -41,20 +41,28 @@ export async function middleware(request: NextRequest) {
       return supabaseResponse;
     }
 
-    if (!user) {
-      return NextResponse.redirect(new URL("/admin/login", request.url));
+    // Check for admin session cookie
+    const adminSessionCookie = request.cookies.get("admin_session");
+    if (adminSessionCookie) {
+      try {
+        const session = JSON.parse(adminSessionCookie.value);
+        // Check if session is expired (7 days)
+        const loginTime = new Date(session.loginTime);
+        const now = new Date();
+        const daysDiff =
+          (now.getTime() - loginTime.getTime()) / (1000 * 60 * 60 * 24);
+
+        if (daysDiff <= 7 && session.role === "admin") {
+          // Valid admin session, allow access
+          return supabaseResponse;
+        }
+      } catch (error) {
+        console.error("Error parsing admin session:", error);
+      }
     }
 
-    // Get user profile to check role
-    const { data: userProfile } = await supabase
-      .from("users")
-      .select("role")
-      .eq("user_id", user.id)
-      .single();
-
-    if (!userProfile || userProfile.role !== "admin") {
-      return NextResponse.redirect(new URL("/admin/login", request.url));
-    }
+    // No valid admin session, redirect to admin login
+    return NextResponse.redirect(new URL("/admin/login", request.url));
   }
 
   // Protect agent routes

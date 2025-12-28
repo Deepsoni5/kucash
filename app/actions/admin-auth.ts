@@ -5,55 +5,34 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 export async function adminLogin(email: string, password: string) {
+  console.log("Admin login attempt:", { email, password: "***" });
+
   try {
-    const supabase = await createClient();
+    // Hardcoded admin credentials check
+    const ADMIN_EMAIL = "admin_kucash@gmail.com";
+    const ADMIN_PASSWORD = "Demopass@12";
 
-    // First, verify the user exists and get their data
-    const { data: user, error: userError } = await supabase
-      .from("users")
-      .select("id, email, password_hash, role, full_name, is_active")
-      .eq("email", email)
-      .single();
+    console.log("Checking credentials against:", {
+      ADMIN_EMAIL,
+      ADMIN_PASSWORD: "***",
+    });
 
-    if (userError || !user) {
+    if (email !== ADMIN_EMAIL || password !== ADMIN_PASSWORD) {
+      console.log("Credentials mismatch");
       return { success: false, error: "Invalid credentials" };
     }
 
-    // Check if user is active
-    if (!user.is_active) {
-      return { success: false, error: "Account is deactivated" };
-    }
-
-    // Check if user has admin role
-    if (user.role !== "admin") {
-      return {
-        success: false,
-        error: "Access denied. Admin privileges required.",
-      };
-    }
-
-    // Verify password using the database function
-    const { data: passwordValid, error: passwordError } = await supabase.rpc(
-      "verify_password",
-      {
-        password: password,
-        hash: user.password_hash,
-      }
-    );
-
-    if (passwordError || !passwordValid) {
-      return { success: false, error: "Invalid credentials" };
-    }
+    console.log("Credentials match, creating session...");
 
     // Create session cookie
     const cookieStore = await cookies();
     cookieStore.set(
       "admin_session",
       JSON.stringify({
-        id: user.id,
-        email: user.email,
-        role: user.role,
-        full_name: user.full_name,
+        id: "admin-001",
+        email: ADMIN_EMAIL,
+        role: "admin",
+        full_name: "Admin User",
         loginTime: new Date().toISOString(),
       }),
       {
@@ -64,13 +43,15 @@ export async function adminLogin(email: string, password: string) {
       }
     );
 
+    console.log("Session created successfully");
+
     return {
       success: true,
       user: {
-        id: user.id,
-        email: user.email,
-        role: user.role,
-        full_name: user.full_name,
+        id: "admin-001",
+        email: ADMIN_EMAIL,
+        role: "admin",
+        full_name: "Admin User",
       },
     };
   } catch (error) {

@@ -31,7 +31,7 @@ export function CreateUserDialog() {
     full_name: "",
     email: "",
     password: "",
-    role: "user" as "admin" | "user" | "moderator",
+    role: "user" as "admin" | "user" | "agent" | "moderator",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -164,16 +164,17 @@ export function CreateUserDialog() {
             <Label htmlFor="role">Role *</Label>
             <Select
               value={formData.role}
-              onValueChange={(value: "admin" | "user" | "moderator") =>
-                setFormData({ ...formData, role: value })
-              }
+              onValueChange={(
+                value: "admin" | "user" | "agent" | "moderator"
+              ) => setFormData({ ...formData, role: value })}
               disabled={isLoading}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select role" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="user">User</SelectItem>
+                <SelectItem value="user">Customer</SelectItem>
+                <SelectItem value="agent">Agent</SelectItem>
                 <SelectItem value="moderator">Moderator</SelectItem>
                 <SelectItem value="admin">Administrator</SelectItem>
               </SelectContent>

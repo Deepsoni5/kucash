@@ -29,15 +29,22 @@ export function AdminLoginForm() {
     setIsLoading(true);
     setError("");
 
+    console.log("Form submitted with:", { email, password: "***" });
+
     try {
       const result = await adminLogin(email, password);
+      console.log("Login result:", result);
 
       if (result.success) {
+        console.log("Login successful, redirecting...");
         router.push("/admin/dashboard");
+        router.refresh(); // Force refresh
       } else {
+        console.log("Login failed:", result.error);
         setError(result.error || "Invalid credentials");
       }
     } catch (error) {
+      console.error("Login error:", error);
       setError("An error occurred. Please try again.");
     } finally {
       setIsLoading(false);

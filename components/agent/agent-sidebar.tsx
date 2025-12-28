@@ -19,6 +19,7 @@ import {
 import { useAuth } from "@/contexts/auth-context";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+import { logoutUser } from "@/app/actions/auth-actions";
 
 interface AgentSidebarProps {
   user: {
@@ -51,13 +52,21 @@ export function AgentSidebar({
   setSidebarOpen,
 }: AgentSidebarProps) {
   const pathname = usePathname();
-  const { signOut } = useAuth();
   const router = useRouter();
   const { toast } = useToast();
 
   const handleSignOut = async () => {
     try {
-      await signOut();
+      const result = await logoutUser();
+      if (result.error) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: result.error,
+        });
+        return;
+      }
+
       toast({
         title: "Logged out successfully",
         description: "You have been logged out of your account.",

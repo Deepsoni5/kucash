@@ -13,13 +13,13 @@ import {
   Users,
   MessageSquare,
   FileText,
-  Settings,
   ChevronLeft,
   ChevronRight,
   LogOut,
   Menu,
   FolderOpen,
   Edit3,
+  UserCheck,
 } from "lucide-react";
 import { adminLogout } from "@/app/actions/admin-auth";
 
@@ -60,14 +60,14 @@ const navigation = [
     icon: Users,
   },
   {
+    name: "Agents",
+    href: "/admin/agents",
+    icon: UserCheck,
+  },
+  {
     name: "Loan Applications",
     href: "/admin/loans",
     icon: FileText,
-  },
-  {
-    name: "Settings",
-    href: "/admin/settings",
-    icon: Settings,
   },
 ];
 

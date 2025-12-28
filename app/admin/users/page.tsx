@@ -21,10 +21,26 @@ export default async function UsersPage() {
 
   const supabase = await createClient();
 
-  // Get all users
+  // Get all users with all fields
   const { data: users, error } = await supabase
     .from("users")
-    .select("id, full_name, email, role, is_active, created_at")
+    .select(
+      `
+      id, 
+      full_name, 
+      email, 
+      role, 
+      is_active, 
+      created_at, 
+      updated_at,
+      mobile_number,
+      postal_address,
+      phone_gpay_number,
+      photo_url,
+      agent_id,
+      user_id
+    `
+    )
     .order("created_at", { ascending: false });
 
   // Get user counts by role and status
@@ -32,10 +48,15 @@ export default async function UsersPage() {
     .from("users")
     .select("*", { count: "exact", head: true });
 
-  const { count: adminCount } = await supabase
+  const { count: agentCount } = await supabase
     .from("users")
     .select("*", { count: "exact", head: true })
-    .eq("role", "admin");
+    .eq("role", "agent");
+
+  const { count: userCount } = await supabase
+    .from("users")
+    .select("*", { count: "exact", head: true })
+    .eq("role", "user");
 
   const { count: activeCount } = await supabase
     .from("users")
@@ -82,16 +103,27 @@ export default async function UsersPage() {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Administrators
-              </CardTitle>
-              <Shield className="h-4 w-4 text-red-500" />
+              <CardTitle className="text-sm font-medium">Agents</CardTitle>
+              <Shield className="h-4 w-4 text-blue-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-red-500">
-                {adminCount || 0}
+              <div className="text-2xl font-bold text-blue-500">
+                {agentCount || 0}
               </div>
-              <p className="text-xs text-muted-foreground">Admin users</p>
+              <p className="text-xs text-muted-foreground">Agent users</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Customers</CardTitle>
+              <Users className="h-4 w-4 text-green-500" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-green-500">
+                {userCount || 0}
+              </div>
+              <p className="text-xs text-muted-foreground">Customer users</p>
             </CardContent>
           </Card>
 

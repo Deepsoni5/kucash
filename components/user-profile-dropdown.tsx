@@ -58,6 +58,17 @@ export function UserProfileDropdown() {
     }
   };
 
+  const getProfileLink = () => {
+    switch (user.role) {
+      case "agent":
+        return "/agent/profile";
+      case "user":
+        return "/customer/profile";
+      default:
+        return "/customer/profile";
+    }
+  };
+
   const getDashboardLabel = () => {
     switch (user.role) {
       case "admin":
@@ -122,7 +133,7 @@ export function UserProfileDropdown() {
         </DropdownMenuItem>
 
         <DropdownMenuItem asChild>
-          <Link href="/profile" className="cursor-pointer">
+          <Link href={getProfileLink()} className="cursor-pointer">
             <User className="mr-2 h-4 w-4" />
             Profile Settings
           </Link>

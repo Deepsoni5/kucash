@@ -8,7 +8,7 @@ export async function createUser(userData: {
   full_name: string;
   email: string;
   password: string;
-  role: "admin" | "user" | "moderator";
+  role: "admin" | "user" | "agent" | "moderator";
 }) {
   try {
     await requireAdminAuth();
@@ -81,7 +81,7 @@ export async function updateUserRole(userId: string, role: string) {
   try {
     await requireAdminAuth();
 
-    const validRoles = ["admin", "user", "moderator"];
+    const validRoles = ["admin", "user", "agent", "moderator"];
     if (!validRoles.includes(role)) {
       return { success: false, error: "Invalid role" };
     }
