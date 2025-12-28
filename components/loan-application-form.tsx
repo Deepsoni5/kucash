@@ -374,7 +374,7 @@ export function LoanApplicationForm({
   // Show loading state while checking authentication
   if (loading) {
     return (
-      <section id="apply" className="py-20 lg:py-32 bg-muted/30">
+      <section id="apply" className="py-20 lg:py-24 bg-muted/30">
         <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-12">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-balance">
@@ -403,7 +403,7 @@ export function LoanApplicationForm({
   // Show login prompt for non-authenticated users (unless skipUserPrefill is true for agents)
   if (!user && !skipUserPrefill) {
     return (
-      <section id="apply" className="py-20 lg:py-32 bg-muted/30">
+      <section id="apply" className="py-20 lg:py-24 bg-muted/30">
         <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Section Header */}
           <div className="text-center max-w-3xl mx-auto mb-12">
@@ -475,7 +475,7 @@ export function LoanApplicationForm({
 
   if (isSubmitted) {
     return (
-      <section id="apply" className="py-20 lg:py-32 bg-background">
+      <section id="apply" className="py-20 lg:py-24 bg-background">
         <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Card className="max-w-2xl mx-auto text-center border-2 border-primary">
             <CardContent className="p-12">
@@ -502,7 +502,7 @@ export function LoanApplicationForm({
   }
 
   return (
-    <section id="apply" className="py-20 lg:py-32 bg-muted/30">
+    <section id="apply" className="py-20 lg:py-24 bg-muted/30">
       <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-12">

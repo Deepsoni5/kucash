@@ -1,37 +1,41 @@
-"use client"
+"use client";
 
-import { UserCheck, ShieldCheck, ListChecks, Banknote } from "lucide-react"
+import { UserCheck, ShieldCheck, ListChecks, Banknote } from "lucide-react";
 
 const steps = [
   {
     icon: UserCheck,
     title: "Check Eligibility",
-    description: "Enter basic details in our simple form. Our smart algorithm matches your profile with 100+ banking partners instantly to find your best fit.",
+    description:
+      "Enter basic details in our simple form. Our smart algorithm matches your profile with 100+ banking partners instantly to find your best fit.",
     step: "01",
   },
   {
     icon: ShieldCheck,
     title: "Paperless Verification",
-    description: "No physical documents required. We use Account Aggregator technology to verify your income and KYC securely.",
+    description:
+      "No physical documents required. We use Account Aggregator technology to verify your income and KYC securely.",
     step: "02",
   },
   {
     icon: ListChecks,
     title: "Unlock Your Offers",
-    description: "Compare interest rates and terms from top lenders. View the Key Fact Statement (KFS) before you decide.",
+    description:
+      "Compare interest rates and terms from top lenders. View the Key Fact Statement (KFS) before you decide.",
     step: "03",
   },
   {
     icon: Banknote,
     title: "Direct Bank Transfer",
-    description: "Once e-signed and fully verified the loan amount is credited directly from the bank to your account. No wallets, no third-party holding accounts.",
+    description:
+      "Once e-signed and fully verified the loan amount is credited directly from the bank to your account. No wallets, no third-party holding accounts.",
     step: "04",
   },
-]
+];
 
 export function HowItWorksSection() {
   return (
-    <section id="how-it-works" className="py-20 lg:py-32 bg-muted/30">
+    <section id="how-it-works" className="py-20 lg:py-24 bg-muted/30">
       <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
@@ -40,14 +44,16 @@ export function HowItWorksSection() {
             <span className="text-primary">Works</span>
           </h2>
           <p className="text-lg text-muted-foreground text-pretty">
-            {"Get your loan approved in 4 simple steps. Fast, secure, and completely digital process."}
+            {
+              "Get your loan approved in 4 simple steps. Fast, secure, and completely digital process."
+            }
           </p>
         </div>
 
         {/* Steps */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {steps.map((step, index) => {
-            const Icon = step.icon
+            const Icon = step.icon;
             return (
               <div key={index} className="relative group">
                 {/* Connector Line */}
@@ -67,14 +73,18 @@ export function HowItWorksSection() {
                   </div>
 
                   {/* Content */}
-                  <h3 className="text-xl font-bold mb-3 text-foreground">{step.title}</h3>
-                  <p className="text-muted-foreground text-pretty leading-relaxed">{step.description}</p>
+                  <h3 className="text-xl font-bold mb-3 text-foreground">
+                    {step.title}
+                  </h3>
+                  <p className="text-muted-foreground text-pretty leading-relaxed">
+                    {step.description}
+                  </p>
                 </div>
               </div>
-            )
+            );
           })}
         </div>
       </div>
     </section>
-  )
+  );
 }

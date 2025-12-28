@@ -1,16 +1,17 @@
-"use client"
+"use client";
 
-import { Card, CardContent } from "@/components/ui/card"
-import { Star, ChevronLeft, ChevronRight } from "lucide-react"
-import Image from "next/image"
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card";
+import { Star, ChevronLeft, ChevronRight } from "lucide-react";
+import Image from "next/image";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 const testimonials = [
   {
     name: "Rajesh Kumar",
     role: "Small Business Owner",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&q=80",
+    image:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&q=80",
     content:
       "KuCash helped me expand my retail business with their quick business loan. The entire process was smooth and transparent. Highly recommended!",
     rating: 5,
@@ -18,7 +19,8 @@ const testimonials = [
   {
     name: "Priya Sharma",
     role: "Working Professional",
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&q=80",
+    image:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&q=80",
     content:
       "Got my personal loan approved within hours! The team was supportive and the interest rates were very competitive. Thank you Kucash!",
     rating: 5,
@@ -26,7 +28,8 @@ const testimonials = [
   {
     name: "Amit Patel",
     role: "Entrepreneur",
-    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&q=80",
+    image:
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&q=80",
     content:
       "The working capital loan from KuCash was a lifesaver during the expansion phase. Quick approval and flexible repayment terms.",
     rating: 5,
@@ -34,26 +37,29 @@ const testimonials = [
   {
     name: "Sneha Reddy",
     role: "Restaurant Owner",
-    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&q=80",
+    image:
+      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&q=80",
     content:
       "Secured a property loan for my restaurant expansion. The team was professional and the rates were unbeatable. Five stars!",
     rating: 5,
   },
-]
+];
 
 export function TestimonialsSection() {
-  const [currentIndex, setCurrentIndex] = useState(0)
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   const nextSlide = () => {
-    setCurrentIndex((prev) => (prev + 1) % testimonials.length)
-  }
+    setCurrentIndex((prev) => (prev + 1) % testimonials.length);
+  };
 
   const prevSlide = () => {
-    setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length)
-  }
+    setCurrentIndex(
+      (prev) => (prev - 1 + testimonials.length) % testimonials.length
+    );
+  };
 
   return (
-    <section className="py-20 lg:py-32 bg-background">
+    <section className="py-20 lg:py-24 bg-background">
       <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
@@ -62,7 +68,9 @@ export function TestimonialsSection() {
             <span className="text-primary">Customers Say</span>
           </h2>
           <p className="text-lg text-muted-foreground text-pretty">
-            {"Join thousands of satisfied customers who trusted KuCash for their financial needs."}
+            {
+              "Join thousands of satisfied customers who trusted KuCash for their financial needs."
+            }
           </p>
         </div>
 
@@ -91,7 +99,10 @@ export function TestimonialsSection() {
               {/* Rating */}
               <div className="flex gap-1 mb-6 justify-center">
                 {[...Array(testimonials[currentIndex].rating)].map((_, i) => (
-                  <Star key={i} className="w-6 h-6 fill-yellow-400 text-yellow-400" />
+                  <Star
+                    key={i}
+                    className="w-6 h-6 fill-yellow-400 text-yellow-400"
+                  />
                 ))}
               </div>
 
@@ -109,8 +120,12 @@ export function TestimonialsSection() {
                   />
                 </div>
                 <div className="text-left">
-                  <div className="font-semibold text-foreground text-lg">{testimonials[currentIndex].name}</div>
-                  <div className="text-sm text-muted-foreground">{testimonials[currentIndex].role}</div>
+                  <div className="font-semibold text-foreground text-lg">
+                    {testimonials[currentIndex].name}
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    {testimonials[currentIndex].role}
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -122,13 +137,14 @@ export function TestimonialsSection() {
               <button
                 key={index}
                 onClick={() => setCurrentIndex(index)}
-                className={`w-2 h-2 rounded-full transition-all ${index === currentIndex ? "bg-primary w-8" : "bg-border"
-                  }`}
+                className={`w-2 h-2 rounded-full transition-all ${
+                  index === currentIndex ? "bg-primary w-8" : "bg-border"
+                }`}
               />
             ))}
           </div>
         </div>
       </div>
     </section>
-  )
+  );
 }

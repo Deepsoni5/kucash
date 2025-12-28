@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { ArrowRight, Phone } from "lucide-react"
-import Link from "next/link"
+import { Button } from "@/components/ui/button";
+import { ArrowRight, Phone } from "lucide-react";
+import Link from "next/link";
 
 export function CTASection() {
   return (
-    <section className="py-20 lg:py-32 bg-primary relative overflow-hidden">
+    <section className="py-20 lg:py-24 bg-primary relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-10 left-10 w-64 h-64 bg-white rounded-full blur-3xl" />
@@ -47,10 +47,12 @@ export function CTASection() {
           </div>
 
           <p className="text-white/80 mt-8 text-sm">
-            {"🔒 100% Secure Application • LSP loan service provider • Quick Approval"}
+            {
+              "🔒 100% Secure Application • LSP loan service provider • Quick Approval"
+            }
           </p>
         </div>
       </div>
     </section>
-  )
+  );
 }

@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef } from "react";
 
 const partners = [
   { name: "Partner 1", logo: "/p1.png" },
@@ -13,41 +13,45 @@ const partners = [
   { name: "Partner 9", logo: "/p9.png" },
   { name: "Partner 10", logo: "/p10.png" },
   { name: "Partner 11", logo: "/p11.png" },
-]
+];
 
 export function PartnersSection() {
-  const scrollRef = useRef<HTMLDivElement>(null)
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const scrollContainer = scrollRef.current
-    if (!scrollContainer) return
+    const scrollContainer = scrollRef.current;
+    if (!scrollContainer) return;
 
-    let scrollInterval: NodeJS.Timeout
+    let scrollInterval: NodeJS.Timeout;
 
     const startScrolling = () => {
       scrollInterval = setInterval(() => {
         if (scrollContainer) {
-          scrollContainer.scrollLeft += 1
+          scrollContainer.scrollLeft += 1;
           if (scrollContainer.scrollLeft >= scrollContainer.scrollWidth / 2) {
-            scrollContainer.scrollLeft = 0
+            scrollContainer.scrollLeft = 0;
           }
         }
-      }, 20)
-    }
+      }, 20);
+    };
 
-    startScrolling()
+    startScrolling();
 
-    return () => clearInterval(scrollInterval)
-  }, [])
+    return () => clearInterval(scrollInterval);
+  }, []);
 
   return (
-    <section className="py-16 lg:py-24 bg-muted/30">
+    <section className="py-16 lg:py-20 bg-muted/30">
       <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-foreground">Our Lending Partners</h2>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-foreground">
+            Our Lending Partners
+          </h2>
           <p className="text-base lg:text-lg text-muted-foreground text-pretty">
-            {"Trusted collaborations with India's leading financial institutions"}
+            {
+              "Trusted collaborations with India's leading financial institutions"
+            }
           </p>
         </div>
 
@@ -64,10 +68,7 @@ export function PartnersSection() {
             }}
           >
             {[...partners, ...partners, ...partners].map((partner, index) => (
-              <div
-                key={index}
-                className="flex-shrink-0"
-              >
+              <div key={index} className="flex-shrink-0">
                 <img
                   src={partner.logo || "/placeholder.svg"}
                   alt={`${partner.name} - KuCash partner`}
@@ -80,9 +81,13 @@ export function PartnersSection() {
 
         {/* Trust Badge */}
         <div className="mt-16 text-center">
-          <p className="text-sm font-medium text-muted-foreground">{"Collaborating with 100+ Banks, NBFCs, and Financial Institutions."}</p>
+          <p className="text-sm font-medium text-muted-foreground">
+            {
+              "Collaborating with 100+ Banks, NBFCs, and Financial Institutions."
+            }
+          </p>
         </div>
       </div>
     </section>
-  )
+  );
 }

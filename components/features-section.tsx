@@ -58,7 +58,7 @@ const features = [
 
 export function FeaturesSection() {
   return (
-    <section className="py-20 lg:py-32 bg-gradient-to-br from-primary/5 via-background to-accent/5">
+    <section className="py-20 lg:py-24 bg-gradient-to-br from-primary/5 via-background to-accent/5">
       <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">

@@ -1,6 +1,11 @@
-"use client"
+"use client";
 
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const faqs = [
   {
@@ -33,20 +38,24 @@ const faqs = [
     answer:
       "We use bank-grade 256-bit SSL encryption and follow strict LSP loan service provider guidelines to ensure your data is completely secure. We never share your information with third parties.",
   },
-]
+];
 
 export function FAQSection() {
   return (
-    <section className="py-20 lg:py-32 bg-muted/30">
+    <section className="py-20 lg:py-24 bg-muted/30">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-balance">
             <span className="text-foreground">Frequently Asked </span>
-            <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Questions</span>
+            <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              Questions
+            </span>
           </h2>
           <p className="text-lg text-muted-foreground text-pretty">
-            {"Got questions? We have answers. Find everything you need to know about our loan process."}
+            {
+              "Got questions? We have answers. Find everything you need to know about our loan process."
+            }
           </p>
         </div>
 
@@ -71,5 +80,5 @@ export function FAQSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }
