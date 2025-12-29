@@ -172,6 +172,11 @@ export function SignupForm() {
               ? `Your Agent ID is: ${result.agentId}. Please check your email to verify your account.`
               : "Please check your email to verify your account.",
           });
+
+          // Redirect to landing page after 2 seconds
+          setTimeout(() => {
+            router.push("/");
+          }, 2000);
         } else {
           toast({
             title: "Account Created Successfully!",
@@ -180,9 +185,9 @@ export function SignupForm() {
               : "You can now login to your account.",
           });
 
-          // Redirect to login after 2 seconds
+          // Redirect to landing page after 2 seconds
           setTimeout(() => {
-            router.push("/login");
+            router.push("/");
           }, 2000);
         }
       }
