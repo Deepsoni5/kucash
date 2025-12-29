@@ -22,7 +22,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Our Loan Services - KuCash | Fast & Transparent Financing",
   description:
-    "Explore KuCash's wide range of loan services including Personal Loans, Business Loans, Vehicle Loans, Working Capital, and M&A Advisory. 100% digital process with 24h disbursal.",
+    "Explore KuCash's wide range of loan services including Personal Loans, Business Loans, Vehicle Loans, Working Capital, and Invoice Discounting. 100% digital process with 24h disbursal.",
 };
 
 const services = [
@@ -119,20 +119,21 @@ const services = [
     color: "orange",
   },
   {
-    id: "ma-advisory",
+    id: "invoice-discounting",
     icon: Handshake,
-    headline: "M&A Advisory & Deal Facilitation.",
-    subHeadline: "Strategic Growth & Exits.",
-    tagline: "₹5 Cr – ₹500+ Cr. End-to-End Facilitation.",
+    headline: "Invoice Discounting.",
+    subHeadline: "Unlock Cash Flow.",
+    tagline: "₹10L – ₹10Cr. 30 – 120 days.",
     description:
-      "Turn strategic opportunities into successful transactions. We help businesses identify the right buyers, investors, or partners and facilitate smooth mergers, acquisitions, and strategic exits with confidentiality and precision.",
+      "Improve cash flow by accessing funds against approved invoices. No additional collateral required. Faster, flexible funding for growing businesses. Convert your outstanding invoices into immediate working capital and keep your operations running smoothly.",
     details: [
-      { label: "DEAL SIZE", value: "₹5 Cr – ₹500+ Cr" },
-      { label: "ENGAGEMENT", value: "Retainer / Success Fee" },
-      { label: "PROCESS", value: "End-to-End Facilitation" },
+      { label: "AMOUNT", value: "₹10L – ₹10Cr" },
+      { label: "DISCOUNT RATE", value: "From 10%" },
+      { label: "TENURE", value: "30 – 120 days" },
       {
-        label: "Strategic Advisory",
-        value: "Expert guidance on mergers, acquisitions, and capital raising.",
+        label: "Key Benefit",
+        value:
+          "Get up to 80% of invoice value instantly without waiting for customer payments.",
       },
     ],
     color: "green",
@@ -181,13 +182,15 @@ export default function ServicesPage() {
             <section
               key={service.id}
               id={service.id}
-              className={`py-24 lg:py-40 border-b border-border/50 ${!isEven ? "bg-muted/30" : "bg-background"
-                }`}
+              className={`py-24 lg:py-40 border-b border-border/50 ${
+                !isEven ? "bg-muted/30" : "bg-background"
+              }`}
             >
               <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div
-                  className={`grid lg:grid-cols-2 gap-16 lg:gap-24 items-center ${!isEven ? "lg:flex-row-reverse" : ""
-                    }`}
+                  className={`grid lg:grid-cols-2 gap-16 lg:gap-24 items-center ${
+                    !isEven ? "lg:flex-row-reverse" : ""
+                  }`}
                 >
                   {/* Content Side */}
                   <div className={`space-y-8 ${!isEven ? "lg:order-2" : ""}`}>
@@ -247,18 +250,19 @@ export default function ServicesPage() {
                       <div
                         className="absolute inset-0 bg-cover bg-center group-hover:scale-110 transition-transform duration-700"
                         style={{
-                          backgroundImage: `url('${service.id === "personal-loan"
-                            ? "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3"
-                            : service.id === "business-loan"
+                          backgroundImage: `url('${
+                            service.id === "personal-loan"
+                              ? "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3"
+                              : service.id === "business-loan"
                               ? "https://images.unsplash.com/photo-1563013544-824ae1b704d3?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3"
                               : service.id === "vehicle-loan"
-                                ? "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.0.3"
-                                : service.id === "working-capital"
-                                  ? "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3"
-                                  : service.id === "ma-advisory"
-                                    ? "https://images.pexels.com/photos/7414275/pexels-photo-7414275.jpeg?_gl=1*aecqf0*_ga*NDI3MTcyODI5LjE3NjI2OTAxOTg.*_ga_8JE65Q40S6*czE3NjY1NzkxMzgkbzMkZzEkdDE3NjY1NzkxNTAkajQ4JGwwJGgw?q=80&w=2070&auto=format&fit=crop"
-                                    : "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=2070&auto=format&fit=crop"
-                            }')`,
+                              ? "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.0.3"
+                              : service.id === "working-capital"
+                              ? "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3"
+                              : service.id === "ma-advisory"
+                              ? "https://images.pexels.com/photos/7414275/pexels-photo-7414275.jpeg?_gl=1*aecqf0*_ga*NDI3MTcyODI5LjE3NjI2OTAxOTg.*_ga_8JE65Q40S6*czE3NjY1NzkxMzgkbzMkZzEkdDE3NjY1NzkxNTAkajQ4JGwwJGgw?q=80&w=2070&auto=format&fit=crop"
+                              : "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=2070&auto=format&fit=crop"
+                          }')`,
                         }}
                       />
                     </div>
@@ -316,7 +320,12 @@ export default function ServicesPage() {
                 <ShieldCheck className="w-3 h-3" /> Important Notice
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed italic">
-                <strong>Disclaimer:</strong> KuCash is a Loan Service Provider (LSP) partnering with RBI-regulated Banks and NBFCs. We facilitate loan applications but do not directly lend money or hold deposits. Approval, interest rates, and disbursal are at the sole discretion of our partner lenders. Please read the Key Fact Statement (KFS) carefully before signing any agreement.
+                <strong>Disclaimer:</strong> KuCash is a Loan Service Provider
+                (LSP) partnering with RBI-regulated Banks and NBFCs. We
+                facilitate loan applications but do not directly lend money or
+                hold deposits. Approval, interest rates, and disbursal are at
+                the sole discretion of our partner lenders. Please read the Key
+                Fact Statement (KFS) carefully before signing any agreement.
               </p>
             </div>
           </div>

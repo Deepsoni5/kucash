@@ -6,6 +6,7 @@ import { HowItWorksSection } from "@/components/how-it-works-section";
 import { FeaturesSection } from "@/components/features-section";
 import { StatsSection } from "@/components/stats-section";
 import { EMICTASection } from "@/components/emi-cta-section";
+import { FinancialInsightsSection } from "@/components/financial-insights-section";
 import { TestimonialsSection } from "@/components/testimonials-section";
 import { BlogSection } from "@/components/blog-section";
 import { LoanApplicationForm } from "@/components/loan-application-form";
@@ -30,6 +31,7 @@ export default async function HomePage() {
         <FeaturesSection />
         <StatsSection />
         <EMICTASection />
+        <FinancialInsightsSection />
         <BlogSection posts={featuredPosts.slice(0, 3)} />
         <TestimonialsSection />
         <LoanApplicationForm />

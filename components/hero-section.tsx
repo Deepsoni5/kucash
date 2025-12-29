@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { ArrowRight, TrendingUp, Shield, Zap, Calculator } from "lucide-react"
-import Link from "next/link"
-import Image from "next/image"
+import { Button } from "@/components/ui/button";
+import { ArrowRight, TrendingUp, Shield, Zap, Calculator } from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
 
 export function HeroSection() {
   return (
@@ -27,7 +27,9 @@ export function HeroSection() {
             {/* Trust Badge */}
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
               <Shield className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium text-primary">Top Digital LSP</span>
+              <span className="text-sm font-medium text-primary">
+                Top Digital LSP
+              </span>
             </div>
 
             {/* Main Heading */}
@@ -51,8 +53,12 @@ export function HeroSection() {
                   <Zap className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <div className="font-semibold text-foreground text-sm lg:text-base">Instant</div>
-                  <div className="text-xs lg:text-sm text-muted-foreground">Eligibility Check</div>
+                  <div className="font-semibold text-foreground text-sm lg:text-base">
+                    Instant
+                  </div>
+                  <div className="text-xs lg:text-sm text-muted-foreground">
+                    Eligibility Check
+                  </div>
                 </div>
               </div>
               <div className="flex items-center gap-3 p-3 lg:p-4 rounded-2xl bg-card border border-border hover:border-primary/50 transition-all">
@@ -60,8 +66,12 @@ export function HeroSection() {
                   <TrendingUp className="w-5 h-5 text-accent" />
                 </div>
                 <div>
-                  <div className="font-semibold text-foreground text-sm lg:text-base">Low Interest</div>
-                  <div className="text-xs lg:text-sm text-muted-foreground">starting from 9.99%</div>
+                  <div className="font-semibold text-foreground text-sm lg:text-base">
+                    Low Interest
+                  </div>
+                  <div className="text-xs lg:text-sm text-muted-foreground">
+                    starting from 9.99%
+                  </div>
                 </div>
               </div>
               <div className="flex items-center gap-3 p-3 lg:p-4 rounded-2xl bg-card border border-border hover:border-primary/50 transition-all">
@@ -69,8 +79,12 @@ export function HeroSection() {
                   <Shield className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <div className="font-semibold text-foreground text-sm lg:text-base">100% Secure</div>
-                  <div className="text-xs lg:text-sm text-muted-foreground">Registered Loan Service Provider</div>
+                  <div className="font-semibold text-foreground text-sm lg:text-base">
+                    100% Secure
+                  </div>
+                  <div className="text-xs lg:text-sm text-muted-foreground">
+                    Registered Loan Service Provider
+                  </div>
                 </div>
               </div>
             </div>
@@ -109,46 +123,64 @@ export function HeroSection() {
             {/* Social Proof - Mobile Optimized */}
             <div className="flex flex-wrap items-center gap-4 lg:gap-8 pt-4">
               <div>
-                <div className="text-2xl lg:text-3xl font-bold text-primary">₹500+ Cr</div>
-                <div className="text-xs lg:text-sm text-muted-foreground">Loans Disbursed</div>
+                <div className="text-2xl lg:text-3xl font-bold text-primary">
+                  ₹500+ Cr
+                </div>
+                <div className="text-xs lg:text-sm text-muted-foreground">
+                  Loans Disbursed
+                </div>
               </div>
               <div className="h-8 lg:h-12 w-px bg-border" />
               <div>
-                <div className="text-2xl lg:text-3xl font-bold text-accent">5000+</div>
-                <div className="text-xs lg:text-sm text-muted-foreground">Happy Customers</div>
+                <div className="text-2xl lg:text-3xl font-bold text-accent">
+                  5000+
+                </div>
+                <div className="text-xs lg:text-sm text-muted-foreground">
+                  Happy Customers
+                </div>
               </div>
               <div className="h-8 lg:h-12 w-px bg-border" />
               <div>
-                <div className="text-2xl lg:text-3xl font-bold text-primary">4.8★</div>
-                <div className="text-xs lg:text-sm text-muted-foreground">Customer Rating</div>
+                <div className="text-2xl lg:text-3xl font-bold text-primary">
+                  4.8★
+                </div>
+                <div className="text-xs lg:text-sm text-muted-foreground">
+                  Customer Rating
+                </div>
               </div>
             </div>
           </div>
 
           {/* Right Content - Hero Image */}
           <div
-            className="relative h-[350px] sm:h-[450px] lg:h-[600px] animate-slide-in-up"
+            className="relative h-[180px] sm:h-[240px] lg:h-[320px] animate-slide-in-up"
             style={{ animationDelay: "0.2s" }}
           >
-            <div className="relative h-full rounded-3xl overflow-hidden shadow-2xl">
-              <Image
-                src="https://images.pexels.com/photos/2988232/pexels-photo-2988232.jpeg?auto=compress&cs=tinysrgb&w=800&q=80"
-                alt="Professional financial consultation and loan approval process"
-                fill
-                className="object-cover object-center"
-                priority
-                sizes="(max-width: 768px) 100vw, 50vw"
-              />
-              {/* Overlay Card */}
-              <div className="absolute bottom-4 left-4 right-4 lg:bottom-8 lg:left-8 lg:right-8 bg-background/95 backdrop-blur-lg p-4 lg:p-6 rounded-2xl border border-border shadow-xl">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="text-xs lg:text-sm text-muted-foreground mb-1">Loan Amount</div>
-                    <div className="text-2xl lg:text-3xl font-bold text-primary">₹1L - ₹50L</div>
+            <Image
+              src="/hero.png"
+              alt="Professional financial consultation and loan approval process"
+              width={3794}
+              height={1674}
+              className="w-full h-full object-contain"
+              priority
+            />
+            {/* Overlay Card */}
+            <div className="absolute -bottom-8 left-4 right-4 lg:-bottom-12 lg:left-8 lg:right-8 bg-background/95 backdrop-blur-lg p-4 lg:p-6 rounded-2xl border border-border shadow-xl">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="text-xs lg:text-sm text-muted-foreground mb-1">
+                    Loan Amount
                   </div>
-                  <div className="text-right">
-                    <div className="text-xs lg:text-sm text-muted-foreground mb-1">Approval Time</div>
-                    <div className="text-2xl lg:text-3xl font-bold text-accent">{"< 24hrs"}</div>
+                  <div className="text-2xl lg:text-3xl font-bold text-primary">
+                    ₹1L - ₹50L
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-xs lg:text-sm text-muted-foreground mb-1">
+                    Approval Time
+                  </div>
+                  <div className="text-2xl lg:text-3xl font-bold text-accent">
+                    {"< 24hrs"}
                   </div>
                 </div>
               </div>
@@ -157,5 +189,5 @@ export function HeroSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }

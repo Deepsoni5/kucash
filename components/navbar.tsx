@@ -70,11 +70,10 @@ export function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled || isOpen
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled || isOpen
           ? "bg-background/95 backdrop-blur-lg border-b border-border shadow-sm"
           : "bg-transparent"
-      }`}
+        }`}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20 md:h-24">
@@ -196,8 +195,8 @@ export function Navbar() {
                         user.role === "admin"
                           ? "/admin/dashboard"
                           : user.role === "agent"
-                          ? "/agent/dashboard"
-                          : "/customer/dashboard"
+                            ? "/agent/dashboard"
+                            : "/customer/dashboard"
                       }
                       onClick={() => setIsOpen(false)}
                     >
@@ -205,8 +204,8 @@ export function Navbar() {
                         {user.role === "admin"
                           ? "Admin Dashboard"
                           : user.role === "agent"
-                          ? "Agent Dashboard"
-                          : "Customer Dashboard"}
+                            ? "Agent Dashboard"
+                            : "Customer Dashboard"}
                       </Button>
                     </Link>
                   </div>

@@ -1042,7 +1042,9 @@ export function LoanApplicationForm({
                         </p>
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="aadharCard">Aadhaar Card *</Label>
+                        <Label htmlFor="aadharCard">
+                          Aadhaar Card * (without space)
+                        </Label>
                         <div className="relative">
                           <Input
                             id="aadharCard"

@@ -58,19 +58,19 @@ const loanProducts = [
   },
   {
     icon: Handshake,
-    title: "M&A Advisory & Deal Facilitation",
+    title: "Invoice Discounting",
     description:
-      "Turn strategic opportunities into successful transactions. We help businesses identify the right buyers, investors, or partners and facilitate smooth mergers, acquisitions, and strategic exits with confidentiality and precision.",
-    amount: "₹5 Cr – ₹500+ Cr",
-    interest: "Retainer / Success Fee",
-    tenure: "End-to-End Facilitation",
+      "Improve cash flow by accessing funds against approved invoices. No additional collateral required. Faster, flexible funding for growing businesses.",
+    amount: "₹10L – ₹10Cr",
+    interest: "From 10%",
+    tenure: "30 – 120 days",
     labels: {
-      amount: "DEAL SIZE",
-      interest: "ENGAGEMENT",
-      tenure: "PROCESS",
+      amount: "AMOUNT",
+      interest: "DISCOUNT RATE",
+      tenure: "TENURE",
     },
     color: "from-green-500 to-green-600",
-    cta: "Explore Opportunities",
+    cta: "Unlock Invoice Value",
   },
   {
     icon: Briefcase,
