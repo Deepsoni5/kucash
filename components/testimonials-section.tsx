@@ -8,43 +8,42 @@ import { Button } from "@/components/ui/button";
 
 const testimonials = [
   {
-    name: "Rajesh Kumar",
-    role: "Small Business Owner",
+    name: "Kunal Sharma",
+    role: "Textile Shop Owner, Ludhiana",
     image:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&q=80",
+      "https://images.pexels.com/photos/899357/pexels-photo-899357.jpeg?w=150&h=150&fit=crop&q=80",
     content:
-      "KuCash helped me expand my retail business with their quick business loan. The entire process was smooth and transparent. Highly recommended!",
+      "Needed funds urgently for Diwali stock. Got ₹5 lakh approved in 2 days. Interest was reasonable at 14% and no hidden charges. Been 8 months, very satisfied.",
     rating: 5,
   },
   {
-    name: "Priya Sharma",
-    role: "Working Professional",
+    name: "Shruti Agarwal",
+    role: "Freelance Graphic Designer",
     image:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&q=80",
+      "https://plus.unsplash.com/premium_photo-1682089810582-f7b200217b67?w=150&h=150&fit=crop&q=80",
     content:
-      "Got my personal loan approved within hours! The team was supportive and the interest rates were very competitive. Thank you Kucash!",
-    rating: 5,
+      "Took a ₹2L personal loan for my sister's wedding. Approval was fast but documentation took 3-4 days. Overall good experience, would use again.",
+    rating: 4,
   },
   {
-    name: "Amit Patel",
-    role: "Entrepreneur",
+    name: "Harish Mehta",
+    role: "Hardware Store, Surat",
     image:
-      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1557862921-37829c790f19?w=150&h=150&fit=crop&q=80",
     content:
-      "The working capital loan from KuCash was a lifesaver during the expansion phase. Quick approval and flexible repayment terms.",
-    rating: 5,
+      "Working capital loan helped during slow season. ₹8 lakh for 18 months. Little higher interest than banks but much faster process. Customer service responds quickly on WhatsApp.",
+    rating: 4,
   },
   {
-    name: "Sneha Reddy",
-    role: "Restaurant Owner",
+    name: "Anjali Desai",
+    role: "Salon Owner, Pune",
     image:
-      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&q=80",
+      "https://images.pexels.com/photos/32251444/pexels-photo-32251444.jpeg?_gl=1*1o9z8im*_ga*NDI3MTcyODI5LjE3NjI2OTAxOTg.*_ga_8JE65Q40S6*czE3NjcxMDY3ODckbzQkZzEkdDE3NjcxMDczMTMkajM2JGwwJGgw?w=150&h=150&fit=crop&q=80",
     content:
-      "Secured a property loan for my restaurant expansion. The team was professional and the rates were unbeatable. Five stars!",
+      "Got business loan of ₹4.5L for new equipment. Process was smooth, took about a week total. They worked with my average credit score which bigger banks rejected. Happy with the terms.",
     rating: 5,
   },
 ];
-
 export function TestimonialsSection() {
   const [currentIndex, setCurrentIndex] = useState(0);
 
