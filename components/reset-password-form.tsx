@@ -132,11 +132,29 @@ function ResetPasswordFormContent() {
 
       if (result.error) {
         setErrors({ general: result.error });
-        toast({
-          variant: "destructive",
-          title: "Password Reset Failed",
-          description: result.error,
-        });
+
+        // Show specific toast messages based on error type
+        if (result.errorType === "pkce_error") {
+          toast({
+            variant: "destructive",
+            title: "Browser Mismatch",
+            description:
+              "Please use the same browser where you requested the password reset, or request a new reset link.",
+          });
+        } else if (result.errorType === "expired_link") {
+          toast({
+            variant: "destructive",
+            title: "Link Expired",
+            description:
+              "This password reset link has expired. Please request a new one.",
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Password Reset Failed",
+            description: result.error,
+          });
+        }
       } else {
         toast({
           title: "Password Reset Successful!",
@@ -187,6 +205,63 @@ function ResetPasswordFormContent() {
               Please request a new password reset if you need to change your
               password.
             </p>
+          </div>
+
+          <Button
+            onClick={() => router.push("/forgot-password")}
+            className="w-full"
+          >
+            Request New Reset Link
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  // Show specific error message for PKCE or other errors when code exists but there's an error
+  if (errors.general && code) {
+    const isPkceError = errors.general.includes("same browser");
+    const isExpiredError = errors.general.includes("expired");
+
+    return (
+      <div className="text-center space-y-6">
+        <div className="w-16 h-16 mx-auto rounded-full bg-orange-100 dark:bg-orange-900/20 flex items-center justify-center">
+          <AlertCircle className="w-8 h-8 text-orange-600 dark:text-orange-400" />
+        </div>
+
+        <div className="space-y-2">
+          <h3 className="text-xl font-semibold text-foreground">
+            {isPkceError
+              ? "Browser Mismatch"
+              : isExpiredError
+              ? "Link Expired"
+              : "Reset Failed"}
+          </h3>
+          <p className="text-muted-foreground">{errors.general}</p>
+        </div>
+
+        <div className="space-y-4">
+          <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
+            <div className="text-sm text-blue-800 dark:text-blue-200">
+              {isPkceError ? (
+                <>
+                  <p className="font-medium mb-2">Why this happens:</p>
+                  <ul className="text-left space-y-1">
+                    <li>• You requested the reset in a different browser</li>
+                    <li>• You cleared your browser data/cookies</li>
+                    <li>• You're using incognito/private mode</li>
+                  </ul>
+                  <p className="mt-2 font-medium">
+                    Solution: Use the same browser or request a new link.
+                  </p>
+                </>
+              ) : (
+                <p>
+                  Password reset links are valid for 1 hour. Please request a
+                  new one.
+                </p>
+              )}
+            </div>
           </div>
 
           <Button

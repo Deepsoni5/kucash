@@ -331,6 +331,28 @@ export async function updatePassword(formData: FormData) {
 
     if (sessionError) {
       console.error("❌ Session exchange error:", sessionError);
+
+      // Handle PKCE error specifically
+      if (sessionError.message?.includes("PKCE code verifier not found")) {
+        return {
+          error:
+            "Please use the same browser where you requested the password reset. If you're using the same browser, try requesting a new password reset link.",
+          errorType: "pkce_error",
+        };
+      }
+
+      // Handle expired code
+      if (
+        sessionError.message?.includes("expired") ||
+        sessionError.status === 400
+      ) {
+        return {
+          error:
+            "This password reset link has expired. Please request a new password reset.",
+          errorType: "expired_link",
+        };
+      }
+
       return { error: "Invalid or expired reset link" };
     }
 
