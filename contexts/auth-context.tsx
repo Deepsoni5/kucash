@@ -39,71 +39,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const fetchUserProfile = async (authUser: User) => {
     console.log("🔍 AUTH CONTEXT: Fetching user profile for:", authUser.id);
-    console.log("🔍 AUTH CONTEXT: Auth user details:", {
-      id: authUser.id,
-      email: authUser.email,
-      metadata: authUser.user_metadata,
-      emailConfirmed: authUser.email_confirmed_at,
-    });
 
     try {
-      // Add detailed logging for the database query
       console.log("🔍 AUTH CONTEXT: Starting database query...");
 
-      const startTime = Date.now();
-      const { data: userProfile, error } = await supabase
+      // Create timeout promise
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => {
+          reject(new Error("Database query timeout"));
+        }, 5000); // 5 second timeout
+      });
+
+      // Create query promise
+      const queryPromise = supabase
         .from("users")
         .select("*")
         .eq("user_id", authUser.id)
         .single();
 
+      const startTime = Date.now();
+      const { data: userProfile, error } = (await Promise.race([
+        queryPromise,
+        timeoutPromise,
+      ])) as any;
       const queryTime = Date.now() - startTime;
-      console.log(
-        `🔍 AUTH CONTEXT: Database query completed in ${queryTime}ms`
-      );
 
-      console.log("🔍 AUTH CONTEXT: Database responsee:", {
-        hasData: !!userProfile,
-        error: error?.message,
-        errorCode: error?.code,
-        errorDetails: error?.details,
-        errorHint: error?.hint,
-        data: userProfile
-          ? {
-              id: userProfile.id,
-              user_id: userProfile.user_id,
-              email: userProfile.email,
-              full_name: userProfile.full_name,
-            }
-          : null,
-      });
+      console.log(`✅ AUTH CONTEXT: Query completed in ${queryTime}ms`);
 
       if (error) {
-        console.error("❌ AUTH CONTEXT: Database error:", {
-          message: error.message,
-          code: error.code,
-          details: error.details,
-          hint: error.hint,
-        });
-
-        // Check if it's a connection or permission error
-        if (
-          error.code === "PGRST301" ||
-          error.message?.includes("permission")
-        ) {
-          console.error(
-            "❌ AUTH CONTEXT: Permission denied - check RLS policies"
-          );
-        } else if (error.code === "PGRST116") {
-          console.log("ℹ️ AUTH CONTEXT: User profile not found in database");
-        }
-
+        console.error("❌ AUTH CONTEXT: Database error:", error);
         setUser(null);
-        setLoading(false);
-        return;
-      }
-
-      if (userProfile) {
+      } else if (userProfile) {
         const user = {
           id: userProfile.id,
           userId: userProfile.user_id,
@@ -117,24 +83,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           postalAddress: userProfile.postal_address,
           phoneGpayNumber: userProfile.phone_gpay_number,
         };
-        console.log("✅ AUTH CONTEXT: Successfully set user from database:", {
-          fullName: user.fullName,
-          email: user.email,
-          role: user.role,
-        });
+        console.log("✅ AUTH CONTEXT: User set successfully:", user.fullName);
         setUser(user);
       } else {
-        console.log("❌ AUTH CONTEXT: No user profile data returned");
+        console.log("❌ AUTH CONTEXT: No profile found");
         setUser(null);
       }
     } catch (error) {
-      console.error(
-        "❌ AUTH CONTEXT: Unexpected error during profile fetch:",
-        error
-      );
+      console.error("❌ AUTH CONTEXT: Query failed:", error);
       setUser(null);
     } finally {
-      console.log("🔍 AUTH CONTEXT: Setting loading to false");
+      console.log("🔍 AUTH CONTEXT: Setting loading false");
       setLoading(false);
     }
   };
@@ -146,38 +105,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const {
         data: { session },
-        error,
       } = await supabase.auth.getSession();
-
-      console.log("🔍 AUTH CONTEXT: Session refresh result:", {
-        hasSession: !!session,
-        hasUser: !!session?.user,
-        error: error?.message,
-      });
-
-      if (error) {
-        console.error("❌ AUTH CONTEXT: Session error:", error);
-        setUser(null);
-        setLoading(false);
-        return;
-      }
 
       if (session?.user) {
         await fetchUserProfile(session.user);
       } else {
-        console.log("❌ AUTH CONTEXT: No session found during refresh");
         setUser(null);
         setLoading(false);
       }
     } catch (error) {
-      console.error("❌ AUTH CONTEXT: Refresh error:", error);
+      console.error("❌ AUTH CONTEXT: Refresh failed:", error);
       setUser(null);
       setLoading(false);
     }
   };
 
   const signOut = async () => {
-    console.log("🔍 AUTH CONTEXT: Signing out...");
     await supabase.auth.signOut();
     setUser(null);
   };
@@ -189,67 +132,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         const {
           data: { session },
-          error,
         } = await supabase.auth.getSession();
 
-        console.log("🔍 AUTH CONTEXT: Initial session result:", {
-          hasSession: !!session,
-          hasUser: !!session?.user,
-          error: error?.message,
-        });
-
-        if (error) {
-          console.error("❌ AUTH CONTEXT: Initial session error:", error);
-          setLoading(false);
-          return;
-        }
-
         if (session?.user) {
-          console.log(
-            "✅ AUTH CONTEXT: Found initial session, fetching profile..."
-          );
+          console.log("✅ AUTH CONTEXT: Initial session found");
           await fetchUserProfile(session.user);
         } else {
-          console.log("❌ AUTH CONTEXT: No initial session found");
+          console.log("❌ AUTH CONTEXT: No initial session");
           setLoading(false);
         }
       } catch (error) {
-        console.error(
-          "❌ AUTH CONTEXT: Initial session unexpected error:",
-          error
-        );
+        console.error("❌ AUTH CONTEXT: Initial session error:", error);
         setLoading(false);
       }
     };
 
     getInitialSession();
 
-    // Listen for auth changes
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("🔍 AUTH CONTEXT: Auth state changed:", event, {
-        hasSession: !!session,
-        hasUser: !!session?.user,
-      });
+      console.log("🔍 AUTH CONTEXT: Auth changed:", event, !!session?.user);
 
       if (event === "SIGNED_IN" && session?.user) {
-        console.log("✅ AUTH CONTEXT: User signed in, fetching profile...");
         await fetchUserProfile(session.user);
       } else if (event === "SIGNED_OUT") {
-        console.log("🔍 AUTH CONTEXT: User signed out");
         setUser(null);
         setLoading(false);
-      } else if (event === "TOKEN_REFRESHED" && session?.user) {
-        console.log("🔄 AUTH CONTEXT: Token refreshed, updating profile...");
-        await fetchUserProfile(session.user);
       }
     });
 
-    return () => {
-      console.log("🔍 AUTH CONTEXT: Cleaning up subscription");
-      subscription.unsubscribe();
-    };
+    return () => subscription.unsubscribe();
   }, []);
 
   return (
