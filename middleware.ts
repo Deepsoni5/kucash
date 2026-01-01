@@ -29,102 +29,117 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  // Refresh session if expired - required for Server Components
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // CRITICAL: Always refresh session to ensure it's valid
+  try {
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser();
 
-  // Protect admin routes
-  if (request.nextUrl.pathname.startsWith("/admin")) {
-    // Allow access to admin login page
-    if (request.nextUrl.pathname === "/admin/login") {
-      return supabaseResponse;
+    if (error) {
+      console.log("🔍 MIDDLEWARE: Auth error:", error.message);
+    } else {
+      console.log("🔍 MIDDLEWARE: User found:", !!user);
     }
 
-    // Check for admin session cookie
-    const adminSessionCookie = request.cookies.get("admin_session");
-    if (adminSessionCookie) {
-      try {
-        const session = JSON.parse(adminSessionCookie.value);
-        // Check if session is expired (7 days)
-        const loginTime = new Date(session.loginTime);
-        const now = new Date();
-        const daysDiff =
-          (now.getTime() - loginTime.getTime()) / (1000 * 60 * 60 * 24);
+    // Protect admin routes
+    if (request.nextUrl.pathname.startsWith("/admin")) {
+      // Allow access to admin login page
+      if (request.nextUrl.pathname === "/admin/login") {
+        return supabaseResponse;
+      }
 
-        if (daysDiff <= 7 && session.role === "admin") {
-          // Valid admin session, allow access
-          return supabaseResponse;
+      // Check for admin session cookie
+      const adminSessionCookie = request.cookies.get("admin_session");
+      if (adminSessionCookie) {
+        try {
+          const session = JSON.parse(adminSessionCookie.value);
+          // Check if session is expired (7 days)
+          const loginTime = new Date(session.loginTime);
+          const now = new Date();
+          const daysDiff =
+            (now.getTime() - loginTime.getTime()) / (1000 * 60 * 60 * 24);
+
+          if (daysDiff <= 7 && session.role === "admin") {
+            // Valid admin session, allow access
+            return supabaseResponse;
+          }
+        } catch (error) {
+          console.error("Error parsing admin session:", error);
         }
-      } catch (error) {
-        console.error("Error parsing admin session:", error);
+      }
+
+      // No valid admin session, redirect to admin login
+      return NextResponse.redirect(new URL("/admin/login", request.url));
+    }
+
+    // Protect agent routes
+    if (request.nextUrl.pathname.startsWith("/agent")) {
+      if (!user) {
+        return NextResponse.redirect(new URL("/login", request.url));
+      }
+
+      // Get user profile to check role
+      const { data: userProfile } = await supabase
+        .from("users")
+        .select("role")
+        .eq("user_id", user.id)
+        .single();
+
+      if (!userProfile || userProfile.role !== "agent") {
+        return NextResponse.redirect(new URL("/login", request.url));
       }
     }
 
-    // No valid admin session, redirect to admin login
-    return NextResponse.redirect(new URL("/admin/login", request.url));
-  }
+    // Protect customer routes
+    if (request.nextUrl.pathname.startsWith("/customer")) {
+      if (!user) {
+        return NextResponse.redirect(new URL("/login", request.url));
+      }
 
-  // Protect agent routes
-  if (request.nextUrl.pathname.startsWith("/agent")) {
-    if (!user) {
-      return NextResponse.redirect(new URL("/login", request.url));
-    }
+      // Get user profile to check role
+      const { data: userProfile } = await supabase
+        .from("users")
+        .select("role")
+        .eq("user_id", user.id)
+        .single();
 
-    // Get user profile to check role
-    const { data: userProfile } = await supabase
-      .from("users")
-      .select("role")
-      .eq("user_id", user.id)
-      .single();
-
-    if (!userProfile || userProfile.role !== "agent") {
-      return NextResponse.redirect(new URL("/login", request.url));
-    }
-  }
-
-  // Protect customer routes
-  if (request.nextUrl.pathname.startsWith("/customer")) {
-    if (!user) {
-      return NextResponse.redirect(new URL("/login", request.url));
-    }
-
-    // Get user profile to check role
-    const { data: userProfile } = await supabase
-      .from("users")
-      .select("role")
-      .eq("user_id", user.id)
-      .single();
-
-    if (!userProfile || userProfile.role !== "user") {
-      return NextResponse.redirect(new URL("/login", request.url));
-    }
-  }
-
-  // Redirect authenticated users away from auth pages
-  if (
-    user &&
-    (request.nextUrl.pathname === "/login" ||
-      request.nextUrl.pathname === "/signup")
-  ) {
-    // Get user profile to redirect to appropriate dashboard
-    const { data: userProfile } = await supabase
-      .from("users")
-      .select("role")
-      .eq("user_id", user.id)
-      .single();
-
-    if (userProfile) {
-      if (userProfile.role === "admin") {
-        return NextResponse.redirect(new URL("/admin/dashboard", request.url));
-      } else if (userProfile.role === "agent") {
-        return NextResponse.redirect(new URL("/agent/dashboard", request.url));
-      } else {
-        return NextResponse.redirect(
-          new URL("/customer/dashboard", request.url)
-        );
+      if (!userProfile || userProfile.role !== "user") {
+        return NextResponse.redirect(new URL("/login", request.url));
       }
     }
+
+    // Redirect authenticated users away from auth pages
+    if (
+      user &&
+      (request.nextUrl.pathname === "/login" ||
+        request.nextUrl.pathname === "/signup")
+    ) {
+      // Get user profile to redirect to appropriate dashboard
+      const { data: userProfile } = await supabase
+        .from("users")
+        .select("role")
+        .eq("user_id", user.id)
+        .single();
+
+      if (userProfile) {
+        if (userProfile.role === "admin") {
+          return NextResponse.redirect(
+            new URL("/admin/dashboard", request.url)
+          );
+        } else if (userProfile.role === "agent") {
+          return NextResponse.redirect(
+            new URL("/agent/dashboard", request.url)
+          );
+        } else {
+          return NextResponse.redirect(
+            new URL("/customer/dashboard", request.url)
+          );
+        }
+      }
+    }
+  } catch (error) {
+    console.error("🔍 MIDDLEWARE: Unexpected error:", error);
   }
 
   return supabaseResponse;

@@ -80,16 +80,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const refreshUser = async () => {
     console.log("🔍 AUTH CONTEXT: Refreshing user...");
     try {
+      // First try to get the current session
       const {
-        data: { user: authUser },
-      } = await supabase.auth.getUser();
+        data: { session },
+        error: sessionError,
+      } = await supabase.auth.getSession();
 
-      console.log("🔍 AUTH CONTEXT: Got auth user:", !!authUser);
-
-      if (authUser) {
-        await fetchUserProfile(authUser);
-      } else {
+      if (sessionError) {
+        console.error("❌ AUTH CONTEXT: Session error:", sessionError);
         setUser(null);
+        return;
+      }
+
+      if (session?.user) {
+        console.log("🔍 AUTH CONTEXT: Got session user:", session.user.id);
+        await fetchUserProfile(session.user);
+      } else {
+        // Try to refresh the session
+        console.log("🔍 AUTH CONTEXT: No session, trying to refresh...");
+        const { data: refreshData, error: refreshError } =
+          await supabase.auth.refreshSession();
+
+        if (refreshData.session?.user && !refreshError) {
+          console.log("✅ AUTH CONTEXT: Session refreshed successfully");
+          await fetchUserProfile(refreshData.session.user);
+        } else {
+          console.log("❌ AUTH CONTEXT: No valid session found");
+          setUser(null);
+        }
       }
     } catch (error) {
       console.error("❌ AUTH CONTEXT: Refresh user error:", error);
@@ -137,8 +155,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           data: { session },
         } = await supabase.auth.getSession();
 
+        console.log("🔍 AUTH CONTEXT: Got session:", !!session);
+
         if (session?.user) {
           await fetchUserProfile(session.user);
+        } else {
+          // Try to refresh the session
+          console.log("🔍 AUTH CONTEXT: No session, trying to refresh...");
+          const { data: refreshData, error: refreshError } =
+            await supabase.auth.refreshSession();
+
+          if (refreshData.session?.user && !refreshError) {
+            console.log("✅ AUTH CONTEXT: Session refreshed successfully");
+            await fetchUserProfile(refreshData.session.user);
+          } else {
+            console.log("❌ AUTH CONTEXT: No valid session found");
+            setUser(null);
+          }
         }
       } catch (error) {
         console.error("❌ AUTH CONTEXT: Session initialization failed:", error);
@@ -153,20 +186,46 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("🔍 AUTH CONTEXT: Auth state changed:", event);
+      console.log("🔍 AUTH CONTEXT: Auth state changed:", event, !!session);
 
       if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
         if (session?.user) {
+          console.log("✅ AUTH CONTEXT: User signed in/refreshed");
           await fetchUserProfile(session.user);
         }
       } else if (event === "SIGNED_OUT") {
+        console.log("🔍 AUTH CONTEXT: User signed out");
         setUser(null);
       }
 
       setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
+    // Listen for visibility changes to refresh session when user comes back
+    const handleVisibilityChange = async () => {
+      if (!document.hidden) {
+        console.log(
+          "🔍 AUTH CONTEXT: Tab became visible, refreshing session..."
+        );
+        try {
+          const {
+            data: { session },
+          } = await supabase.auth.getSession();
+          if (session?.user) {
+            await fetchUserProfile(session.user);
+          }
+        } catch (error) {
+          console.error("❌ AUTH CONTEXT: Visibility refresh failed:", error);
+        }
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      subscription.unsubscribe();
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
   }, []);
 
   return (
