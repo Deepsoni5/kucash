@@ -36,18 +36,17 @@ function ResetPasswordFormContent() {
     color: "text-gray-400",
   });
 
-  // Check if we have the required tokens from the URL
-  const accessToken = searchParams.get("access_token");
-  const refreshToken = searchParams.get("refresh_token");
+  // Check if we have the required code from the URL (new Supabase Auth flow)
+  const code = searchParams.get("code");
 
   useEffect(() => {
-    if (!accessToken || !refreshToken) {
+    if (!code) {
       setErrors({
         general:
           "Invalid or expired reset link. Please request a new password reset.",
       });
     }
-  }, [accessToken, refreshToken]);
+  }, [code]);
 
   const calculatePasswordStrength = (password: string): PasswordStrength => {
     let score = 0;
@@ -107,7 +106,7 @@ function ResetPasswordFormContent() {
       newErrors.confirmPassword = "Passwords do not match";
     }
 
-    if (!accessToken || !refreshToken) {
+    if (!code) {
       newErrors.general = "Invalid or expired reset link";
     }
 
@@ -127,8 +126,7 @@ function ResetPasswordFormContent() {
     try {
       const formData = new FormData();
       formData.append("password", password);
-      formData.append("accessToken", accessToken!);
-      formData.append("refreshToken", refreshToken!);
+      formData.append("code", code!);
 
       const result = await updatePassword(formData);
 
@@ -166,7 +164,7 @@ function ResetPasswordFormContent() {
     }
   };
 
-  if (errors.general && (!accessToken || !refreshToken)) {
+  if (errors.general && !code) {
     return (
       <div className="text-center space-y-6">
         <div className="w-16 h-16 mx-auto rounded-full bg-red-100 dark:bg-red-900/20 flex items-center justify-center">

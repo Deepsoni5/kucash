@@ -310,19 +310,32 @@ export async function updatePassword(formData: FormData) {
   const supabase = await createClient();
 
   const password = formData.get("password") as string;
-  const accessToken = formData.get("accessToken") as string;
-  const refreshToken = formData.get("refreshToken") as string;
+  const code = formData.get("code") as string;
+
+  console.log("🔍 UPDATE PASSWORD DEBUG:", {
+    hasPassword: !!password,
+    hasCode: !!code,
+    code: code?.substring(0, 10) + "...", // Log partial code for debugging
+  });
 
   try {
-    // Set the session with the tokens from the reset link
-    const { error: sessionError } = await supabase.auth.setSession({
-      access_token: accessToken,
-      refresh_token: refreshToken,
+    // Exchange the code for a session
+    const { data: sessionData, error: sessionError } =
+      await supabase.auth.exchangeCodeForSession(code);
+
+    console.log("🔍 EXCHANGE CODE RESPONSE:", {
+      hasSession: !!sessionData.session,
+      hasUser: !!sessionData.user,
+      error: sessionError?.message,
     });
 
     if (sessionError) {
-      console.error("Session error:", sessionError);
+      console.error("❌ Session exchange error:", sessionError);
       return { error: "Invalid or expired reset link" };
+    }
+
+    if (!sessionData.session) {
+      return { error: "Failed to establish session" };
     }
 
     // Update the user's password
@@ -330,17 +343,22 @@ export async function updatePassword(formData: FormData) {
       password: password,
     });
 
+    console.log("🔍 PASSWORD UPDATE RESPONSE:", {
+      error: error?.message,
+    });
+
     if (error) {
-      console.error("Update password error:", error);
+      console.error("❌ Update password error:", error);
       return { error: error.message };
     }
 
+    console.log("✅ Password updated successfully");
     return {
       success: true,
       message: "Password updated successfully!",
     };
   } catch (error) {
-    console.error("Update password error:", error);
+    console.error("❌ Update password error:", error);
     return { error: "Failed to update password. Please try again." };
   }
 }
