@@ -62,7 +62,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         `🔍 AUTH CONTEXT: Database query completed in ${queryTime}ms`
       );
 
-      console.log("🔍 AUTH CONTEXT: Database response:", {
+      console.log("🔍 AUTH CONTEXT: Database responsee:", {
         hasData: !!userProfile,
         error: error?.message,
         errorCode: error?.code,
