@@ -85,16 +85,48 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
-    // Get initial session
+    // Get initial session and handle auth code exchange
     const getInitialSession = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+      try {
+        // First, try to exchange any auth code in the URL
+        const { searchParams } = new URL(window.location.href);
+        const code = searchParams.get("code");
 
-      if (session?.user) {
-        await fetchUserProfile(session.user);
+        if (code) {
+          console.log(
+            "🔍 AUTH CONTEXT: Found auth code, attempting exchange..."
+          );
+          const { data, error } = await supabase.auth.exchangeCodeForSession(
+            code
+          );
+
+          if (error) {
+            console.error("❌ AUTH CONTEXT: Code exchange failed:", error);
+            // Clear the code from URL to prevent infinite loops
+            const url = new URL(window.location.href);
+            url.searchParams.delete("code");
+            window.history.replaceState({}, "", url.toString());
+          } else if (data.session?.user) {
+            console.log("✅ AUTH CONTEXT: Code exchange successful");
+            await fetchUserProfile(data.session.user);
+            setLoading(false);
+            return;
+          }
+        }
+
+        // If no code or code exchange failed, get existing session
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+
+        if (session?.user) {
+          await fetchUserProfile(session.user);
+        }
+      } catch (error) {
+        console.error("❌ AUTH CONTEXT: Session initialization failed:", error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     getInitialSession();
@@ -103,11 +135,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (session?.user) {
-        await fetchUserProfile(session.user);
-      } else {
+      console.log("🔍 AUTH CONTEXT: Auth state changed:", event);
+
+      if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
+        if (session?.user) {
+          await fetchUserProfile(session.user);
+        }
+      } else if (event === "SIGNED_OUT") {
         setUser(null);
       }
+
       setLoading(false);
     });
 

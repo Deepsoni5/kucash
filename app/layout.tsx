@@ -1,10 +1,12 @@
 import type React from "react";
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Analytics } from "@vercel/analytics/next";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ScrollToTop } from "@/components/scroll-to-top";
 import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider } from "@/contexts/auth-context";
+import { AuthRedirectHandler } from "@/components/auth-redirect-handler";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -103,10 +105,14 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <AuthProvider>
-            <ScrollToTop />
-            {children}
-            <Toaster />
-            <Analytics />
+            <Suspense fallback={<div>Loading...</div>}>
+              <AuthRedirectHandler>
+                <ScrollToTop />
+                {children}
+                <Toaster />
+                <Analytics />
+              </AuthRedirectHandler>
+            </Suspense>
           </AuthProvider>
         </ThemeProvider>
       </body>
