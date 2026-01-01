@@ -9,6 +9,7 @@ import { loginUser } from "@/app/actions/auth-actions";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/auth-context";
+import Link from "next/link";
 
 interface LoginFormData {
   email: string;
@@ -154,6 +155,16 @@ export function LoginForm() {
         {errors.password && (
           <p className="text-xs text-red-500">{errors.password}</p>
         )}
+
+        {/* Forgot Password Link */}
+        <div className="flex justify-end">
+          <Link
+            href="/forgot-password"
+            className="text-sm text-primary hover:underline"
+          >
+            Forgot Password?
+          </Link>
+        </div>
       </div>
 
       <Button

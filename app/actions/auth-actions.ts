@@ -268,6 +268,83 @@ export async function resendVerificationEmail() {
   }
 }
 
+export async function resetPassword(formData: FormData) {
+  const supabase = await createClient();
+
+  const email = formData.get("email") as string;
+
+  console.log("🔍 RESET PASSWORD DEBUG:", {
+    email,
+    siteUrl: process.env.NEXT_PUBLIC_SITE_URL,
+    redirectTo: `${
+      process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
+    }/reset-password`,
+  });
+
+  try {
+    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${
+        process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
+      }/reset-password`,
+    });
+
+    console.log("🔍 SUPABASE RESET RESPONSE:", { data, error });
+
+    if (error) {
+      console.error("❌ Reset password error:", error);
+      return { error: error.message };
+    }
+
+    console.log("✅ Reset password email sent successfully");
+    return {
+      success: true,
+      message: "Password reset email sent successfully!",
+    };
+  } catch (error) {
+    console.error("❌ Reset password error:", error);
+    return { error: "Failed to send reset email. Please try again." };
+  }
+}
+
+export async function updatePassword(formData: FormData) {
+  const supabase = await createClient();
+
+  const password = formData.get("password") as string;
+  const accessToken = formData.get("accessToken") as string;
+  const refreshToken = formData.get("refreshToken") as string;
+
+  try {
+    // Set the session with the tokens from the reset link
+    const { error: sessionError } = await supabase.auth.setSession({
+      access_token: accessToken,
+      refresh_token: refreshToken,
+    });
+
+    if (sessionError) {
+      console.error("Session error:", sessionError);
+      return { error: "Invalid or expired reset link" };
+    }
+
+    // Update the user's password
+    const { error } = await supabase.auth.updateUser({
+      password: password,
+    });
+
+    if (error) {
+      console.error("Update password error:", error);
+      return { error: error.message };
+    }
+
+    return {
+      success: true,
+      message: "Password updated successfully!",
+    };
+  } catch (error) {
+    console.error("Update password error:", error);
+    return { error: "Failed to update password. Please try again." };
+  }
+}
+
 export async function uploadPhoto(
   file: File
 ): Promise<{ url?: string; publicId?: string; error?: string }> {
