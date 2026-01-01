@@ -49,7 +49,48 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.log("🔍 AUTH CONTEXT: Profile fetch result:", {
         hasProfile: !!userProfile,
         error: error?.message,
+        errorCode: error?.code,
+        errorDetails: error?.details,
       });
+
+      if (error) {
+        console.error("❌ AUTH CONTEXT: Profile fetch error details:", {
+          message: error.message,
+          code: error.code,
+          details: error.details,
+          hint: error.hint,
+        });
+
+        // If it's a "not found" error, create a basic user object from auth data
+        if (error.code === "PGRST116" || error.message?.includes("No rows")) {
+          console.log(
+            "🔄 AUTH CONTEXT: Profile not found, creating basic user from auth data"
+          );
+          const basicUser = {
+            id: authUser.id,
+            userId: authUser.id,
+            fullName:
+              authUser.user_metadata?.full_name ||
+              authUser.email?.split("@")[0] ||
+              "User",
+            email: authUser.email || "",
+            role: authUser.user_metadata?.role || "user",
+            agentId: authUser.user_metadata?.agent_id || null,
+            mobileNumber: authUser.user_metadata?.mobile_number || "",
+            isActive: true,
+            photoUrl: authUser.user_metadata?.photo_url || null,
+            postalAddress: authUser.user_metadata?.postal_address || null,
+            phoneGpayNumber: authUser.user_metadata?.phone_gpay_number || null,
+          };
+          console.log("✅ AUTH CONTEXT: Setting basic user:", basicUser);
+          setUser(basicUser);
+          return;
+        }
+
+        // For other errors, set user to null
+        setUser(null);
+        return;
+      }
 
       if (userProfile) {
         const user = {
@@ -65,15 +106,41 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           postalAddress: userProfile.postal_address,
           phoneGpayNumber: userProfile.phone_gpay_number,
         };
-        console.log("✅ AUTH CONTEXT: Setting user:", user.fullName);
+        console.log("✅ AUTH CONTEXT: Setting user:", {
+          fullName: user.fullName,
+          email: user.email,
+          role: user.role,
+        });
         setUser(user);
       } else {
-        console.log("❌ AUTH CONTEXT: No profile found");
+        console.log("❌ AUTH CONTEXT: No profile found, setting user to null");
         setUser(null);
       }
     } catch (error) {
-      console.error("❌ AUTH CONTEXT: Profile fetch error:", error);
-      setUser(null);
+      console.error("❌ AUTH CONTEXT: Profile fetch unexpected error:", error);
+
+      // CRITICAL FIX: Always create a basic user from auth data if profile fetch fails
+      console.log(
+        "🔄 AUTH CONTEXT: Creating fallback user from auth data due to error"
+      );
+      const fallbackUser = {
+        id: authUser.id,
+        userId: authUser.id,
+        fullName:
+          authUser.user_metadata?.full_name ||
+          authUser.email?.split("@")[0] ||
+          "User",
+        email: authUser.email || "",
+        role: authUser.user_metadata?.role || "user",
+        agentId: authUser.user_metadata?.agent_id || null,
+        mobileNumber: authUser.user_metadata?.mobile_number || "",
+        isActive: true,
+        photoUrl: authUser.user_metadata?.photo_url || null,
+        postalAddress: authUser.user_metadata?.postal_address || null,
+        phoneGpayNumber: authUser.user_metadata?.phone_gpay_number || null,
+      };
+      console.log("✅ AUTH CONTEXT: Setting fallback user:", fallbackUser);
+      setUser(fallbackUser);
     }
   };
 
