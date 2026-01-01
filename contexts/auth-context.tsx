@@ -39,56 +39,67 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const fetchUserProfile = async (authUser: User) => {
     console.log("🔍 AUTH CONTEXT: Fetching user profile for:", authUser.id);
+    console.log("🔍 AUTH CONTEXT: Auth user details:", {
+      id: authUser.id,
+      email: authUser.email,
+      metadata: authUser.user_metadata,
+      emailConfirmed: authUser.email_confirmed_at,
+    });
+
     try {
+      // Add detailed logging for the database query
+      console.log("🔍 AUTH CONTEXT: Starting database query...");
+
+      const startTime = Date.now();
       const { data: userProfile, error } = await supabase
         .from("users")
         .select("*")
         .eq("user_id", authUser.id)
         .single();
 
-      console.log("🔍 AUTH CONTEXT: Profile fetch result:", {
-        hasProfile: !!userProfile,
+      const queryTime = Date.now() - startTime;
+      console.log(
+        `🔍 AUTH CONTEXT: Database query completed in ${queryTime}ms`
+      );
+
+      console.log("🔍 AUTH CONTEXT: Database response:", {
+        hasData: !!userProfile,
         error: error?.message,
         errorCode: error?.code,
         errorDetails: error?.details,
+        errorHint: error?.hint,
+        data: userProfile
+          ? {
+              id: userProfile.id,
+              user_id: userProfile.user_id,
+              email: userProfile.email,
+              full_name: userProfile.full_name,
+            }
+          : null,
       });
 
       if (error) {
-        console.error("❌ AUTH CONTEXT: Profile fetch error details:", {
+        console.error("❌ AUTH CONTEXT: Database error:", {
           message: error.message,
           code: error.code,
           details: error.details,
           hint: error.hint,
         });
 
-        // If it's a "not found" error, create a basic user object from auth data
-        if (error.code === "PGRST116" || error.message?.includes("No rows")) {
-          console.log(
-            "🔄 AUTH CONTEXT: Profile not found, creating basic user from auth data"
+        // Check if it's a connection or permission error
+        if (
+          error.code === "PGRST301" ||
+          error.message?.includes("permission")
+        ) {
+          console.error(
+            "❌ AUTH CONTEXT: Permission denied - check RLS policies"
           );
-          const basicUser = {
-            id: authUser.id,
-            userId: authUser.id,
-            fullName:
-              authUser.user_metadata?.full_name ||
-              authUser.email?.split("@")[0] ||
-              "User",
-            email: authUser.email || "",
-            role: authUser.user_metadata?.role || "user",
-            agentId: authUser.user_metadata?.agent_id || null,
-            mobileNumber: authUser.user_metadata?.mobile_number || "",
-            isActive: true,
-            photoUrl: authUser.user_metadata?.photo_url || null,
-            postalAddress: authUser.user_metadata?.postal_address || null,
-            phoneGpayNumber: authUser.user_metadata?.phone_gpay_number || null,
-          };
-          console.log("✅ AUTH CONTEXT: Setting basic user:", basicUser);
-          setUser(basicUser);
-          return;
+        } else if (error.code === "PGRST116") {
+          console.log("ℹ️ AUTH CONTEXT: User profile not found in database");
         }
 
-        // For other errors, set user to null
         setUser(null);
+        setLoading(false);
         return;
       }
 
@@ -106,143 +117,107 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           postalAddress: userProfile.postal_address,
           phoneGpayNumber: userProfile.phone_gpay_number,
         };
-        console.log("✅ AUTH CONTEXT: Setting user:", {
+        console.log("✅ AUTH CONTEXT: Successfully set user from database:", {
           fullName: user.fullName,
           email: user.email,
           role: user.role,
         });
         setUser(user);
       } else {
-        console.log("❌ AUTH CONTEXT: No profile found, setting user to null");
+        console.log("❌ AUTH CONTEXT: No user profile data returned");
         setUser(null);
       }
     } catch (error) {
-      console.error("❌ AUTH CONTEXT: Profile fetch unexpected error:", error);
-
-      // CRITICAL FIX: Always create a basic user from auth data if profile fetch fails
-      console.log(
-        "🔄 AUTH CONTEXT: Creating fallback user from auth data due to error"
+      console.error(
+        "❌ AUTH CONTEXT: Unexpected error during profile fetch:",
+        error
       );
-      const fallbackUser = {
-        id: authUser.id,
-        userId: authUser.id,
-        fullName:
-          authUser.user_metadata?.full_name ||
-          authUser.email?.split("@")[0] ||
-          "User",
-        email: authUser.email || "",
-        role: authUser.user_metadata?.role || "user",
-        agentId: authUser.user_metadata?.agent_id || null,
-        mobileNumber: authUser.user_metadata?.mobile_number || "",
-        isActive: true,
-        photoUrl: authUser.user_metadata?.photo_url || null,
-        postalAddress: authUser.user_metadata?.postal_address || null,
-        phoneGpayNumber: authUser.user_metadata?.phone_gpay_number || null,
-      };
-      console.log("✅ AUTH CONTEXT: Setting fallback user:", fallbackUser);
-      setUser(fallbackUser);
+      setUser(null);
+    } finally {
+      console.log("🔍 AUTH CONTEXT: Setting loading to false");
+      setLoading(false);
     }
   };
 
   const refreshUser = async () => {
     console.log("🔍 AUTH CONTEXT: Refreshing user...");
+    setLoading(true);
+
     try {
-      // First try to get the current session
       const {
         data: { session },
-        error: sessionError,
+        error,
       } = await supabase.auth.getSession();
 
-      if (sessionError) {
-        console.error("❌ AUTH CONTEXT: Session error:", sessionError);
+      console.log("🔍 AUTH CONTEXT: Session refresh result:", {
+        hasSession: !!session,
+        hasUser: !!session?.user,
+        error: error?.message,
+      });
+
+      if (error) {
+        console.error("❌ AUTH CONTEXT: Session error:", error);
         setUser(null);
+        setLoading(false);
         return;
       }
 
       if (session?.user) {
-        console.log("🔍 AUTH CONTEXT: Got session user:", session.user.id);
         await fetchUserProfile(session.user);
       } else {
-        // Try to refresh the session
-        console.log("🔍 AUTH CONTEXT: No session, trying to refresh...");
-        const { data: refreshData, error: refreshError } =
-          await supabase.auth.refreshSession();
-
-        if (refreshData.session?.user && !refreshError) {
-          console.log("✅ AUTH CONTEXT: Session refreshed successfully");
-          await fetchUserProfile(refreshData.session.user);
-        } else {
-          console.log("❌ AUTH CONTEXT: No valid session found");
-          setUser(null);
-        }
+        console.log("❌ AUTH CONTEXT: No session found during refresh");
+        setUser(null);
+        setLoading(false);
       }
     } catch (error) {
-      console.error("❌ AUTH CONTEXT: Refresh user error:", error);
+      console.error("❌ AUTH CONTEXT: Refresh error:", error);
       setUser(null);
+      setLoading(false);
     }
   };
 
   const signOut = async () => {
+    console.log("🔍 AUTH CONTEXT: Signing out...");
     await supabase.auth.signOut();
     setUser(null);
   };
 
   useEffect(() => {
-    // Get initial session and handle auth code exchange
     const getInitialSession = async () => {
+      console.log("🔍 AUTH CONTEXT: Getting initial session...");
+
       try {
-        // First, try to exchange any auth code in the URL
-        const { searchParams } = new URL(window.location.href);
-        const code = searchParams.get("code");
-
-        if (code) {
-          console.log(
-            "🔍 AUTH CONTEXT: Found auth code, attempting exchange..."
-          );
-          const { data, error } = await supabase.auth.exchangeCodeForSession(
-            code
-          );
-
-          if (error) {
-            console.error("❌ AUTH CONTEXT: Code exchange failed:", error);
-            // Clear the code from URL to prevent infinite loops
-            const url = new URL(window.location.href);
-            url.searchParams.delete("code");
-            window.history.replaceState({}, "", url.toString());
-          } else if (data.session?.user) {
-            console.log("✅ AUTH CONTEXT: Code exchange successful");
-            await fetchUserProfile(data.session.user);
-            setLoading(false);
-            return;
-          }
-        }
-
-        // If no code or code exchange failed, get existing session
         const {
           data: { session },
+          error,
         } = await supabase.auth.getSession();
 
-        console.log("🔍 AUTH CONTEXT: Got session:", !!session);
+        console.log("🔍 AUTH CONTEXT: Initial session result:", {
+          hasSession: !!session,
+          hasUser: !!session?.user,
+          error: error?.message,
+        });
+
+        if (error) {
+          console.error("❌ AUTH CONTEXT: Initial session error:", error);
+          setLoading(false);
+          return;
+        }
 
         if (session?.user) {
+          console.log(
+            "✅ AUTH CONTEXT: Found initial session, fetching profile..."
+          );
           await fetchUserProfile(session.user);
         } else {
-          // Try to refresh the session
-          console.log("🔍 AUTH CONTEXT: No session, trying to refresh...");
-          const { data: refreshData, error: refreshError } =
-            await supabase.auth.refreshSession();
-
-          if (refreshData.session?.user && !refreshError) {
-            console.log("✅ AUTH CONTEXT: Session refreshed successfully");
-            await fetchUserProfile(refreshData.session.user);
-          } else {
-            console.log("❌ AUTH CONTEXT: No valid session found");
-            setUser(null);
-          }
+          console.log("❌ AUTH CONTEXT: No initial session found");
+          setLoading(false);
         }
       } catch (error) {
-        console.error("❌ AUTH CONTEXT: Session initialization failed:", error);
-      } finally {
+        console.error(
+          "❌ AUTH CONTEXT: Initial session unexpected error:",
+          error
+        );
         setLoading(false);
       }
     };
@@ -253,45 +228,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("🔍 AUTH CONTEXT: Auth state changed:", event, !!session);
+      console.log("🔍 AUTH CONTEXT: Auth state changed:", event, {
+        hasSession: !!session,
+        hasUser: !!session?.user,
+      });
 
-      if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
-        if (session?.user) {
-          console.log("✅ AUTH CONTEXT: User signed in/refreshed");
-          await fetchUserProfile(session.user);
-        }
+      if (event === "SIGNED_IN" && session?.user) {
+        console.log("✅ AUTH CONTEXT: User signed in, fetching profile...");
+        await fetchUserProfile(session.user);
       } else if (event === "SIGNED_OUT") {
         console.log("🔍 AUTH CONTEXT: User signed out");
         setUser(null);
+        setLoading(false);
+      } else if (event === "TOKEN_REFRESHED" && session?.user) {
+        console.log("🔄 AUTH CONTEXT: Token refreshed, updating profile...");
+        await fetchUserProfile(session.user);
       }
-
-      setLoading(false);
     });
 
-    // Listen for visibility changes to refresh session when user comes back
-    const handleVisibilityChange = async () => {
-      if (!document.hidden) {
-        console.log(
-          "🔍 AUTH CONTEXT: Tab became visible, refreshing session..."
-        );
-        try {
-          const {
-            data: { session },
-          } = await supabase.auth.getSession();
-          if (session?.user) {
-            await fetchUserProfile(session.user);
-          }
-        } catch (error) {
-          console.error("❌ AUTH CONTEXT: Visibility refresh failed:", error);
-        }
-      }
-    };
-
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
     return () => {
+      console.log("🔍 AUTH CONTEXT: Cleaning up subscription");
       subscription.unsubscribe();
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, []);
 
