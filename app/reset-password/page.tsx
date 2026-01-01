@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { WhatsAppButton } from "@/components/whatsapp-button";
@@ -19,7 +20,10 @@ export const metadata: Metadata = {
     "Create a new password for your KuCash account. Enter your new password to regain access.",
 };
 
-export default function ResetPasswordPage() {
+// Make this page dynamic to prevent build-time errors with searchParams
+export const dynamic = "force-dynamic";
+
+function ResetPasswordPageContent() {
   return (
     <>
       <Navbar />
@@ -51,7 +55,23 @@ export default function ResetPasswordPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <ResetPasswordForm />
+                  <Suspense
+                    fallback={
+                      <div className="space-y-6 animate-pulse">
+                        <div className="space-y-2">
+                          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-24"></div>
+                          <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                        </div>
+                        <div className="space-y-2">
+                          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-32"></div>
+                          <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                        </div>
+                        <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+                      </div>
+                    }
+                  >
+                    <ResetPasswordForm />
+                  </Suspense>
 
                   {/* Security Note */}
                   <div className="flex items-center gap-3 p-4 rounded-xl bg-muted/50 border border-border">
@@ -105,4 +125,8 @@ export default function ResetPasswordPage() {
       <WhatsAppButton />
     </>
   );
+}
+
+export default function ResetPasswordPage() {
+  return <ResetPasswordPageContent />;
 }

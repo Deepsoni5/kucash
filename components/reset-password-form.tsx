@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,7 +15,7 @@ interface PasswordStrength {
   color: string;
 }
 
-export function ResetPasswordForm() {
+function ResetPasswordFormContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
@@ -348,5 +348,31 @@ export function ResetPasswordForm() {
         )}
       </Button>
     </form>
+  );
+}
+
+// Loading fallback component
+function ResetPasswordFormSkeleton() {
+  return (
+    <div className="space-y-6 animate-pulse">
+      <div className="space-y-2">
+        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-24"></div>
+        <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded"></div>
+      </div>
+      <div className="space-y-2">
+        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-32"></div>
+        <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded"></div>
+      </div>
+      <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+    </div>
+  );
+}
+
+// Main export with Suspense wrapper
+export function ResetPasswordForm() {
+  return (
+    <Suspense fallback={<ResetPasswordFormSkeleton />}>
+      <ResetPasswordFormContent />
+    </Suspense>
   );
 }
