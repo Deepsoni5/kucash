@@ -38,12 +38,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const supabase = createClient();
 
   const fetchUserProfile = async (authUser: User) => {
+    console.log("🔍 AUTH CONTEXT: Fetching user profile for:", authUser.id);
     try {
       const { data: userProfile, error } = await supabase
         .from("users")
         .select("*")
         .eq("user_id", authUser.id)
         .single();
+
+      console.log("🔍 AUTH CONTEXT: Profile fetch result:", {
+        hasProfile: !!userProfile,
+        error: error?.message,
+      });
 
       if (userProfile) {
         const user = {
@@ -59,22 +65,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           postalAddress: userProfile.postal_address,
           phoneGpayNumber: userProfile.phone_gpay_number,
         };
+        console.log("✅ AUTH CONTEXT: Setting user:", user.fullName);
         setUser(user);
       } else {
+        console.log("❌ AUTH CONTEXT: No profile found");
         setUser(null);
       }
     } catch (error) {
+      console.error("❌ AUTH CONTEXT: Profile fetch error:", error);
       setUser(null);
     }
   };
 
   const refreshUser = async () => {
-    const {
-      data: { user: authUser },
-    } = await supabase.auth.getUser();
-    if (authUser) {
-      await fetchUserProfile(authUser);
-    } else {
+    console.log("🔍 AUTH CONTEXT: Refreshing user...");
+    try {
+      const {
+        data: { user: authUser },
+      } = await supabase.auth.getUser();
+
+      console.log("🔍 AUTH CONTEXT: Got auth user:", !!authUser);
+
+      if (authUser) {
+        await fetchUserProfile(authUser);
+      } else {
+        setUser(null);
+      }
+    } catch (error) {
+      console.error("❌ AUTH CONTEXT: Refresh user error:", error);
       setUser(null);
     }
   };
