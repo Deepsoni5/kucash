@@ -269,40 +269,190 @@ export async function resendVerificationEmail() {
 }
 
 export async function resetPassword(formData: FormData) {
-  const supabase = await createClient();
-
+  console.log("🚀🚀🚀 RESET PASSWORD FUNCTION CALLED - NEW CODE 🚀🚀🚀");
   const email = formData.get("email") as string;
+  console.log("📧 EMAIL:", email);
 
-  console.log("🔍 RESET PASSWORD DEBUG:", {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const redirectTo = `${siteUrl}/reset-password`;
+
+  console.log("🔍 ENVIRONMENT CHECK:", {
     email,
-    siteUrl: process.env.NEXT_PUBLIC_SITE_URL,
-    redirectTo: `${
-      process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
-    }/reset-password`,
+    siteUrl,
+    redirectTo,
+    hasSupabaseUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
+    hasServiceRoleKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
+    hasEmailUser: !!process.env.EMAIL_USER,
+    hasEmailAppPassword: !!process.env.EMAIL_APP_PASSWORD,
   });
 
   try {
-    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${
-        process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
-      }/reset-password`,
-    });
+    // Check if service role key is available for Admin API
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-    console.log("🔍 SUPABASE RESET RESPONSE:", { data, error });
+    if (!serviceRoleKey) {
+      console.error("❌ STEP 1 FAILED: SUPABASE_SERVICE_ROLE_KEY not found");
+      console.error(
+        "⚠️ Please add SUPABASE_SERVICE_ROLE_KEY to your .env file"
+      );
+      return {
+        error: "Email service configuration missing. Please contact support.",
+      };
+    }
+    console.log("✅ STEP 1: Service role key found");
 
-    if (error) {
-      console.error("❌ Reset password error:", error);
-      return { error: error.message };
+    // Use Admin API to generate link without sending email
+    console.log("🔄 STEP 2: Creating Supabase Admin client...");
+    const { createClient: createAdminClient } = await import(
+      "@supabase/supabase-js"
+    );
+    const adminSupabase = createAdminClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      serviceRoleKey,
+      {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false,
+        },
+      }
+    );
+    console.log("✅ STEP 2: Admin client created");
+
+    // First, check if user exists using the users table
+    console.log("🔄 STEP 3: Checking if user exists...");
+    const supabase = await createClient();
+    const { data: userProfile, error: userError } = await supabase
+      .from("users")
+      .select("user_id, email")
+      .eq("email", email)
+      .single();
+
+    if (userError || !userProfile) {
+      // Don't reveal if user exists or not for security
+      console.log(
+        "⚠️ STEP 3: User not found, but returning success for security"
+      );
+      return {
+        success: true,
+        message:
+          "If an account exists with this email, a password reset link has been sent.",
+      };
+    }
+    console.log("✅ STEP 3: User found:", userProfile.user_id);
+
+    // Generate the recovery link using Admin API
+    console.log("🔄 STEP 4: Generating recovery link...");
+    const { data: linkData, error: linkError } =
+      await adminSupabase.auth.admin.generateLink({
+        type: "recovery",
+        email: email,
+        options: {
+          redirectTo,
+        },
+      });
+
+    if (linkError) {
+      console.error("❌ STEP 4 ERROR:", linkError);
+      console.error("❌ Link error details:", {
+        message: linkError.message,
+        status: linkError.status,
+        name: linkError.name,
+      });
     }
 
-    console.log("✅ Reset password email sent successfully");
+    if (linkError || !linkData?.properties?.action_link) {
+      console.error("❌ STEP 4 FAILED: Error generating reset link");
+      return { error: "Failed to generate reset link. Please try again." };
+    }
+
+    const resetLink = linkData.properties.action_link;
+    console.log("✅ STEP 4: Reset link generated successfully");
+    console.log("🔗 RESET LINK:", resetLink.substring(0, 100) + "...");
+
+    // Get user's name for email personalization (use the userProfile from step 3)
+    console.log("🔄 STEP 5: Using user profile from step 3...");
+    const { data: fullUserProfile, error: profileError } = await supabase
+      .from("users")
+      .select("full_name")
+      .eq("email", email)
+      .single();
+
+    if (profileError) {
+      console.log(
+        "⚠️ STEP 5: Could not fetch user profile:",
+        profileError.message
+      );
+    }
+
+    const userName = fullUserProfile?.full_name || undefined;
+    console.log(
+      "✅ STEP 5: User profile fetched, name:",
+      userName || "Not found"
+    );
+
+    // Send email using Nodemailer
+    console.log("🔄 STEP 6: Preparing email template...");
+    const { sendEmail } = await import("@/lib/nodemailer");
+    const { getPasswordResetEmailTemplate } = await import(
+      "@/lib/email-templates"
+    );
+
+    const emailTemplate = getPasswordResetEmailTemplate(resetLink, userName);
+    console.log("✅ STEP 6: Email template prepared");
+    console.log("📧 EMAIL TEMPLATE:", {
+      subject: emailTemplate.subject,
+      htmlLength: emailTemplate.html.length,
+      textLength: emailTemplate.text.length,
+    });
+
+    console.log("🔄 STEP 7: Sending email via Nodemailer...");
+    try {
+      const emailResult = await sendEmail({
+        to: email,
+        subject: emailTemplate.subject,
+        html: emailTemplate.html,
+        text: emailTemplate.text,
+      });
+
+      console.log("✅ STEP 7: Email sent successfully!");
+      console.log("📧 EMAIL RESULT:", emailResult);
+      console.log("=".repeat(60));
+      console.log("✅ RESET PASSWORD COMPLETED SUCCESSFULLY");
+      console.log("=".repeat(60));
+
+      return {
+        success: true,
+        message: "Password reset email sent successfully!",
+      };
+    } catch (emailError: any) {
+      console.error("❌ STEP 7 FAILED: Error sending email via Nodemailer");
+      console.error("❌ EMAIL ERROR:", emailError);
+      console.error("❌ EMAIL ERROR DETAILS:", {
+        message: emailError.message,
+        code: emailError.code,
+        command: emailError.command,
+        response: emailError.response,
+        responseCode: emailError.responseCode,
+        stack: emailError.stack,
+      });
+      console.log("=".repeat(60));
+      return {
+        error:
+          emailError.message ||
+          "Failed to send reset email. Please try again later.",
+      };
+    }
+  } catch (error: any) {
+    console.error("❌ RESET PASSWORD FATAL ERROR:", error);
+    console.error("❌ ERROR DETAILS:", {
+      message: error.message,
+      stack: error.stack,
+      name: error.name,
+    });
+    console.log("=".repeat(60));
     return {
-      success: true,
-      message: "Password reset email sent successfully!",
+      error: error.message || "Failed to send reset email. Please try again.",
     };
-  } catch (error) {
-    console.error("❌ Reset password error:", error);
-    return { error: "Failed to send reset email. Please try again." };
   }
 }
 

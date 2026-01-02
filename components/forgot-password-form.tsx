@@ -36,10 +36,18 @@ export function ForgotPasswordForm() {
     setIsLoading(true);
 
     try {
+      console.log(
+        "🔵 FORGOT PASSWORD FORM: Calling resetPassword function with email:",
+        email
+      );
       const formData = new FormData();
       formData.append("email", email);
 
+      console.log(
+        "🔵 FORGOT PASSWORD FORM: FormData created, calling resetPassword..."
+      );
       const result = await resetPassword(formData);
+      console.log("🔵 FORGOT PASSWORD FORM: resetPassword returned:", result);
 
       if (result.error) {
         setError(result.error);

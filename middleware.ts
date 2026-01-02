@@ -37,9 +37,7 @@ export async function middleware(request: NextRequest) {
     } = await supabase.auth.getUser();
 
     if (error) {
-      console.log("🔍 MIDDLEWARE: Auth error:", error.message);
     } else {
-      console.log("🔍 MIDDLEWARE: User found:", !!user);
     }
 
     // Protect admin routes
