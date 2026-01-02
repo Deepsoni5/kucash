@@ -18,21 +18,12 @@ export function Navbar() {
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
 
-  // Debug logging
-  useEffect(() => {
-    console.log("🔍 NAVBAR DEBUG - Auth state:", {
-      user: user?.fullName || "No user",
-      loading,
-      hasUser: !!user,
-    });
-  }, [user, loading]);
-
-  // Force re-render when auth state changes
+  // Only log auth state changes, not on every render
   useEffect(() => {
     if (!loading) {
       console.log("🔄 NAVBAR: Auth loading completed, user:", !!user);
     }
-  }, [user, loading]);
+  }, [loading]); // Only depend on loading, not user
 
   useEffect(() => {
     setMounted(true);

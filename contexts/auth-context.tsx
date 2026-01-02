@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { User } from "@supabase/supabase-js";
 
@@ -37,37 +37,55 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const supabase = createClient();
 
-  const fetchUserProfile = async (authUser: User) => {
+  // Cache to prevent unnecessary database calls
+  const userCacheRef = useRef<{
+    userId: string | null;
+    profile: UserProfile | null;
+    timestamp: number;
+  }>({
+    userId: null,
+    profile: null,
+    timestamp: 0,
+  });
+
+  const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes cache
+
+  const fetchUserProfile = async (authUser: User, forceRefresh = false) => {
     console.log("🔍 AUTH CONTEXT: Fetching user profile for:", authUser.id);
+
+    // Check cache first (unless force refresh)
+    const now = Date.now();
+    const cache = userCacheRef.current;
+
+    if (
+      !forceRefresh &&
+      cache.userId === authUser.id &&
+      cache.profile &&
+      now - cache.timestamp < CACHE_DURATION
+    ) {
+      console.log("✅ AUTH CONTEXT: Using cached profile");
+      setUser(cache.profile);
+      setLoading(false);
+      return;
+    }
 
     try {
       console.log("🔍 AUTH CONTEXT: Starting database query...");
 
-      // Create timeout promise
-      const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => {
-          reject(new Error("Database query timeout"));
-        }, 5000); // 5 second timeout
-      });
-
-      // Create query promise
-      const queryPromise = supabase
+      const startTime = Date.now();
+      const { data: userProfile, error } = await supabase
         .from("users")
         .select("*")
         .eq("user_id", authUser.id)
         .single();
 
-      const startTime = Date.now();
-      const { data: userProfile, error } = (await Promise.race([
-        queryPromise,
-        timeoutPromise,
-      ])) as any;
       const queryTime = Date.now() - startTime;
-
       console.log(`✅ AUTH CONTEXT: Query completed in ${queryTime}ms`);
 
       if (error) {
         console.error("❌ AUTH CONTEXT: Database error:", error);
+        // Clear cache on error
+        userCacheRef.current = { userId: null, profile: null, timestamp: 0 };
         setUser(null);
       } else if (userProfile) {
         const user = {
@@ -83,14 +101,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           postalAddress: userProfile.postal_address,
           phoneGpayNumber: userProfile.phone_gpay_number,
         };
+
+        // Update cache
+        userCacheRef.current = {
+          userId: authUser.id,
+          profile: user,
+          timestamp: now,
+        };
+
         console.log("✅ AUTH CONTEXT: User set successfully:", user.fullName);
         setUser(user);
       } else {
         console.log("❌ AUTH CONTEXT: No profile found");
+        userCacheRef.current = { userId: null, profile: null, timestamp: 0 };
         setUser(null);
       }
     } catch (error) {
       console.error("❌ AUTH CONTEXT: Query failed:", error);
+      // Clear cache on error
+      userCacheRef.current = { userId: null, profile: null, timestamp: 0 };
       setUser(null);
     } finally {
       console.log("🔍 AUTH CONTEXT: Setting loading false");
@@ -99,7 +128,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const refreshUser = async () => {
-    console.log("🔍 AUTH CONTEXT: Refreshing user...");
     setLoading(true);
 
     try {
@@ -108,13 +136,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } = await supabase.auth.getSession();
 
       if (session?.user) {
-        await fetchUserProfile(session.user);
+        await fetchUserProfile(session.user, true); // Force refresh
       } else {
+        userCacheRef.current = { userId: null, profile: null, timestamp: 0 };
         setUser(null);
         setLoading(false);
       }
     } catch (error) {
       console.error("❌ AUTH CONTEXT: Refresh failed:", error);
+      userCacheRef.current = { userId: null, profile: null, timestamp: 0 };
       setUser(null);
       setLoading(false);
     }
@@ -122,23 +152,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = async () => {
     await supabase.auth.signOut();
+    // Clear cache on sign out
+    userCacheRef.current = { userId: null, profile: null, timestamp: 0 };
     setUser(null);
   };
 
   useEffect(() => {
     const getInitialSession = async () => {
-      console.log("🔍 AUTH CONTEXT: Getting initial session...");
-
       try {
         const {
           data: { session },
         } = await supabase.auth.getSession();
 
         if (session?.user) {
-          console.log("✅ AUTH CONTEXT: Initial session found");
           await fetchUserProfile(session.user);
         } else {
-          console.log("❌ AUTH CONTEXT: No initial session");
           setLoading(false);
         }
       } catch (error) {
@@ -151,12 +179,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("🔍 AUTH CONTEXT: Auth changed:", event, !!session?.user);
-
+    } = supabase.auth.onAuthStateChange(async (event: any, session: any) => {
       if (event === "SIGNED_IN" && session?.user) {
-        await fetchUserProfile(session.user);
+        // Only fetch if it's a different user or cache is empty
+        const cache = userCacheRef.current;
+        if (cache.userId !== session.user.id || !cache.profile) {
+          await fetchUserProfile(session.user);
+        } else {
+          console.log("✅ AUTH CONTEXT: Same user, using cache");
+          setUser(cache.profile);
+          setLoading(false);
+        }
       } else if (event === "SIGNED_OUT") {
+        userCacheRef.current = { userId: null, profile: null, timestamp: 0 };
         setUser(null);
         setLoading(false);
       }
