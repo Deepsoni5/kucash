@@ -27,10 +27,7 @@ transporter.verify((error, success) => {
   if (error) {
     console.error("❌ NODEMAILER VERIFICATION ERROR:", error);
     console.error("❌ Error details:", {
-      code: error.code,
-      command: error.command,
-      response: error.response,
-      responseCode: error.responseCode,
+      error,
     });
   } else {
     console.log("✅ NODEMAILER VERIFIED - Ready to send emails");
@@ -76,7 +73,7 @@ export async function sendEmail({
     console.log("📧 SUBJECT:", mailOptions.subject);
 
     const info = await transporter.sendMail(mailOptions);
-    
+
     console.log("✅ EMAIL SENT SUCCESSFULLY:", {
       messageId: info.messageId,
       response: info.response,
@@ -84,7 +81,7 @@ export async function sendEmail({
       rejected: info.rejected,
       pending: info.pending,
     });
-    
+
     return { success: true, messageId: info.messageId };
   } catch (error: any) {
     console.error("❌ EMAIL SEND ERROR:", error);
@@ -98,5 +95,3 @@ export async function sendEmail({
     throw error;
   }
 }
-
-
