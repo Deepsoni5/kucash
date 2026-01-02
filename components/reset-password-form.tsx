@@ -36,17 +36,42 @@ function ResetPasswordFormContent() {
     color: "text-gray-400",
   });
 
-  // Check if we have the required code from the URL (new Supabase Auth flow)
-  const code = searchParams.get("code");
+  // Check if we have the required tokens from the URL fragments (Supabase recovery flow)
+  const [urlTokens, setUrlTokens] = useState<{
+    access_token?: string;
+    refresh_token?: string;
+    expires_at?: string;
+    type?: string;
+  }>({});
 
   useEffect(() => {
-    if (!code) {
+    // Parse URL fragments (hash parameters) for Supabase recovery tokens
+    const hash = window.location.hash.substring(1);
+    const params = new URLSearchParams(hash);
+
+    const tokens = {
+      access_token: params.get("access_token") || undefined,
+      refresh_token: params.get("refresh_token") || undefined,
+      expires_at: params.get("expires_at") || undefined,
+      type: params.get("type") || undefined,
+    };
+
+    console.log("🔍 RESET PASSWORD FORM - URL Tokens:", tokens);
+
+    setUrlTokens(tokens);
+
+    // Check if we have valid recovery tokens
+    if (
+      !tokens.access_token ||
+      !tokens.refresh_token ||
+      tokens.type !== "recovery"
+    ) {
       setErrors({
         general:
           "Invalid or expired reset link. Please request a new password reset.",
       });
     }
-  }, [code]);
+  }, []);
 
   const calculatePasswordStrength = (password: string): PasswordStrength => {
     let score = 0;
@@ -106,7 +131,11 @@ function ResetPasswordFormContent() {
       newErrors.confirmPassword = "Passwords do not match";
     }
 
-    if (!code) {
+    if (
+      !urlTokens.access_token ||
+      !urlTokens.refresh_token ||
+      urlTokens.type !== "recovery"
+    ) {
       newErrors.general = "Invalid or expired reset link";
     }
 
@@ -126,7 +155,8 @@ function ResetPasswordFormContent() {
     try {
       const formData = new FormData();
       formData.append("password", password);
-      formData.append("code", code!);
+      formData.append("access_token", urlTokens.access_token!);
+      formData.append("refresh_token", urlTokens.refresh_token!);
 
       const result = await updatePassword(formData);
 
@@ -182,7 +212,7 @@ function ResetPasswordFormContent() {
     }
   };
 
-  if (errors.general && !code) {
+  if (errors.general && !urlTokens.access_token) {
     return (
       <div className="text-center space-y-6">
         <div className="w-16 h-16 mx-auto rounded-full bg-red-100 dark:bg-red-900/20 flex items-center justify-center">
@@ -218,8 +248,8 @@ function ResetPasswordFormContent() {
     );
   }
 
-  // Show specific error message for PKCE or other errors when code exists but there's an error
-  if (errors.general && code) {
+  // Show specific error message for PKCE or other errors when tokens exist but there's an error
+  if (errors.general && urlTokens.access_token) {
     const isPkceError = errors.general.includes("same browser");
     const isExpiredError = errors.general.includes("expired");
 

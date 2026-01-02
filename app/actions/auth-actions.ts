@@ -460,40 +460,37 @@ export async function updatePassword(formData: FormData) {
   const supabase = await createClient();
 
   const password = formData.get("password") as string;
-  const code = formData.get("code") as string;
+  const accessToken = formData.get("access_token") as string;
+  const refreshToken = formData.get("refresh_token") as string;
 
   console.log("🔍 UPDATE PASSWORD DEBUG:", {
     hasPassword: !!password,
-    hasCode: !!code,
-    code: code?.substring(0, 10) + "...", // Log partial code for debugging
+    hasAccessToken: !!accessToken,
+    hasRefreshToken: !!refreshToken,
+    accessTokenLength: accessToken?.length || 0,
   });
 
   try {
-    // Exchange the code for a session
+    // Set the session using the tokens from the recovery link
     const { data: sessionData, error: sessionError } =
-      await supabase.auth.exchangeCodeForSession(code);
+      await supabase.auth.setSession({
+        access_token: accessToken,
+        refresh_token: refreshToken,
+      });
 
-    console.log("🔍 EXCHANGE CODE RESPONSE:", {
+    console.log("🔍 SET SESSION RESPONSE:", {
       hasSession: !!sessionData.session,
       hasUser: !!sessionData.user,
       error: sessionError?.message,
     });
 
     if (sessionError) {
-      console.error("❌ Session exchange error:", sessionError);
+      console.error("❌ Session error:", sessionError);
 
-      // Handle PKCE error specifically
-      if (sessionError.message?.includes("PKCE code verifier not found")) {
-        return {
-          error:
-            "Please use the same browser where you requested the password reset. If you're using the same browser, try requesting a new password reset link.",
-          errorType: "pkce_error",
-        };
-      }
-
-      // Handle expired code
+      // Handle expired token
       if (
         sessionError.message?.includes("expired") ||
+        sessionError.message?.includes("invalid") ||
         sessionError.status === 400
       ) {
         return {
