@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -20,6 +20,7 @@ import {
   FolderOpen,
   Edit3,
   UserCheck,
+  Loader2,
 } from "lucide-react";
 import { adminLogout } from "@/app/actions/admin-auth";
 
@@ -83,6 +84,12 @@ function SidebarContent({
   onNavigate?: () => void;
 }) {
   const pathname = usePathname();
+  const [navigatingTo, setNavigatingTo] = useState<string | null>(null);
+
+  // Reset navigating state when pathname changes
+  useEffect(() => {
+    setNavigatingTo(null);
+  }, [pathname]);
 
   return (
     <div className="flex flex-col h-full">
@@ -142,7 +149,14 @@ function SidebarContent({
           const Icon = item.icon;
 
           return (
-            <Link key={item.name} href={item.href} onClick={onNavigate}>
+            <Link
+              key={item.name}
+              href={item.href}
+              onClick={() => {
+                setNavigatingTo(item.href);
+                onNavigate?.();
+              }}
+            >
               <div
                 className={cn(
                   "flex items-center gap-3 px-3 py-2 rounded-lg transition-colors",
@@ -152,11 +166,15 @@ function SidebarContent({
                   collapsed && "justify-center"
                 )}
               >
-                <Icon className="w-5 h-5 flex-shrink-0" />
+                {navigatingTo === item.href ? (
+                  <Loader2 className="w-5 h-5 flex-shrink-0 animate-spin text-red-400" />
+                ) : (
+                  <Icon className="w-5 h-5 flex-shrink-0" />
+                )}
                 {!collapsed && (
                   <>
                     <span className="flex-1">{item.name}</span>
-                    {item.badge && contactCount > 0 && (
+                    {item.badge && contactCount > 0 && !navigatingTo && (
                       <Badge variant="destructive" className="text-xs">
                         {contactCount}
                       </Badge>

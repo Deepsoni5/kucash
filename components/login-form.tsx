@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { loginUser, resendVerificationEmail } from "@/app/actions/auth-actions";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
@@ -300,7 +300,14 @@ export function LoginForm() {
               disabled={isResendingEmail}
               className="ml-4"
             >
-              {isResendingEmail ? "Sending..." : "Resend Email"}
+              {isResendingEmail ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Sending...
+                </>
+              ) : (
+                "Resend Email"
+              )}
             </Button>
           </div>
         </div>
@@ -312,7 +319,14 @@ export function LoginForm() {
         className="w-full rounded-full bg-gradient-to-r from-primary to-accent"
         disabled={isLoading}
       >
-        {isLoading ? "Logging in..." : "Login"}
+        {isLoading ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Logging in...
+          </>
+        ) : (
+          "Login"
+        )}
       </Button>
     </form>
   );

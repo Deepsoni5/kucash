@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Shield, Eye, EyeOff } from "lucide-react";
+import { Shield, Eye, EyeOff, Loader2 } from "lucide-react";
 import { adminLogin } from "@/app/actions/admin-auth";
 
 export function AdminLoginForm() {
@@ -116,7 +116,14 @@ export function AdminLoginForm() {
             className="w-full rounded-full bg-gradient-to-r from-red-500 to-orange-500"
             disabled={isLoading}
           >
-            {isLoading ? "Signing In..." : "Sign In"}
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Signing In...
+              </>
+            ) : (
+              "Sign In"
+            )}
           </Button>
         </form>
 
