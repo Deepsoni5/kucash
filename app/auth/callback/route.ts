@@ -64,6 +64,10 @@ export async function GET(request: NextRequest) {
         }
 
         // 2. Set is_active = TRUE in the users table
+        console.log(
+          "🔄 AUTH CALLBACK: Setting is_active to TRUE for user:",
+          userId
+        );
         const { error: updateError } = await supabase
           .from("users")
           .update({ is_active: true })
@@ -83,6 +87,18 @@ export async function GET(request: NextRequest) {
           );
           return NextResponse.redirect(errorUrl);
         }
+
+        // Verify the update worked
+        const { data: verifyUser, error: verifyError } = await supabase
+          .from("users")
+          .select("is_active")
+          .eq("user_id", userId)
+          .single();
+
+        console.log("🔍 AUTH CALLBACK: User activation verification:", {
+          is_active: verifyUser?.is_active,
+          verifyError: verifyError?.message,
+        });
 
         console.log(
           "✅ AUTH CALLBACK: Email verified and user activated successfully"

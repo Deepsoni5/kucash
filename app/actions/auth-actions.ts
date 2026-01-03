@@ -45,7 +45,6 @@ export async function signupUser(formData: FormData) {
       postal_address: signupData.postalAddress,
       phone_gpay_number: signupData.phoneGpayNumber,
       photo_url: signupData.photoUrl,
-      is_active: false, // Set to false initially, will be true after email verification
     };
 
     console.log("🔍 SIGNUP DEBUG - Metadata being sent:", metaData);
@@ -130,6 +129,26 @@ export async function signupUser(formData: FormData) {
       }
 
       userProfile = profile;
+
+      // IMPORTANT: Set is_active to FALSE after user creation
+      if (userProfile) {
+        console.log("🔄 SIGNUP DEBUG - Setting is_active to FALSE...");
+        const { error: updateError } = await supabase
+          .from("users")
+          .update({ is_active: false })
+          .eq("user_id", data.user.id);
+
+        if (updateError) {
+          console.error(
+            "❌ SIGNUP ERROR - Failed to set is_active to false:",
+            updateError
+          );
+        } else {
+          console.log("✅ SIGNUP DEBUG - is_active set to FALSE successfully");
+          // Update the local userProfile object
+          userProfile.is_active = false;
+        }
+      }
     }
 
     console.log("🔍 SIGNUP DEBUG - Final result:", {
@@ -239,6 +258,13 @@ export async function loginUser(formData: FormData) {
     }
 
     // Check if user account is active
+    console.log("🔍 LOGIN DEBUG - User profile:", {
+      userId: userProfile.user_id,
+      email: userProfile.email,
+      is_active: userProfile.is_active,
+      email_confirmed: !!data.user.email_confirmed_at,
+    });
+
     if (!userProfile.is_active) {
       return {
         error:
