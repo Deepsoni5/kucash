@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { WhatsAppButton } from "@/components/whatsapp-button";
@@ -54,7 +55,23 @@ export default function LoginPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <LoginForm />
+                  <Suspense
+                    fallback={
+                      <div className="space-y-4 animate-pulse">
+                        <div className="space-y-2">
+                          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-16"></div>
+                          <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                        </div>
+                        <div className="space-y-2">
+                          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-20"></div>
+                          <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                        </div>
+                        <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+                      </div>
+                    }
+                  >
+                    <LoginForm />
+                  </Suspense>
 
                   {/* Security Note */}
                   <div className="flex items-center gap-3 p-4 rounded-xl bg-muted/50 border border-border">

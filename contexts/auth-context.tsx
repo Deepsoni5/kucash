@@ -51,8 +51,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes cache
 
   const fetchUserProfile = async (authUser: User, forceRefresh = false) => {
-    console.log("🔍 AUTH CONTEXT: Fetching user profile for:", authUser.id);
-
     // Check cache first (unless force refresh)
     const now = Date.now();
     const cache = userCacheRef.current;
@@ -70,21 +68,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     try {
-      console.log("🔍 AUTH CONTEXT: Starting database query...");
-
       const startTime = Date.now();
-      const { data: userProfile, error } = await supabase
+
+      // Create timeout promise that rejects after 8 seconds
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => {
+          reject(new Error("Database query timeout"));
+        }, 8000);
+      });
+
+      // Create the database query promise
+      const queryPromise = supabase
         .from("users")
         .select("*")
         .eq("user_id", authUser.id)
         .single();
 
+      // Race between query and timeout
+      const { data: userProfile, error } = (await Promise.race([
+        queryPromise,
+        timeoutPromise,
+      ])) as any;
+
       const queryTime = Date.now() - startTime;
-      console.log(`✅ AUTH CONTEXT: Query completed in ${queryTime}ms`);
+
+      if (queryTime > 2000) {
+        console.log(`⚠️ AUTH CONTEXT: Slow query (${queryTime}ms)`);
+      }
 
       if (error) {
         console.error("❌ AUTH CONTEXT: Database error:", error);
-        // Clear cache on error
+        // Clear cache on actual error
         userCacheRef.current = { userId: null, profile: null, timestamp: 0 };
         setUser(null);
       } else if (userProfile) {
@@ -109,20 +123,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           timestamp: now,
         };
 
-        console.log("✅ AUTH CONTEXT: User set successfully:", user.fullName);
         setUser(user);
       } else {
         console.log("❌ AUTH CONTEXT: No profile found");
         userCacheRef.current = { userId: null, profile: null, timestamp: 0 };
         setUser(null);
       }
-    } catch (error) {
-      console.error("❌ AUTH CONTEXT: Query failed:", error);
-      // Clear cache on error
-      userCacheRef.current = { userId: null, profile: null, timestamp: 0 };
-      setUser(null);
+    } catch (error: any) {
+      // Handle timeout errors gracefully
+      if (error.message?.includes("timeout")) {
+        console.error("❌ AUTH CONTEXT: Query timeout - using fallback");
+        // Use cached data if available, otherwise set to null
+        const cache = userCacheRef.current;
+        if (cache.profile && cache.userId === authUser.id) {
+          console.log("✅ AUTH CONTEXT: Using cached profile after timeout");
+          setUser(cache.profile);
+        } else {
+          console.log("❌ AUTH CONTEXT: No cache available after timeout");
+          setUser(null);
+        }
+      } else {
+        console.error("❌ AUTH CONTEXT: Query failed:", error);
+        // Clear cache on other errors
+        userCacheRef.current = { userId: null, profile: null, timestamp: 0 };
+        setUser(null);
+      }
     } finally {
-      console.log("🔍 AUTH CONTEXT: Setting loading false");
       setLoading(false);
     }
   };

@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff } from "lucide-react";
 import { loginUser } from "@/app/actions/auth-actions";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/auth-context";
 import Link from "next/link";
@@ -18,6 +18,7 @@ interface LoginFormData {
 
 export function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { toast } = useToast();
   const { refreshUser } = useAuth();
   const [formData, setFormData] = useState<LoginFormData>({
@@ -30,6 +31,66 @@ export function LoginForm() {
   const [errors, setErrors] = useState<
     Partial<Record<keyof LoginFormData, string>>
   >({});
+
+  // Handle URL parameters for success/error messages
+  useEffect(() => {
+    const message = searchParams.get("message");
+    const error = searchParams.get("error");
+    const verified = searchParams.get("verified");
+
+    if (message) {
+      toast({
+        title: "Success!",
+        description: decodeURIComponent(message),
+      });
+
+      // Clean up URL
+      const url = new URL(window.location.href);
+      url.searchParams.delete("message");
+      window.history.replaceState({}, "", url.toString());
+    }
+
+    if (verified === "true") {
+      toast({
+        title: "Email Verified!",
+        description:
+          "Your email has been verified successfully. You can now log in.",
+      });
+
+      // Clean up URL
+      const url = new URL(window.location.href);
+      url.searchParams.delete("verified");
+      window.history.replaceState({}, "", url.toString());
+    }
+
+    if (error) {
+      let errorMessage = "An error occurred. Please try again.";
+
+      switch (error) {
+        case "verification_failed":
+          errorMessage =
+            "Email verification failed. Please try again or contact support.";
+          break;
+        case "configuration_error":
+          errorMessage = "Service configuration error. Please contact support.";
+          break;
+        case "callback_error":
+          errorMessage = "Authentication error. Please try again.";
+          break;
+      }
+
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: errorMessage,
+      });
+
+      // Clean up URL
+      const url = new URL(window.location.href);
+      url.searchParams.delete("error");
+      window.history.replaceState({}, "", url.toString());
+    }
+  }, [searchParams, toast]);
 
   const handleInputChange = (field: keyof LoginFormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));

@@ -1,7 +1,6 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
 
 interface SignupData {
   fullName: string;
@@ -50,13 +49,37 @@ export async function signupUser(formData: FormData) {
 
     console.log("🔍 SIGNUP DEBUG - Metadata being sent:", metaData);
 
-    // Use Supabase Auth for signup
-    const { data, error } = await supabase.auth.signUp({
+    // Check if service role key is available for Admin API
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+    if (!serviceRoleKey) {
+      console.error("❌ SIGNUP ERROR: SUPABASE_SERVICE_ROLE_KEY not found");
+      return {
+        error: "Account creation service unavailable. Please contact support.",
+      };
+    }
+
+    // Use Admin API to create user WITHOUT sending automatic email
+    const { createClient: createAdminClient } = await import(
+      "@supabase/supabase-js"
+    );
+    const adminSupabase = createAdminClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      serviceRoleKey,
+      {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false,
+        },
+      }
+    );
+
+    // Create user via Admin API (no automatic email)
+    const { data, error } = await adminSupabase.auth.admin.createUser({
       email: signupData.email,
       password: signupData.password,
-      options: {
-        data: metaData,
-      },
+      user_metadata: metaData,
+      email_confirm: false, // Don't auto-confirm, we'll handle verification ourselves
     });
 
     console.log("🔍 SIGNUP DEBUG - Supabase response:", {
@@ -114,6 +137,47 @@ export async function signupUser(formData: FormData) {
       agentId: userProfile?.agent_id,
       role: userProfile?.role,
     });
+
+    // Send custom verification email using our own mail system
+    if (data.user && !data.user.email_confirmed_at) {
+      console.log("🔄 SIGNUP: Sending custom verification email...");
+
+      try {
+        const siteUrl =
+          process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
+        // Create a simple verification link that goes to auth callback with user info
+        const verificationLink = `${siteUrl}/auth/callback?type=email_verification&email=${encodeURIComponent(
+          signupData.email
+        )}&user_id=${data.user.id}`;
+
+        // Send email using our custom mail system
+        const { sendEmail } = await import("@/lib/nodemailer");
+        const { getEmailVerificationTemplate } = await import(
+          "@/lib/email-templates"
+        );
+
+        const emailTemplate = getEmailVerificationTemplate(
+          verificationLink,
+          signupData.fullName
+        );
+
+        await sendEmail({
+          to: signupData.email,
+          subject: emailTemplate.subject,
+          html: emailTemplate.html,
+          text: emailTemplate.text,
+        });
+
+        console.log("✅ SIGNUP: Custom verification email sent successfully");
+      } catch (emailError) {
+        console.error(
+          "❌ SIGNUP: Failed to send verification email:",
+          emailError
+        );
+        // Don't fail the signup if email sending fails
+      }
+    }
 
     return {
       success: true,
@@ -248,23 +312,74 @@ export async function getCurrentUser() {
   }
 }
 
-export async function resendVerificationEmail() {
-  const supabase = await createClient();
+export async function resendVerificationEmail(email?: string) {
+  console.log("🚀 RESEND VERIFICATION EMAIL - Custom Implementation");
 
   try {
-    const { error } = await supabase.auth.resend({
-      type: "signup",
-      email: "", // Will use the current user's email
-    });
+    const supabase = await createClient();
+    let userEmail = email;
 
-    if (error) {
-      return { error: error.message };
+    // If no email provided, get current user's email
+    if (!userEmail) {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) {
+        return { error: "No user found. Please log in first." };
+      }
+      userEmail = user.email;
     }
 
-    return { success: true, message: "Verification email sent!" };
-  } catch (error) {
-    console.error("Resend verification error:", error);
-    return { error: "Failed to resend verification email" };
+    if (!userEmail) {
+      return { error: "Email address is required." };
+    }
+
+    console.log("📧 RESEND VERIFICATION: Email:", userEmail);
+
+    // Get user profile for personalization
+    const { data: userProfile } = await supabase
+      .from("users")
+      .select("full_name, user_id")
+      .eq("email", userEmail)
+      .single();
+
+    if (!userProfile) {
+      return { error: "User not found." };
+    }
+
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
+    // Create a simple verification link
+    const verificationLink = `${siteUrl}/auth/callback?type=email_verification&email=${encodeURIComponent(
+      userEmail
+    )}&user_id=${userProfile.user_id}`;
+
+    // Send email using our custom mail system
+    const { sendEmail } = await import("@/lib/nodemailer");
+    const { getEmailVerificationTemplate } = await import(
+      "@/lib/email-templates"
+    );
+
+    const emailTemplate = getEmailVerificationTemplate(
+      verificationLink,
+      userProfile.full_name
+    );
+
+    await sendEmail({
+      to: userEmail,
+      subject: emailTemplate.subject,
+      html: emailTemplate.html,
+      text: emailTemplate.text,
+    });
+
+    console.log("✅ RESEND VERIFICATION: Email sent successfully");
+    return { success: true, message: "Verification email sent successfully!" };
+  } catch (error: any) {
+    console.error("❌ RESEND VERIFICATION: Error:", error);
+    return {
+      error:
+        error.message || "Failed to send verification email. Please try again.",
+    };
   }
 }
 
