@@ -45,6 +45,7 @@ export async function signupUser(formData: FormData) {
       postal_address: signupData.postalAddress,
       phone_gpay_number: signupData.phoneGpayNumber,
       photo_url: signupData.photoUrl,
+      is_active: false, // Set to false initially, will be true after email verification
     };
 
     console.log("🔍 SIGNUP DEBUG - Metadata being sent:", metaData);
@@ -235,6 +236,14 @@ export async function loginUser(formData: FormData) {
     if (profileError || !userProfile) {
       console.error("Profile fetch error:", profileError);
       return { error: "User profile not found" };
+    }
+
+    // Check if user account is active
+    if (!userProfile.is_active) {
+      return {
+        error:
+          "Your account is not yet activated. Please check your email and click the verification link to activate your account.",
+      };
     }
 
     return {

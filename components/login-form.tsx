@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff } from "lucide-react";
-import { loginUser } from "@/app/actions/auth-actions";
+import { loginUser, resendVerificationEmail } from "@/app/actions/auth-actions";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/auth-context";
@@ -28,6 +28,8 @@ export function LoginForm() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isResendingEmail, setIsResendingEmail] = useState(false);
+  const [showResendOption, setShowResendOption] = useState(false);
   const [errors, setErrors] = useState<
     Partial<Record<keyof LoginFormData, string>>
   >({});
@@ -135,6 +137,16 @@ export function LoginForm() {
       const result = await loginUser(submitData);
 
       if (result.error) {
+        // Check if it's an account activation error
+        if (
+          result.error.includes("not yet activated") ||
+          result.error.includes("verify your email")
+        ) {
+          setShowResendOption(true);
+        } else {
+          setShowResendOption(false);
+        }
+
         toast({
           variant: "destructive",
           title: "Login Failed",
@@ -170,6 +182,46 @@ export function LoginForm() {
       });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleResendVerification = async () => {
+    if (!formData.email) {
+      toast({
+        variant: "destructive",
+        title: "Email Required",
+        description: "Please enter your email address first.",
+      });
+      return;
+    }
+
+    setIsResendingEmail(true);
+
+    try {
+      const result = await resendVerificationEmail(formData.email);
+
+      if (result.error) {
+        toast({
+          variant: "destructive",
+          title: "Resend Failed",
+          description: result.error,
+        });
+      } else {
+        toast({
+          title: "Email Sent!",
+          description:
+            "Verification email has been sent. Please check your inbox.",
+        });
+        setShowResendOption(false);
+      }
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Resend Failed",
+        description: "Failed to resend verification email. Please try again.",
+      });
+    } finally {
+      setIsResendingEmail(false);
     }
   };
 
@@ -227,6 +279,32 @@ export function LoginForm() {
           </Link>
         </div>
       </div>
+
+      {/* Resend Verification Email Option */}
+      {showResendOption && (
+        <div className="p-4 rounded-xl bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-orange-800 dark:text-orange-200">
+                Account Not Activated
+              </p>
+              <p className="text-xs text-orange-600 dark:text-orange-300">
+                Please check your email and click the verification link
+              </p>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={handleResendVerification}
+              disabled={isResendingEmail}
+              className="ml-4"
+            >
+              {isResendingEmail ? "Sending..." : "Resend Email"}
+            </Button>
+          </div>
+        </div>
+      )}
 
       <Button
         type="submit"

@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
           }
         );
 
-        // Manually confirm the user's email
+        // 1. Manually confirm the user's email in Supabase Auth
         const { error: confirmError } =
           await adminSupabase.auth.admin.updateUserById(userId, {
             email_confirm: true,
@@ -63,14 +63,37 @@ export async function GET(request: NextRequest) {
           return NextResponse.redirect(errorUrl);
         }
 
-        console.log("✅ AUTH CALLBACK: Email verified successfully");
+        // 2. Set is_active = TRUE in the users table
+        const { error: updateError } = await supabase
+          .from("users")
+          .update({ is_active: true })
+          .eq("user_id", userId)
+          .eq("email", email);
 
-        // Redirect to login with success message
+        if (updateError) {
+          console.error(
+            "❌ AUTH CALLBACK: Failed to activate user:",
+            updateError
+          );
+          const errorUrl = new URL("/login", origin);
+          errorUrl.searchParams.set("error", "activation_failed");
+          errorUrl.searchParams.set(
+            "message",
+            "Account activation failed. Please contact support."
+          );
+          return NextResponse.redirect(errorUrl);
+        }
+
+        console.log(
+          "✅ AUTH CALLBACK: Email verified and user activated successfully"
+        );
+
+        // 3. Redirect to login page with success message
         const successUrl = new URL("/login", origin);
         successUrl.searchParams.set("verified", "true");
         successUrl.searchParams.set(
           "message",
-          "Email verified successfully! You can now log in."
+          "Email verified successfully! Your account is now active. You can log in."
         );
         return NextResponse.redirect(successUrl);
       } else {
