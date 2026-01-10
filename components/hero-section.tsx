@@ -42,7 +42,7 @@ export function HeroSection() {
             {/* Subheading */}
             <p className="text-base sm:text-lg lg:text-xl text-muted-foreground leading-relaxed max-w-xl text-pretty">
               {
-                "Whether it's a new home, a growing business, or a personal emergency—KuCash connects you to India's most trusted lenders. Simple process. Transparent terms. Zero confusion."
+                "Whether it's a new home, a growing business, or a personal emergency—KuCash is a technology-driven digital loan facilitation platform that enables users to apply for loans through a paperless, automated process. Our system improves traditional lending workflows by reducing processing time and simplifying access to trusted lenders."
               }
             </p>
 

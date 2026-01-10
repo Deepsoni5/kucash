@@ -3,6 +3,7 @@ import { HeroSection } from "@/components/hero-section";
 import { PartnersSection } from "@/components/partners-section";
 import { LoanProductsSection } from "@/components/loan-products-section";
 import { HowItWorksSection } from "@/components/how-it-works-section";
+import { InnovationSection } from "@/components/innovation-section";
 import { FeaturesSection } from "@/components/features-section";
 import { StatsSection } from "@/components/stats-section";
 import { EMICTASection } from "@/components/emi-cta-section";
@@ -28,6 +29,7 @@ export default async function HomePage() {
         <PartnersSection />
         <LoanProductsSection />
         <HowItWorksSection />
+        <InnovationSection />
         <FeaturesSection />
         <StatsSection />
         <EMICTASection />
