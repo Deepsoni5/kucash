@@ -17,6 +17,7 @@ import {
   X,
   Home,
   Calculator,
+  Briefcase,
 } from "lucide-react";
 
 const navigation = [
@@ -34,6 +35,11 @@ const navigation = [
     name: "Profile",
     href: "/customer/profile",
     icon: User,
+  },
+  {
+    name: "Become an Agent",
+    href: "/customer/become-agent",
+    icon: Briefcase,
   },
 ];
 

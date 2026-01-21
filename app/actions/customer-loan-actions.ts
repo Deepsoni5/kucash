@@ -239,9 +239,16 @@ export async function updateCustomerProfile(
 ) {
   const supabase = await createClient();
 
+  // Sanitize data: convert empty strings to null
+  const sanitizedData = {
+    ...profileData,
+    phone_gpay_number: profileData.phone_gpay_number || null,
+    mobile_number: profileData.mobile_number || null,
+  };
+
   const { error } = await supabase
     .from("users")
-    .update(profileData)
+    .update(sanitizedData)
     .eq("user_id", userId);
 
   if (error) {

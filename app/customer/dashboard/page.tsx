@@ -201,6 +201,12 @@ export default async function CustomerDashboard() {
                     Update Profile
                   </Button>
                 </Link>
+                <Link href="/customer/become-agent" className="block">
+                  <Button className="w-full justify-start bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0">
+                    <TrendingUp className="mr-2 h-4 w-4" />
+                    Become an Agent
+                  </Button>
+                </Link>
               </div>
 
               {/* Support */}
