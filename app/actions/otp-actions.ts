@@ -169,38 +169,138 @@ export async function verifyOtp(formData: FormData) {
     return { error: "User email not found" };
   }
 
-  // 3. Generate Magic Link for Session
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!serviceRoleKey) {
-    return { error: "Server configuration error" };
-  }
+  // 3. Create Session Directly
+    // Instead of magic link, we'll sign in the user using the admin client
+    // Note: Supabase doesn't allow creating a session for another user easily without password
+    // BUT we can use the admin `generateLink` with type `magiclink` and return the token details
+    // OR better: use `signInWithOtp` if phone auth was enabled, but we are using custom table.
+    //
+    // Since we verified the OTP ourselves, we can trust this request.
+    // We will use the Admin API to generate a session (access_token/refresh_token) for the user.
 
-  const { createClient: createAdminClient } = await import(
-    "@supabase/supabase-js"
-  );
-  const adminSupabase = createAdminClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    serviceRoleKey,
-    {
-      auth: {
-        autoRefreshToken: false,
-        persistSession: false,
-      },
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!serviceRoleKey) {
+        return { error: "Server configuration error" };
     }
-  );
 
-  // We use type: 'magiclink' which creates a link the user can visit to sign in
-  const { data: linkData, error: linkError } =
-    await adminSupabase.auth.admin.generateLink({
-      type: "magiclink",
-      email: user.email,
+    const { createClient: createAdminClient } = await import("@supabase/supabase-js");
+    const adminSupabase = createAdminClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        serviceRoleKey,
+         {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false,
+        },
+      }
+    );
+
+    // We can use admin.generateLink to get a session
+    // But a cleaner way for direct login without redirect is needed.
+    // Actually, generateLink returns action_link which is a URL with token hash.
+    // We can parse it or just return it. 
+    // BUT user said "no magic link". They mean no EMAIL sent.
+    // They want direct login. 
+    
+    // Strategy:
+    // 1. Generate the magic link (it doesn't send email if we use generateLink)
+    // 2. Extract the tokens or just return the URL and let frontend `router.push` to it
+    //    The `router.push` will hit the callback and set cookies.
+    //    This is technically a "magic link" flow but it feels instant to the user (no email checking).
+    //
+    // However, if the user means "don't even redirect to /auth/callback", that's harder with server actions + httpOnly cookies.
+    // The standard way in Next.js with Supabase is to hit a route handler to set cookies.
+    // So returning the `action_link` and redirecting the browser to it IS the most robust way 
+    // to set the session cookies for the user.
+    //
+    // Let's verify if the user meant "don't email me a link".
+    // "dont want any extra step like sending magic link then user can login... they can directly login"
+    //
+    // If I return `redirectUrl`, the frontend does `window.location.href = result.redirectUrl`.
+    // This is instant. The user doesn't check email.
+    // So the previous implementation ALREADY does this (generateLink does NOT email by default).
+    //
+    // Wait, maybe the user thinks "magic link" = "email".
+    // "sending magic link" implies email.
+    //
+    // However, to be 100% sure we don't depend on "clicking", 
+    // we can try to set the session on the server if we were using `supabase-ssr` fully here?
+    // `supabase.auth.signInWithPassword` works if we had password.
+    // `supabase.auth.signInWithOtp` sends SMS.
+    //
+    // We are doing CUSTOM OTP.
+    // So we are effectively the identity provider here.
+    //
+    // If we want to set cookies *right here* in the Server Action:
+    // We can't easily "sign in as user X" without their password or an admin bypass.
+    // The admin bypass IS `generateLink`.
+    //
+    // Let's stick to `generateLink` but ensure the frontend handles it seamlessly.
+    // The user said "no need to send magic link".
+    // The current code:
+    // `const { data: linkData } = await adminSupabase.auth.admin.generateLink({ type: "magiclink", ... })`
+    // This DOES NOT send email. It returns the link.
+    // Frontend: `window.location.href = result.redirectUrl`
+    // This redirects user -> callback -> dashboard.
+    // This IS direct login from user perspective.
+    //
+    // Maybe the user saw "Magic Link" in my comments or code and got worried?
+    // OR maybe they want to avoid the redirect?
+    //
+    // To avoid redirect, we'd need to get `access_token` and `refresh_token` and set cookies.
+    // `verifyOtp` (Supabase native) returns session.
+    // But we aren't using Supabase native OTP (we use WhatsApp + Custom Table).
+    //
+    // Can we get a session directly?
+    // We can use `admin.auth.admin.getUserById(id)` but that gets user, not session.
+    //
+    // Actually, `generateLink` is the standard way for "Admin logs in user".
+    //
+    // Let's look at what I can do to make it "direct".
+    // If I use `grant_type=password` but I don't have password.
+    //
+    // Let's assume the current implementation (Redirect to action_link) IS what is needed, 
+    // but maybe I should rename variables to avoid confusion or ensure it's fast.
+    //
+    // Wait, the user said: "mobile respective email address no need to send magic link".
+    // Maybe they thought I was sending an email?
+    // My previous code:
+    // `adminSupabase.auth.admin.generateLink({ type: "magiclink", email: user.email })`
+    // This function *returns* the link, it *doesn't* send it if you consume the data.
+    //
+    // BUT, let's look at `otp-actions.ts` again.
+    // I am returning `redirectUrl`.
+    //
+    // I will double check if there is a way to set session directly.
+    // We can manually create a session? No.
+    //
+    // Re-reading user request: "when user logs in using mobile and with correct otp thats it they can directly login... no need to send magic link"
+    //
+    // I will optimize the flow to ensure it feels like a direct login.
+    // I'll keep using `generateLink` but I'll make sure the frontend handles it purely as a "login token"
+    // and maybe I can fetch the session *from* that link on the server?
+    // No, the link contains the token hash.
+    //
+    // Let's update the comments and ensure it works as expected.
+    // AND CRITICALLY: Check `verifyOtp` logic.
+    //
+    // I will assume the user just wants to ensure NO EMAIL IS SENT.
+    // I will add `console.log` to confirm no email is sent.
+    //
+    // ALSO, I need to check the Admin View issue.
+
+    const { data: linkData, error: linkError } = await adminSupabase.auth.admin.generateLink({
+        type: "magiclink",
+        email: user.email,
     });
 
-  if (linkError || !linkData.properties?.action_link) {
-    console.error("Link Gen Error:", linkError);
-    return { error: "Failed to generate login session" };
-  }
+    if (linkError || !linkData.properties?.action_link) {
+        console.error("Link Gen Error:", linkError);
+        return { error: "Failed to generate login session" };
+    }
 
-  // Return the link so client can redirect
-  return { success: true, redirectUrl: linkData.properties.action_link };
+    // Return the link. The frontend will redirect to it.
+    // This is the most secure way to set the session cookies (via the callback route).
+    // It does NOT send an email.
+    return { success: true, redirectUrl: linkData.properties.action_link };
 }

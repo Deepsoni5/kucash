@@ -294,6 +294,46 @@ export function LoansTable({ loans }: LoansTableProps) {
     window.open(whatsappUrl, "_blank");
   };
 
+  const getFileExtension = (url: string) => {
+    // Try to get extension from URL path
+    const path = url.split("?")[0];
+    const extension = path.split(".").pop()?.toLowerCase();
+    
+    // Check if it's a known image or PDF extension
+    if (["jpg", "jpeg", "png", "gif", "webp", "pdf"].includes(extension || "")) {
+      return extension;
+    }
+    
+    // Fallback based on content type checking if possible, or default to jpg for images
+    // If it looks like a cloudinary URL without extension, it might be an image
+    return "jpg";
+  };
+
+  const isPdf = (url: string) => {
+    return getFileExtension(url) === "pdf";
+  };
+
+  const renderDocumentPreview = (url: string, alt: string) => {
+    if (isPdf(url)) {
+      return (
+        <div className="w-full h-20 bg-gray-100 flex flex-col items-center justify-center rounded mb-2 text-gray-500">
+           <FileText className="w-8 h-8 mb-1" />
+           <span className="text-xs">PDF Document</span>
+        </div>
+      );
+    }
+    
+    return (
+      <CloudinaryImage
+        src={url}
+        alt={alt}
+        width={100}
+        height={60}
+        className="w-full h-20 object-cover rounded mb-2"
+      />
+    );
+  };
+
   const downloadDocument = async (url: string, filename: string) => {
     try {
       const response = await fetch(url);
@@ -342,7 +382,7 @@ export function LoansTable({ loans }: LoansTableProps) {
 
     for (const doc of documents) {
       if (doc.url) {
-        const extension = doc.url.split(".").pop() || "jpg";
+        const extension = getFileExtension(doc.url) || "jpg";
         await downloadDocument(doc.url, `${doc.name}.${extension}`);
         // Add delay between downloads
         await new Promise((resolve) => setTimeout(resolve, 500));
@@ -1112,13 +1152,7 @@ export function LoansTable({ loans }: LoansTableProps) {
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   {selectedLoan.pan_card_url && (
                     <div className="text-center p-4 border rounded-lg">
-                      <CloudinaryImage
-                        src={selectedLoan.pan_card_url}
-                        alt="PAN Card"
-                        width={100}
-                        height={60}
-                        className="w-full h-20 object-cover rounded mb-2"
-                      />
+                      {renderDocumentPreview(selectedLoan.pan_card_url, "PAN Card")}
                       <p className="text-sm font-medium">PAN Card</p>
                       <Button
                         size="sm"
@@ -1130,7 +1164,7 @@ export function LoansTable({ loans }: LoansTableProps) {
                             `pan_${selectedLoan.full_name.replace(
                               /\s+/g,
                               "_"
-                            )}.jpg`
+                            )}.${getFileExtension(selectedLoan.pan_card_url!)}`
                           )
                         }
                       >
@@ -1141,13 +1175,7 @@ export function LoansTable({ loans }: LoansTableProps) {
                   )}
                   {selectedLoan.aadhar_card_url && (
                     <div className="text-center p-4 border rounded-lg">
-                      <CloudinaryImage
-                        src={selectedLoan.aadhar_card_url}
-                        alt="Aadhar Card"
-                        width={100}
-                        height={60}
-                        className="w-full h-20 object-cover rounded mb-2"
-                      />
+                       {renderDocumentPreview(selectedLoan.aadhar_card_url, "Aadhar Card")}
                       <p className="text-sm font-medium">Aadhar Card</p>
                       <Button
                         size="sm"
@@ -1159,7 +1187,7 @@ export function LoansTable({ loans }: LoansTableProps) {
                             `aadhar_${selectedLoan.full_name.replace(
                               /\s+/g,
                               "_"
-                            )}.jpg`
+                            )}.${getFileExtension(selectedLoan.aadhar_card_url!)}`
                           )
                         }
                       >
@@ -1170,13 +1198,7 @@ export function LoansTable({ loans }: LoansTableProps) {
                   )}
                   {selectedLoan.income_proof_url && (
                     <div className="text-center p-4 border rounded-lg">
-                      <CloudinaryImage
-                        src={selectedLoan.income_proof_url}
-                        alt="Income Proof"
-                        width={100}
-                        height={60}
-                        className="w-full h-20 object-cover rounded mb-2"
-                      />
+                      {renderDocumentPreview(selectedLoan.income_proof_url, "Income Proof")}
                       <p className="text-sm font-medium">Income Proof</p>
                       <Button
                         size="sm"
@@ -1188,7 +1210,7 @@ export function LoansTable({ loans }: LoansTableProps) {
                             `income_${selectedLoan.full_name.replace(
                               /\s+/g,
                               "_"
-                            )}.jpg`
+                            )}.${getFileExtension(selectedLoan.income_proof_url!)}`
                           )
                         }
                       >
@@ -1199,13 +1221,7 @@ export function LoansTable({ loans }: LoansTableProps) {
                   )}
                   {selectedLoan.address_proof_url && (
                     <div className="text-center p-4 border rounded-lg">
-                      <CloudinaryImage
-                        src={selectedLoan.address_proof_url}
-                        alt="Address Proof"
-                        width={100}
-                        height={60}
-                        className="w-full h-20 object-cover rounded mb-2"
-                      />
+                      {renderDocumentPreview(selectedLoan.address_proof_url, "Address Proof")}
                       <p className="text-sm font-medium">Address Proof</p>
                       <Button
                         size="sm"
@@ -1217,7 +1233,7 @@ export function LoansTable({ loans }: LoansTableProps) {
                             `address_${selectedLoan.full_name.replace(
                               /\s+/g,
                               "_"
-                            )}.jpg`
+                            )}.${getFileExtension(selectedLoan.address_proof_url!)}`
                           )
                         }
                       >
