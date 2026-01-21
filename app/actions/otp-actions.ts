@@ -81,7 +81,7 @@ export async function sendOtp(formData: FormData) {
 
   try {
     const response = await fetch(
-      `https://graph.facebook.com/v24.0/${PHONE_ID}/messages`,
+      `https://graph.facebook.com/v19.0/${PHONE_ID}/messages`,
       {
         method: "POST",
         headers: {
@@ -94,7 +94,7 @@ export async function sendOtp(formData: FormData) {
           type: "template",
           template: {
             name: TEMPLATE_NAME,
-            language: { code: "en_US" },
+            language: { code: "en" },
             components: [
               {
                 type: "body",
@@ -106,15 +106,12 @@ export async function sendOtp(formData: FormData) {
       }
     );
 
-    console.log(response);
-
     const data = await response.json();
 
     if (!response.ok) {
       console.error("Meta API Error:", JSON.stringify(data));
-      // Don't reveal internal API errors to user, but log it
       return {
-        error: "Failed to send OTP via WhatsApp. Please try again later.",
+        error: data?.error?.message || "Failed to send OTP via WhatsApp.",
       };
     }
   } catch (err) {
