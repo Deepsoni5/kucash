@@ -4,7 +4,7 @@
 
 export function WhatsAppButton() {
   const handleWhatsAppClick = () => {
-    const phoneNumber = "919008367818"
+    const phoneNumber = "918431767538"
     const message = encodeURIComponent(
       "Hi KuCash Team! I am interested in learning more about your loan products. Please help me with the details.",
     )

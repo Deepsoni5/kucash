@@ -138,7 +138,7 @@ export function getPasswordResetEmailTemplate(
             
             <div class="info-box">
                 <strong>ℹ️ Need help?</strong><br>
-                If you're having trouble resetting your password, contact us at <a href="mailto:wecare@kucash.in" style="color: #0066FF;">wecare@kucash.in</a> or call us at <a href="tel:+919008367818" style="color: #0066FF;">+91 9008367818</a>
+                If you're having trouble resetting your password, contact us at <a href="mailto:wecare@kucash.in" style="color: #0066FF;">wecare@kucash.in</a> or call us at <a href="tel:+918431767538" style="color: #0066FF;">+91 8431767538</a>
             </div>
         </div>
         
@@ -165,7 +165,7 @@ ${resetLink}
 
 ⚠️ Security Notice: This link will expire in 1 hour. If you didn't request a password reset, please ignore this email or contact our support team.
 
-Need help? Contact us at wecare@kucash.in or call +91 9008367818
+Need help? Contact us at wecare@kucash.in or call +91 8431767538
 
 ---
 This email was sent by KuCash (Madhyavarti Solutions Private Limited)
@@ -319,7 +319,7 @@ export function getEmailVerificationTemplate(
             
             <div class="info-box">
                 <strong>ℹ️ Need help?</strong><br>
-                If you're having trouble verifying your email, contact us at <a href="mailto:wecare@kucash.in" style="color: #0066FF;">wecare@kucash.in</a> or call us at <a href="tel:+919008367818" style="color: #0066FF;">+91 9008367818</a>
+                If you're having trouble verifying your email, contact us at <a href="mailto:wecare@kucash.in" style="color: #0066FF;">wecare@kucash.in</a> or call us at <a href="tel:+918431767538" style="color: #0066FF;">+91 8431767538</a>
             </div>
         </div>
         
@@ -353,7 +353,7 @@ After verification, you'll be able to:
 - Track your loan applications
 - Connect with our financial experts
 
-Need help? Contact us at wecare@kucash.in or call +91 9008367818
+Need help? Contact us at wecare@kucash.in or call +91 8431767538
 
 ---
 This email was sent by KuCash (Madhyavarti Solutions Private Limited)

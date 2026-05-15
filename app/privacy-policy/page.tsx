@@ -361,7 +361,7 @@ export default function PrivacyPolicyPage() {
                       Officer Name
                     </span>
                     <p className="text-2xl font-bold tracking-tight italic">
-                      Mr. Kiran Biradar
+                      Mr. Balakrishna Cherukuri
                     </p>
                     <p className="text-sm font-medium text-muted-foreground">
                       Grievance Redressal Officer
@@ -393,10 +393,10 @@ export default function PrivacyPolicyPage() {
                           Phone
                         </span>
                         <a
-                          href="tel:+918618629391"
+                          href="tel:+918431767538"
                           className="text-foreground font-semibold"
                         >
-                          +91 8618629391
+                          +91 8431767538
                         </a>
                       </div>
                     </div>

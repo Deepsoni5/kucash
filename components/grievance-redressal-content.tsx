@@ -79,7 +79,7 @@ export function GrievanceRedressalContent() {
                     </div>
                     <div>
                       <p className="font-semibold text-foreground text-lg">
-                        Kiran Biradar
+                        Balakrishna Cherukuri
                       </p>
                       <p className="text-sm text-muted-foreground">
                         Nodal Officer
@@ -93,7 +93,7 @@ export function GrievanceRedressalContent() {
                     </div>
                     <div>
                       <p className="font-semibold text-foreground">
-                        +91 8618629391
+                        +91 8431767538
                       </p>
                       <p className="text-sm text-muted-foreground">
                         Available during business hours
@@ -311,7 +311,7 @@ export function GrievanceRedressalContent() {
                   resolving your concerns quickly and fairly.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Link href="tel:+918618629391">
+                  <Link href="tel:+918431767538">
                     <Button
                       size="lg"
                       className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"

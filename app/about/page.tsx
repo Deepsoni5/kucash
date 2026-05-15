@@ -138,7 +138,7 @@ export default function AboutPage() {
               <div className="w-24 h-1.5 bg-primary mx-auto rounded-full mt-6" />
             </div>
 
-            <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
+            <div className="grid lg:grid-cols-1 gap-12 lg:gap-16 max-w-3xl mx-auto">
               {/* Founder */}
               <div className="group">
                 <div className="relative bg-card rounded-3xl p-8 lg:p-10 border-2 border-border/50 hover:border-primary/30 shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden">
@@ -210,81 +210,6 @@ export default function AboutPage() {
                   </div>
                 </div>
               </div>
-
-              {/* Co-Founder */}
-              <div className="group">
-                <div className="relative bg-card rounded-3xl p-8 lg:p-10 border-2 border-border/50 hover:border-accent/30 shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden">
-                  {/* Background Pattern */}
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-accent/10 to-secondary/10 rounded-full -translate-y-16 translate-x-16 group-hover:scale-150 transition-transform duration-700"></div>
-
-                  <div className="relative z-10">
-                    {/* Profile Image */}
-                    <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-8">
-                      <div className="relative">
-                        <div className="w-32 h-32 rounded-2xl overflow-hidden border-4 border-accent/20 shadow-lg group-hover:border-accent/40 transition-colors">
-                          <Image
-                            src="/pf1.jpeg"
-                            alt="Kiran Biradar - Co-Founder"
-                            width={128}
-                            height={128}
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                          />
-                        </div>
-                        <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-accent rounded-full flex items-center justify-center shadow-lg">
-                          <TrendingUp className="w-4 h-4 text-accent-foreground" />
-                        </div>
-                      </div>
-
-                      <div className="text-center sm:text-left">
-                        <h3 className="text-2xl lg:text-3xl font-bold text-foreground mb-2">
-                          Kiran Biradar
-                        </h3>
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 border border-accent/20 mb-3">
-                          <div className="w-2 h-2 bg-accent rounded-full"></div>
-                          <span className="text-sm font-semibold text-accent">
-                            Co-Founder
-                          </span>
-                        </div>
-                        <p className="text-muted-foreground font-medium">
-                          B.Sc (CS)
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Quote */}
-                    <div className="relative mb-6">
-                      <div className="absolute -top-2 -left-2 text-6xl text-accent/20 font-serif">
-                        "
-                      </div>
-                      <blockquote className="text-lg text-foreground font-medium italic leading-relaxed pl-8 pr-4">
-                        With over 5 years of solid experience in Finance, he
-                        brings a robust entrepreneurial and operational
-                        background spanning the fintech, fashion-tech, and
-                        manpower industries.
-                      </blockquote>
-                    </div>
-
-                    {/* Description */}
-                    <div className="p-6 rounded-2xl bg-muted/50 dark:bg-muted/20 border border-border/50">
-                      <p className="text-muted-foreground leading-relaxed">
-                        He possesses an exceptional ability to understand
-                        borrower psychology and align large teams toward a
-                        common mission of financial inclusion. His practical
-                        experience in managing complex operations makes him an
-                        ideal counterpart to the founder, ensuring KuCash builds
-                        a scalable, people-first platform that delivers seamless
-                        loan services.
-                      </p>
-                    </div>
-
-                    {/* Experience Badge */}
-                    <div className="flex items-center gap-2 mt-6 text-sm text-accent font-semibold">
-                      <Shield className="w-4 h-4" />
-                      <span>5+ Years Experience</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
 
             {/* Team Stats */}
@@ -292,10 +217,10 @@ export default function AboutPage() {
               <div className="grid sm:grid-cols-3 gap-8 max-w-3xl mx-auto">
                 <div className="p-6 rounded-2xl bg-card border border-border/50 shadow-lg">
                   <div className="text-3xl font-bold text-primary mb-2">
-                    20+
+                    15+
                   </div>
                   <div className="text-sm text-muted-foreground font-medium">
-                    Combined Years Experience
+                    Years Experience
                   </div>
                 </div>
                 <div className="p-6 rounded-2xl bg-card border border-border/50 shadow-lg">

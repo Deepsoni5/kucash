@@ -9,7 +9,7 @@ import type { Metadata } from "next"
 export const metadata: Metadata = {
   title: "Contact Us - KuCash | Get in Touch for Loan Queries",
   description:
-    "Contact KuCash for any loan related queries. Call us at +91 9008367818 or email at wecare@kucash.in. Our team is available 24/7 to assist you.",
+    "Contact KuCash for any loan related queries. Call us at +91 8431767538 or email at wecare@kucash.in. Our team is available 24/7 to assist you.",
 }
 
 export default function ContactPage() {
@@ -54,8 +54,8 @@ export default function ContactPage() {
                     <Phone className="w-7 h-7 text-white" />
                   </div>
                   <h3 className="font-semibold text-foreground mb-2">Call Us</h3>
-                  <a href="tel:+919008367818" className="text-primary hover:underline text-sm">
-                    +91 9008367818
+                  <a href="tel:+918431767538" className="text-primary hover:underline text-sm">
+                    +91 8431767538
                   </a>
                 </CardContent>
               </Card>
@@ -79,7 +79,7 @@ export default function ContactPage() {
                   </div>
                   <h3 className="font-semibold text-foreground mb-2">WhatsApp</h3>
                   <a
-                    href="https://wa.me/919008367818"
+                    href="https://wa.me/918431767538"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-[#25D366] hover:underline text-sm"
@@ -129,10 +129,10 @@ export default function ContactPage() {
                       <div>
                         <h3 className="font-semibold text-foreground mb-1">Phone</h3>
                         <a
-                          href="tel:+919008367818"
+                          href="tel:+918431767538"
                           className="text-muted-foreground hover:text-primary transition-colors"
                         >
-                          +91 9008367818
+                          +91 8431767538
                         </a>
                       </div>
                     </div>

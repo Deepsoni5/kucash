@@ -34,7 +34,7 @@ export function CTASection() {
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
-            <Link href="tel:+919008367818">
+            <Link href="tel:+918431767538">
               <Button
                 size="lg"
                 variant="outline"
